@@ -1,4 +1,5 @@
 import "../admin-orders.css";
+import "./admin-tailwind.css";
 
 export default function AdminLayout({
   children,

@@ -4,7 +4,7 @@ import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 
 export default async function AdminCareersPage() {
-  await requireAdminPage("/admin/careers");
+  await requireAdminPage("/admin/careers", "career.manage");
   const jobs = await prisma.jobPost.findMany({
     orderBy: { createdAt: "desc" },
   });

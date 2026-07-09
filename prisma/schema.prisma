@@ -357,9 +357,45 @@ model AdminUser {
   seoRoutes         SeoRoute[]        @relation("SeoRouteUpdatedBy")
   seoRedirects      SeoRedirect[]     @relation("SeoRedirectUpdatedBy")
   inventoryTransactions InventoryTransaction[] @relation("InventoryChangedBy")
+  permissions           AdminPermission[]      @relation("AdminPermissions")
+  permissionsGranted    AdminPermission[]      @relation("PermissionsGrantedBy")
+  paymentGatewayConfigs PaymentGatewayConfig[]
 
   @@index([role])
   @@index([active])
+}
+
+model AdminPermission {
+  id          String   @id @default(cuid())
+  adminId     String
+  key         String
+  grantedAt   DateTime @default(now())
+  grantedById String?
+
+  admin     AdminUser  @relation("AdminPermissions", fields: [adminId], references: [id], onDelete: Cascade)
+  grantedBy AdminUser? @relation("PermissionsGrantedBy", fields: [grantedById], references: [id], onDelete: SetNull)
+
+  @@unique([adminId, key])
+  @@index([adminId])
+  @@index([key])
+}
+
+model PaymentGatewayConfig {
+  id              String   @id @default(cuid())
+  provider        String   @unique
+  enabled         Boolean  @default(false)
+  mode            String   @default("sandbox")
+  merchantId      String?
+  secretEncrypted String?
+  extraConfig     String?
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  updatedBy AdminUser? @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([provider])
+  @@index([enabled])
 }
 
 model BlogPost {

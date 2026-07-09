@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { AnalyticsEvents } from "@/components/analytics-events";
 import { AnalyticsScripts } from "@/components/analytics-scripts";
-import { CartProvider } from "@/components/cart-provider";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import { getSiteConfig } from "@/lib/site-settings";
 import "./globals.css";
 
@@ -51,11 +48,7 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <AnalyticsScripts />
         <AnalyticsEvents />
-        <CartProvider>
-          <SiteHeader />
-          {children}
-          <SiteFooter />
-        </CartProvider>
+        {children}
       </body>
     </html>
   );

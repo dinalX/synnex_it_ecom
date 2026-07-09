@@ -3,7 +3,7 @@ import { jsonResponse, errorResponse, getSearchParams, getPagination, validateBo
 import { requireAdminApi } from "@/lib/admin-access";
 
 export async function GET(request: Request) {
-  const admin = await requireAdminApi();
+  const admin = await requireAdminApi("product.view");
   if (!admin) return errorResponse("Unauthorized", 401);
 
   const url = new URL(request.url);
@@ -48,7 +48,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const admin = await requireAdminApi();
+  const admin = await requireAdminApi("product.create");
   if (!admin) return errorResponse("Unauthorized", 401);
   const csrfCheck = validateCSRF(request);
   if (!csrfCheck.valid) return errorResponse(csrfCheck.error, 403);

@@ -17,7 +17,7 @@ async function getCurrentSettings() {
 }
 
 export default async function AdminSettingsPage() {
-  await requireAdminPage("/admin/settings");
+  await requireAdminPage("/admin/settings", "settings.view");
   const settings = await getCurrentSettings();
 
   return (

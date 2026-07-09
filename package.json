@@ -18,16 +18,23 @@
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-label": "^2.1.11",
+    "@radix-ui/react-select": "^2.3.3",
+    "@radix-ui/react-separator": "^1.1.11",
     "@radix-ui/react-slot": "^1.2.4",
     "@serwist/next": "^9.5.11",
+    "@tailwindcss/postcss": "^4.3.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "latest",
     "next": "latest",
     "prisma": "^6.19.3",
+    "radix-ui": "^1.6.2",
     "react": "latest",
     "react-dom": "latest",
-    "serwist": "^9.5.11"
+    "serwist": "^9.5.11",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
     "@types/node": "latest",

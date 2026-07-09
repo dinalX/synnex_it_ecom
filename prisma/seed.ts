@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { hashPassword } from "@/lib/password";
 
 const prisma = new PrismaClient();
 
@@ -1037,20 +1038,49 @@ async function main() {
     }
   }
 
-  // ─── Seed Admin User ───────────────────────────────────────────────────────
+  // ─── Bootstrap Admin User (one-time; skipped if any AdminUser already exists) ──
 
-  await prisma.adminUser.upsert({
-    where: { email: "admin@synnex.lk" },
-    update: {},
-    create: {
-      email: "admin@synnex.lk",
-      name: "Synnex Admin",
-      passwordHash:
-        "$2b$10$placeholderhashreplaceinproduction", // Replace with real hash
-      role: "Admin",
-      active: true,
-    },
-  });
+  const PLACEHOLDER_ADMIN_HASH = "$2b$10$placeholderhashreplaceinproduction";
+  const bootstrapEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const bootstrapPassword = process.env.ADMIN_PASSWORD;
+  const existingAdminCount = await prisma.adminUser.count();
+
+  if (existingAdminCount === 0) {
+    if (!bootstrapEmail || !bootstrapPassword) {
+      console.warn(
+        "⚠️  ADMIN_EMAIL/ADMIN_PASSWORD not set — skipping admin bootstrap. Set them in .env and rerun `npm run db:seed`.",
+      );
+    } else {
+      await prisma.adminUser.create({
+        data: {
+          email: bootstrapEmail,
+          name: "Synnex Admin",
+          passwordHash: await hashPassword(bootstrapPassword),
+          role: "SuperAdmin",
+          active: true,
+        },
+      });
+    }
+  } else if (bootstrapEmail && bootstrapPassword) {
+    // Repair admin rows created by an earlier seed run that used a non-functional placeholder hash.
+    const staleAdmin = await prisma.adminUser.findFirst({
+      where: { email: bootstrapEmail, passwordHash: PLACEHOLDER_ADMIN_HASH },
+    });
+    if (staleAdmin) {
+      await prisma.adminUser.update({
+        where: { id: staleAdmin.id },
+        data: { passwordHash: await hashPassword(bootstrapPassword) },
+      });
+      console.log("🔧 Repaired placeholder admin password hash from an earlier seed run.");
+    }
+
+    // Ensure the bootstrap admin always ends up SuperAdmin, even if it was seeded
+    // before SuperAdmin/PBAC existed.
+    await prisma.adminUser.updateMany({
+      where: { email: bootstrapEmail, role: { not: "SuperAdmin" } },
+      data: { role: "SuperAdmin" },
+    });
+  }
 
   // ─── Seed Site Settings ────────────────────────────────────────────────────
 
@@ -1250,7 +1280,7 @@ async function main() {
   console.log("✅ Database seeded successfully!");
   console.log(`   Categories: ${categories.length} main + subcategories`);
   console.log(`   Products: ${products.length}`);
-  console.log(`   Admin users: 1`);
+  console.log(`   Admin users: ${await prisma.adminUser.count()}`);
   console.log(`   Site settings: ${settings.length}`);
   console.log(`   Pages: ${pages.length}`);
   console.log(`   Job posts: ${jobs.length}`);

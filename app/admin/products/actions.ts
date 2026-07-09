@@ -18,7 +18,7 @@ function slugify(text: string) {
 }
 
 export async function createProduct(formData: FormData) {
-  await requireAdminAction();
+  await requireAdminAction("product.create");
 
   const name = formData.get("name") as string;
   const providedSlug = (formData.get("slug") as string | null)?.trim();
@@ -70,7 +70,7 @@ export async function createProduct(formData: FormData) {
 }
 
 export async function updateProduct(id: string, formData: FormData) {
-  await requireAdminAction();
+  await requireAdminAction("product.update");
 
   const existing = await prisma.product.findUnique({ where: { id } });
   if (!existing) throw new Error("Product not found");
@@ -127,7 +127,7 @@ export async function updateProduct(id: string, formData: FormData) {
 }
 
 export async function deleteProduct(id: string) {
-  await requireAdminAction();
+  await requireAdminAction("product.delete");
 
   try {
     await prisma.product.delete({

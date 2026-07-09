@@ -9,7 +9,7 @@ export default async function AdminProductEditPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireAdminPage("/admin/products");
+  await requireAdminPage("/admin/products", "product.view");
   const { id } = await params;
   const product = await prisma.product.findUnique({
     where: { id },

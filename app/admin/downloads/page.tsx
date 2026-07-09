@@ -4,7 +4,7 @@ import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 
 export default async function AdminDownloadsPage() {
-  await requireAdminPage("/admin/downloads");
+  await requireAdminPage("/admin/downloads", "download.manage");
   const downloads = await prisma.driverDownload.findMany({
     orderBy: { updatedAt: "desc" },
   });

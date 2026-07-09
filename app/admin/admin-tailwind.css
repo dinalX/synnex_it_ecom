@@ -1,0 +1,73 @@
+/*
+ * Tailwind entry point scoped to /admin only.
+ * Imported exclusively from app/admin/layout.tsx so this stylesheet
+ * (and its utility classes) never load on storefront routes.
+ *
+ * Preflight (Tailwind's base reset) is intentionally NOT imported:
+ * app/layout.tsx renders the storefront SiteHeader/SiteFooter around
+ * admin pages too, and a global reset would make that shared chrome
+ * look different when viewed inside /admin vs. the storefront.
+ *
+ * All custom-property names below are prefixed with --admin- because
+ * :root is document-global, not scoped to this stylesheet's importer —
+ * an unprefixed name like --muted collides with the storefront's own
+ * --muted variable in app/globals.css and silently overrides it
+ * wherever SiteHeader/SiteFooter render inside /admin.
+ */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@source "../../components/ui/**/*.{ts,tsx}";
+@source "../../components/sections/admin-sidebar.tsx";
+@source "../../components/sections/admin-sidebar-nav.tsx";
+@source "../../components/admin/**/*.{ts,tsx}";
+@source "./**/*.{ts,tsx}";
+
+@theme inline {
+  --color-background: var(--admin-background);
+  --color-foreground: var(--admin-foreground);
+  --color-card: var(--admin-card);
+  --color-card-foreground: var(--admin-card-foreground);
+  --color-popover: var(--admin-popover);
+  --color-popover-foreground: var(--admin-popover-foreground);
+  --color-primary: var(--admin-primary);
+  --color-primary-foreground: var(--admin-primary-foreground);
+  --color-secondary: var(--admin-secondary);
+  --color-secondary-foreground: var(--admin-secondary-foreground);
+  --color-muted: var(--admin-muted);
+  --color-muted-foreground: var(--admin-muted-foreground);
+  --color-accent: var(--admin-accent);
+  --color-accent-foreground: var(--admin-accent-foreground);
+  --color-destructive: var(--admin-destructive);
+  --color-destructive-foreground: var(--admin-destructive-foreground);
+  --color-border: var(--admin-border);
+  --color-input: var(--admin-input);
+  --color-ring: var(--admin-ring);
+  --radius-sm: calc(var(--admin-radius) - 4px);
+  --radius-md: calc(var(--admin-radius) - 2px);
+  --radius-lg: var(--admin-radius);
+  --radius-xl: calc(var(--admin-radius) + 4px);
+}
+
+:root {
+  --admin-background: oklch(1 0 0);
+  --admin-foreground: oklch(0.145 0 0);
+  --admin-card: oklch(1 0 0);
+  --admin-card-foreground: oklch(0.145 0 0);
+  --admin-popover: oklch(1 0 0);
+  --admin-popover-foreground: oklch(0.145 0 0);
+  --admin-primary: oklch(0.205 0 0);
+  --admin-primary-foreground: oklch(0.985 0 0);
+  --admin-secondary: oklch(0.97 0 0);
+  --admin-secondary-foreground: oklch(0.205 0 0);
+  --admin-muted: oklch(0.97 0 0);
+  --admin-muted-foreground: oklch(0.556 0 0);
+  --admin-accent: oklch(0.97 0 0);
+  --admin-accent-foreground: oklch(0.205 0 0);
+  --admin-destructive: oklch(0.577 0.245 27.325);
+  --admin-destructive-foreground: oklch(0.985 0 0);
+  --admin-border: oklch(0.922 0 0);
+  --admin-input: oklch(0.922 0 0);
+  --admin-ring: oklch(0.708 0 0);
+  --admin-radius: 0.625rem;
+}

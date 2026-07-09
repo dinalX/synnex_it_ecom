@@ -3,7 +3,7 @@ import { jsonResponse, errorResponse, getSearchParams, getPagination } from "@/l
 import { requireAdminApi } from "@/lib/admin-access";
 
 export async function GET(request: Request) {
-  const admin = await requireAdminApi();
+  const admin = await requireAdminApi("order.view");
   if (!admin) return errorResponse("Unauthorized", 401);
 
   const url = new URL(request.url);

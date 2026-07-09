@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { timingSafeEqual } from "node:crypto";
-import type { Customer } from "@prisma/client";
+import type { AdminUser, Customer } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { errorResponse, validateBodySize, validateCSRF } from "@/lib/api";
 import { ADMIN_SESSION_COOKIE, USER_SESSION_COOKIE, createSessionToken, type SessionRole } from "@/lib/auth";
@@ -21,12 +20,6 @@ function safeRedirect(value?: string) {
   return value;
 }
 
-function safeEqual(left: string, right: string) {
-  const a = Buffer.from(left);
-  const b = Buffer.from(right);
-  return a.length === b.length && timingSafeEqual(a, b);
-}
-
 export async function POST(request: Request) {
   const csrfCheck = validateCSRF(request);
   if (!csrfCheck.valid) return errorResponse(csrfCheck.error, 403);
@@ -39,20 +32,28 @@ export async function POST(request: Request) {
   const password = body.password || "";
   const redirectTo = safeRedirect(body.redirectTo || (role === "admin" ? "/admin" : "/checkout"));
   let customer: Customer | null = null;
+  let admin: AdminUser | null = null;
 
   if (!email || password.length < 4) {
     return NextResponse.redirect(new URL(`${role === "admin" ? "/admin/login" : "/login"}?error=invalid`, request.url));
   }
 
   if (role === "admin") {
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    if (!adminEmail || !adminPassword) {
-      return NextResponse.redirect(new URL(`/admin/login?error=config`, request.url));
-    }
-    if (!safeEqual(email, adminEmail.toLowerCase()) || !safeEqual(password, adminPassword)) {
+    admin = await prisma.adminUser.findUnique({ where: { email } });
+    if (!admin || !admin.active) {
       return NextResponse.redirect(new URL(`/admin/login?error=invalid&redirect=${encodeURIComponent(redirectTo)}`, request.url));
     }
+
+    const verification = await verifyPassword(password, admin.passwordHash);
+    if (!verification.valid) {
+      return NextResponse.redirect(new URL(`/admin/login?error=invalid&redirect=${encodeURIComponent(redirectTo)}`, request.url));
+    }
+
+    if (verification.upgradedHash) {
+      await prisma.adminUser.update({ where: { id: admin.id }, data: { passwordHash: verification.upgradedHash } });
+    }
+
+    await prisma.adminUser.update({ where: { id: admin.id }, data: { lastLoginAt: new Date() } });
   } else {
     customer = await prisma.customer.findUnique({ where: { email } });
     if (!customer) {
@@ -80,9 +81,9 @@ export async function POST(request: Request) {
   }
 
   const token = await createSessionToken({
-    id: customer?.id,
+    id: customer?.id || admin?.id,
     email,
-    name: customer?.name || email.split("@")[0] || "Synnex user",
+    name: customer?.name || admin?.name || email.split("@")[0] || "Synnex user",
     role: role as SessionRole,
   });
   const response = NextResponse.redirect(new URL(redirectTo, request.url));

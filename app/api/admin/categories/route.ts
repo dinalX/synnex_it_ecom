@@ -3,7 +3,7 @@ import { jsonResponse, errorResponse, getCategoryTree, validateBodySize, validat
 import { requireAdminApi } from "@/lib/admin-access";
 
 export async function GET() {
-  const admin = await requireAdminApi();
+  const admin = await requireAdminApi("category.view");
   if (!admin) return errorResponse("Unauthorized", 401);
 
   try {
@@ -18,7 +18,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const admin = await requireAdminApi();
+  const admin = await requireAdminApi("category.create");
   if (!admin) return errorResponse("Unauthorized", 401);
   const csrfCheck = validateCSRF(request);
   if (!csrfCheck.valid) return errorResponse(csrfCheck.error, 403);

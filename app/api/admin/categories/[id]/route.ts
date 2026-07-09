@@ -3,7 +3,7 @@ import { jsonResponse, errorResponse, validateBodySize, validateCSRF } from "@/l
 import { requireAdminApi } from "@/lib/admin-access";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const admin = await requireAdminApi();
+  const admin = await requireAdminApi("category.update");
   if (!admin) return errorResponse("Unauthorized", 401);
   const csrfCheck = validateCSRF(request);
   if (!csrfCheck.valid) return errorResponse(csrfCheck.error, 403);
@@ -52,7 +52,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const admin = await requireAdminApi();
+  const admin = await requireAdminApi("category.delete");
   if (!admin) return errorResponse("Unauthorized", 401);
   const csrfCheck = validateCSRF(request);
   if (!csrfCheck.valid) return errorResponse(csrfCheck.error, 403);

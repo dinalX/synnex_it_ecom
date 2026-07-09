@@ -85,50 +85,95 @@ export async function createOrderFromCurrentCart(input: CheckoutOrderInput) {
   const orderNumber = generateOrderNumber();
   const paymentMode = normalizePaymentMode(input.paymentMode);
 
-  const order = await prisma.order.create({
-    data: {
-      orderNumber,
-      customerId,
-      customer: input.customer,
-      email: input.email,
-      phone: input.phone,
-      paymentMode,
-      paymentStatus: paymentMode === PAYMENT_MODE_LABELS["cash-on-delivery"] ? "PendingReview" : "AwaitingUpload",
-      subtotal,
-      total: subtotal,
-      shippingAddress: input.shippingAddress,
-      billingAddress: input.billingAddress,
-      notes: input.notes,
-      items: {
-        create: cart.items.map((item) => ({
-          productId: item.productId,
-          variantId: item.variantId,
-          sku: item.variant?.sku || item.product.sku,
-          name: item.variant?.name || item.product.name,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          lineTotal: item.lineTotal,
-          productData: JSON.stringify({
-            slug: item.product.slug,
-            image: item.product.image,
-            accent: item.product.accent,
-          }),
-        })),
+  const order = await prisma.$transaction(async (tx) => {
+    const createdOrder = await tx.order.create({
+      data: {
+        orderNumber,
+        customerId,
+        customer: input.customer,
+        email: input.email,
+        phone: input.phone,
+        paymentMode,
+        paymentStatus: paymentMode === PAYMENT_MODE_LABELS["cash-on-delivery"] ? "PendingReview" : "AwaitingUpload",
+        subtotal,
+        total: subtotal,
+        shippingAddress: input.shippingAddress,
+        billingAddress: input.billingAddress,
+        notes: input.notes,
+        items: {
+          create: cart.items.map((item) => ({
+            productId: item.productId,
+            variantId: item.variantId,
+            sku: item.variant?.sku || item.product.sku,
+            name: item.variant?.name || item.product.name,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            lineTotal: item.lineTotal,
+            productData: JSON.stringify({
+              slug: item.product.slug,
+              image: item.product.image,
+              accent: item.product.accent,
+            }),
+          })),
+        },
       },
-    },
-    include: {
-      items: true,
-      paymentUploads: true,
-    },
-  });
+      include: {
+        items: true,
+        paymentUploads: true,
+      },
+    });
 
-  await prisma.$transaction([
-    prisma.cart.update({
+    for (const [index, item] of cart.items.entries()) {
+      const orderItemId = createdOrder.items[index]?.id;
+
+      if (item.variantId && item.variant) {
+        const beforeQty = item.variant.inventory;
+        const afterQty = beforeQty - item.quantity;
+        await tx.productVariant.update({
+          where: { id: item.variantId },
+          data: { inventory: afterQty },
+        });
+        await tx.inventoryTransaction.create({
+          data: {
+            productId: item.productId,
+            variantId: item.variantId,
+            orderId: createdOrder.id,
+            orderItemId,
+            type: "OrderReserve",
+            quantity: -item.quantity,
+            beforeQty,
+            afterQty,
+          },
+        });
+      } else {
+        const beforeQty = item.product.inventory;
+        const afterQty = beforeQty - item.quantity;
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { inventory: afterQty },
+        });
+        await tx.inventoryTransaction.create({
+          data: {
+            productId: item.productId,
+            orderId: createdOrder.id,
+            orderItemId,
+            type: "OrderReserve",
+            quantity: -item.quantity,
+            beforeQty,
+            afterQty,
+          },
+        });
+      }
+    }
+
+    await tx.cart.update({
       where: { id: cart.id },
       data: { status: "Converted", subtotal },
-    }),
-    prisma.cartItem.deleteMany({ where: { cartId: cart.id } }),
-  ]);
+    });
+    await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+
+    return createdOrder;
+  });
 
   const cookieStore = await cookies();
   cookieStore.set(CART_SESSION_COOKIE, "", {

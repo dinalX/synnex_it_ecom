@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { requireAdminAction } from "@/lib/admin-access";
 
 export async function saveSettings(formData: FormData) {
-  await requireAdminAction();
+  await requireAdminAction("settings.update");
 
   const entries: Record<string, string> = {
     siteTitle: formData.get("siteTitle") as string || "",

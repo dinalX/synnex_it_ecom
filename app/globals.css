@@ -1488,7 +1488,7 @@ del {
 .admin-shell {
   display: grid;
   grid-template-columns: 250px 1fr;
-  min-height: calc(100vh - 72px);
+  min-height: 100vh;
   background: #f2f5f8;
 }
 

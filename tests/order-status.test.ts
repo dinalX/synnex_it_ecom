@@ -5,6 +5,7 @@ import {
   FULFILLMENT_STATUSES,
   ORDER_STATUSES,
   PAYMENT_STATUSES,
+  getStatusBadgeClass,
   isFulfillmentStatus,
   isOrderStatus,
   isPaymentStatus,
@@ -40,4 +41,11 @@ test("shared payment and fulfillment status guards reject invalid values", () =>
   assert.equal(isPaymentStatus("Approved"), false);
   assert.equal(isFulfillmentStatus("Fulfilled"), true);
   assert.equal(isFulfillmentStatus("Delivered"), false);
+});
+
+test("status badge class lookup is case/format insensitive with a safe fallback", () => {
+  assert.equal(getStatusBadgeClass("Paid"), "bg-emerald-100 text-emerald-800");
+  assert.equal(getStatusBadgeClass("Pending Review"), "bg-amber-100 text-amber-800");
+  assert.equal(getStatusBadgeClass("pending-review"), "bg-amber-100 text-amber-800");
+  assert.equal(getStatusBadgeClass("SomeUnknownStatus"), "bg-slate-100 text-slate-700");
 });

@@ -4,7 +4,7 @@ import { requireAdminApi } from "@/lib/admin-access";
 import { isFulfillmentStatus, isOrderStatus, isPaymentStatus } from "@/lib/order-status";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const admin = await requireAdminApi();
+  const admin = await requireAdminApi("order.update");
   if (!admin) return errorResponse("Unauthorized", 401);
   const csrfCheck = validateCSRF(request);
   if (!csrfCheck.valid) return errorResponse(csrfCheck.error, 403);

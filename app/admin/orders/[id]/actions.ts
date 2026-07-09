@@ -11,7 +11,7 @@ import {
 } from "@/lib/order-status";
 
 export async function updateOrder(orderId: string, formData: FormData) {
-  await requireAdminAction();
+  await requireAdminAction("order.update");
 
   const data: Record<string, unknown> = {};
   const status = formData.get("status");
@@ -50,7 +50,7 @@ export async function updateOrder(orderId: string, formData: FormData) {
 }
 
 export async function reviewPaymentUpload(orderId: string, uploadId: string, formData: FormData) {
-  const admin = await requireAdminAction();
+  const admin = await requireAdminAction("order.paymentUpload.review");
   const status = String(formData.get("status") || "").trim();
   const adminNote = String(formData.get("adminNote") || "").trim();
 

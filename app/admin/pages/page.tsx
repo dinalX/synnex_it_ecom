@@ -6,7 +6,7 @@ import { requireAdminPage } from "@/lib/admin-access";
 const pages = ["Home", "POS Solution", "Barcode Solution", "Security Solution", "Checkout", "Careers", "Downloads"];
 
 export default async function AdminPagesPage() {
-  await requireAdminPage("/admin/pages");
+  await requireAdminPage("/admin/pages", "page.manage");
   const pageRecords = await prisma.pageContent.findMany({
     orderBy: { updatedAt: "desc" },
   });

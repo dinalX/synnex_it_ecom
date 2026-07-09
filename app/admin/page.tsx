@@ -11,6 +11,18 @@ import { prisma } from "@/lib/db";
 import { formatCurrency } from "@/lib/api-client";
 import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
+import { getStatusBadgeClass } from "@/lib/order-status";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 async function getDashboardData() {
   const now = new Date();
@@ -88,103 +100,135 @@ export default async function AdminPage() {
       <AdminSidebar />
 
       <section className="admin-main" id="dashboard">
-        <div className="admin-topbar">
-          <div>
-            <p className="eyebrow">Admin dashboard</p>
-            <h1>Store operations</h1>
-          </div>
-          <label className="admin-search">
-            <Search size={18} />
-            <input placeholder="Search orders, products, customers" />
-          </label>
-        </div>
-
-        <div className="admin-stats">
-          {stats.map((stat, index) => {
-            const Icon = [CircleDollarSign, ShoppingCart, ArrowUpRight, Boxes][index];
-            return (
-              <article className="stat-card" key={stat.label}>
-                <span><Icon size={20} /></span>
-                <p>{stat.label}</p>
-                <strong>{stat.value}</strong>
-                <small>{stat.delta} vs last month</small>
-              </article>
-            );
-          })}
-        </div>
-
-        <div className="admin-grid">
-          <section className="admin-panel large">
-            <div className="panel-heading">
-              <div>
-                <p className="eyebrow">Orders</p>
-                <h2>Recent activity</h2>
-              </div>
-              <button>Export <ArrowUpRight size={16} /></button>
-            </div>
-            <div className="orders-table">
-              <div className="table-row table-head">
-                <span>Order</span>
-                <span>Customer</span>
-                <span>Status</span>
-                <span>Total</span>
-                <span>Channel</span>
-              </div>
-              {orders.map((order) => (
-                <div className="table-row" key={order.id}>
-                  <strong>{order.id}</strong>
-                  <span>{order.customer}</span>
-                  <span className={`status ${order.status.toLowerCase().replaceAll(" ", "-")}`}>
-                    {order.status}
-                  </span>
-                  <span>{formatCurrency(order.total)}</span>
-                  <span>{order.channel}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="admin-panel">
-            <div className="panel-heading">
-              <div>
-                <p className="eyebrow">Fulfillment</p>
-                <h2>Pipeline</h2>
-              </div>
-            </div>
-            <div className="pipeline">
-              {fulfillment.map((step) => (
-                <div key={step.label}>
-                  <span>{step.label}</span>
-                  <strong>{step.value}</strong>
-                  <div><i style={{ width: `${Math.min(step.value * 1.6, 100)}%` }} /></div>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-
-        <section className="admin-panel inventory-panel">
-          <div className="panel-heading">
+        <div className="flex flex-col gap-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="eyebrow">Inventory</p>
-              <h2>Stock watchlist</h2>
+              <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Admin dashboard</p>
+              <h1 className="text-2xl font-bold text-foreground">Store operations</h1>
             </div>
-            <Link href="/">View storefront <ChevronRight size={16} /></Link>
-            <Link href="/admin/content">All functions <ChevronRight size={16} /></Link>
+            <label className="flex h-11 w-full max-w-[420px] items-center gap-2 rounded-lg border border-border bg-card px-3">
+              <Search size={18} className="text-muted-foreground" />
+              <input
+                placeholder="Search orders, products, customers"
+                className="h-full w-full bg-transparent text-sm outline-none"
+              />
+            </label>
           </div>
-          <div className="inventory-list">
-            {inventory.map((row) => (
-              <article key={row.sku}>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {stats.map((stat, index) => {
+              const Icon = [CircleDollarSign, ShoppingCart, ArrowUpRight, Boxes][index];
+              return (
+                <Card key={stat.label}>
+                  <CardHeader>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                      <Icon size={20} />
+                    </span>
+                    <CardTitle className="text-sm font-medium text-muted-foreground">{stat.label}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <strong className="text-2xl font-bold text-foreground">{stat.value}</strong>
+                    <p className="mt-1 text-xs text-muted-foreground">{stat.delta} vs last month</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-[2fr_1fr]">
+            <Card>
+              <CardHeader className="flex-row items-center justify-between">
                 <div>
-                  <strong>{row.name}</strong>
-                  <span>{row.sku} · {row.category}</span>
+                  <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Orders</p>
+                  <CardTitle className="text-lg">Recent activity</CardTitle>
                 </div>
-                <span>{row.stock} units</span>
-                <em className={row.status === "Restock" ? "needs-stock" : ""}>{row.status}</em>
-              </article>
-            ))}
+                <Button variant="outline" size="sm">
+                  Export <ArrowUpRight size={16} />
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Order</TableHead>
+                      <TableHead>Customer</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Total</TableHead>
+                      <TableHead>Channel</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {orders.map((order) => (
+                      <TableRow key={order.id}>
+                        <TableCell className="font-semibold">{order.id}</TableCell>
+                        <TableCell>{order.customer}</TableCell>
+                        <TableCell>
+                          <Badge className={getStatusBadgeClass(order.status)}>{order.status}</Badge>
+                        </TableCell>
+                        <TableCell>{formatCurrency(order.total)}</TableCell>
+                        <TableCell>{order.channel}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Fulfillment</p>
+                <CardTitle className="text-lg">Pipeline</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                {fulfillment.map((step) => (
+                  <div key={step.label} className="flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">{step.label}</span>
+                      <strong className="text-foreground">{step.value}</strong>
+                    </div>
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-primary"
+                        style={{ width: `${Math.min(step.value * 1.6, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
           </div>
-        </section>
+
+          <Card>
+            <CardHeader className="flex-row items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Inventory</p>
+                <CardTitle className="text-lg">Stock watchlist</CardTitle>
+              </div>
+              <div className="flex items-center gap-4 text-sm font-medium">
+                <Link href="/" className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
+                  View storefront <ChevronRight size={16} />
+                </Link>
+                <Link href="/admin/content" className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
+                  All functions <ChevronRight size={16} />
+                </Link>
+              </div>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              {inventory.map((row) => (
+                <article key={row.sku} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-4">
+                  <div>
+                    <strong className="text-foreground">{row.name}</strong>
+                    <span className="block text-sm text-muted-foreground">{row.sku} · {row.category}</span>
+                  </div>
+                  <span className="text-sm text-muted-foreground">{row.stock} units</span>
+                  <Badge className={row.status === "Restock" ? "bg-red-100 text-red-700" : "bg-emerald-100 text-emerald-800"}>
+                    {row.status}
+                  </Badge>
+                </article>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
       </section>
     </main>
   );

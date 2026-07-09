@@ -4,7 +4,7 @@ import { errorResponse, validateBodySize, validateCSRF } from "@/lib/api";
 import { requireAdminApi } from "@/lib/admin-access";
 
 export async function GET() {
-  const admin = await requireAdminApi();
+  const admin = await requireAdminApi("settings.view");
   if (!admin) return errorResponse("Unauthorized", 401);
 
   try {
@@ -19,7 +19,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const admin = await requireAdminApi();
+  const admin = await requireAdminApi("settings.update");
   if (!admin) return errorResponse("Unauthorized", 401);
   const csrfCheck = validateCSRF(request);
   if (!csrfCheck.valid) return errorResponse(csrfCheck.error, 403);
