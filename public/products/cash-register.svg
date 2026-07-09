@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Cash register machine</title>
+  <desc id="desc">Compact cash register with screen and keypad.</desc>
+  <rect width="1200" height="900" fill="#eef5ff"/>
+  <rect x="250" y="546" width="700" height="170" rx="28" fill="#111827"/>
+  <rect x="310" y="612" width="580" height="36" rx="18" fill="#2d6cdf"/>
+  <rect x="350" y="245" width="500" height="260" rx="30" fill="#1f2937"/>
+  <rect x="392" y="288" width="416" height="150" rx="16" fill="#f8fafc"/>
+  <rect x="430" y="320" width="168" height="18" rx="9" fill="#1f8a70"/>
+  <rect x="430" y="362" width="300" height="16" rx="8" fill="#cbd5e1"/>
+  <rect x="402" y="520" width="396" height="82" rx="18" fill="#344256"/>
+  <g fill="#ffffff">
+    <rect x="440" y="542" width="46" height="22" rx="6"/>
+    <rect x="510" y="542" width="46" height="22" rx="6"/>
+    <rect x="580" y="542" width="46" height="22" rx="6"/>
+    <rect x="650" y="542" width="96" height="22" rx="6"/>
+  </g>
+  <rect x="430" y="705" width="340" height="42" rx="21" fill="#d45113"/>
+</svg>

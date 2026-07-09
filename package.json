@@ -1,0 +1,42 @@
+{
+  "name": "synnex-commerce",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "test": "node --import tsx --test",
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "npx tsx prisma/seed.ts",
+    "db:reset": "prisma db push --force-reset && npm run db:seed",
+    "openrouter:chat": "node scripts/openrouter-chat.mjs",
+    "start": "next start",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@serwist/next": "^9.5.11",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "latest",
+    "next": "latest",
+    "prisma": "^6.19.3",
+    "react": "latest",
+    "react-dom": "latest",
+    "serwist": "^9.5.11"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.10",
+    "postcss": "^8.5.15",
+    "tsx": "^4.23.0",
+    "typescript": "latest"
+  }
+}
