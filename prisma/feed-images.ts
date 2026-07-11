@@ -1,5 +1,28 @@
-import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+
+/** Directory (relative to public/) where localized/uploaded product images live. */
+export const UPLOADS_DIR_URL = "uploads/products";
+
+/**
+ * Deterministic local path for a remote image URL: short content-independent
+ * hash of the URL plus its sanitized basename, so distinct remote files with
+ * the same basename can't collide and reruns map to the same file.
+ */
+export function localImagePathFor(remoteUrl: string): string {
+  const basename = (remoteUrl.split("/").pop() || "image").split("?")[0];
+  const safeName = basename.replace(/[^a-zA-Z0-9._-]+/g, "-").slice(-80);
+  const hash = createHash("sha256").update(remoteUrl).digest("hex").slice(0, 8);
+  return `/${UPLOADS_DIR_URL}/${hash}-${safeName}`;
+}
+
+/** Swap a feed URL for its localized copy when the file has been downloaded. */
+function preferLocalCopy(remoteUrl: string): string {
+  const localUrl = localImagePathFor(remoteUrl);
+  return existsSync(join(process.cwd(), "public", localUrl)) ? localUrl : remoteUrl;
+}
 
 /**
  * Resolves real product image URLs from the synnex.lk Google Shopping feed
@@ -73,7 +96,7 @@ export function loadFeedImageResolver(
 
   return function resolveImage(productName: string): string | null {
     const exact = byExactName.get(normalize(productName));
-    if (exact) return exact;
+    if (exact) return preferLocalCopy(exact);
 
     const nameTokens = tokensOf(productName);
     let best: { entry: FeedEntry; score: number; modelHit: boolean } | null = null;
@@ -87,7 +110,7 @@ export function loadFeedImageResolver(
     }
 
     if (best && (best.score >= 0.6 || (best.modelHit && best.score >= 0.35))) {
-      return best.entry.image;
+      return preferLocalCopy(best.entry.image);
     }
     return null;
   };

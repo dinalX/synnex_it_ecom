@@ -28,6 +28,34 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState(initialData?.image || "");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setIsUploading(true);
+    setError(null);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch("/api/admin/uploads", {
+        method: "POST",
+        body,
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || "Upload failed");
+      }
+      setImageUrl(data.url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      setIsUploading(false);
+      event.target.value = "";
+    }
+  };
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
@@ -142,9 +170,19 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
           name="image"
           type="text"
           required
-          defaultValue={initialData?.image}
-          placeholder="/products/product-1.svg"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+          placeholder="/uploads/products/photo.jpg"
         />
+        <span style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "8px" }}>
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+            onChange={handleImageUpload}
+            disabled={isUploading}
+          />
+          {isUploading ? <em>Uploading…</em> : null}
+        </span>
       </label>
 
       <label>
