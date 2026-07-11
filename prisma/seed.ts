@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "@/lib/password";
+import { loadFeedImageResolver } from "./feed-images";
 
 const prisma = new PrismaClient();
 
@@ -986,6 +987,9 @@ async function main() {
     },
   ];
 
+  const resolveFeedImage = loadFeedImageResolver();
+  let feedImageHits = 0;
+
   for (const p of products) {
     const { subcategory, ...productData } = p;
     const categoryRecord = await prisma.productCategory.findUnique({
@@ -994,6 +998,12 @@ async function main() {
     const subcategoryRecord = await prisma.productCategory.findUnique({
       where: { slug: p.subcategory },
     });
+
+    // Prefer the real synnex.lk product photo from the shopping feed;
+    // fall back to the bundled placeholder SVG when no match exists.
+    const feedImage = resolveFeedImage(p.name);
+    if (feedImage) feedImageHits++;
+    const imageUrl = feedImage ?? p.image;
 
     const createdProduct = await prisma.product.upsert({
       where: { slug: p.slug },
@@ -1005,7 +1015,7 @@ async function main() {
         compareAt: productData.compareAt,
         rating: productData.rating,
         inventory: productData.inventory,
-        image: productData.image,
+        image: imageUrl,
         accent: productData.accent,
         description: productData.description,
         specs: productData.specs,
@@ -1013,30 +1023,26 @@ async function main() {
       },
       create: {
         ...productData,
+        image: imageUrl,
         categoryId: categoryRecord?.id ?? null,
         category: subcategoryRecord?.name ?? p.subcategory,
       },
     });
 
-    // Seed multiple images per product
-    const productImages = [
-      { url: p.image, alt: p.name, sortOrder: 0 },
-      { url: p.image, alt: `${p.name} - View 2`, sortOrder: 1 },
-      { url: p.image, alt: `${p.name} - View 3`, sortOrder: 2 },
-    ];
-
-    for (const img of productImages) {
-      await prisma.productImage.upsert({
-        where: { id: `${createdProduct.id}-${img.sortOrder}` },
-        update: img,
-        create: {
-          id: `${createdProduct.id}-${img.sortOrder}`,
-          productId: createdProduct.id,
-          ...img,
-        },
-      });
-    }
+    // One real gallery image per product (the feed has a single photo each);
+    // clears the legacy 3-duplicate placeholder rows on reseed.
+    await prisma.productImage.deleteMany({ where: { productId: createdProduct.id } });
+    await prisma.productImage.create({
+      data: {
+        id: `${createdProduct.id}-0`,
+        productId: createdProduct.id,
+        url: imageUrl,
+        alt: p.name,
+        sortOrder: 0,
+      },
+    });
   }
+  console.log(`   Product photos matched from feed: ${feedImageHits}/${products.length}`);
 
   // ─── Bootstrap Admin User (one-time; skipped if any AdminUser already exists) ──
 

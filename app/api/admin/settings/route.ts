@@ -9,6 +9,8 @@ export async function GET() {
 
   try {
     const settings = await prisma.siteSetting.findMany({
+      // Encrypted secrets (key suffix "Enc") never leave the server, even ciphertext.
+      where: { key: { not: { endsWith: "Enc" } } },
       orderBy: [{ group: "asc" }, { key: "asc" }],
     });
 

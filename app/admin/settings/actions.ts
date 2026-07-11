@@ -3,14 +3,17 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { requireAdminAction } from "@/lib/admin-access";
+import { encryptSecret } from "@/lib/secrets";
 
 export async function saveSettings(formData: FormData) {
   await requireAdminAction("settings.update");
 
   const entries: Record<string, string> = {
     siteTitle: formData.get("siteTitle") as string || "",
-    googleTagId: formData.get("googleTagId") as string || "",
-    facebookPixelId: formData.get("facebookPixelId") as string || "",
+    googleTagId: (formData.get("googleTagId") as string || "").trim(),
+    gtmContainerId: (formData.get("gtmContainerId") as string || "").trim(),
+    facebookPixelId: (formData.get("facebookPixelId") as string || "").trim(),
+    metaCapiPixelId: (formData.get("metaCapiPixelId") as string || "").trim(),
     adminEmail: formData.get("adminEmail") as string || "",
     offlinePaymentNotes: formData.get("offlinePaymentNotes") as string || "",
   };
@@ -22,6 +25,20 @@ export async function saveSettings(formData: FormData) {
       create: { key, value },
     }),
   );
+
+  // Write-only secret: an empty field means "keep the stored token",
+  // so saving other settings can never wipe the credential.
+  const capiToken = ((formData.get("metaCapiAccessToken") as string) || "").trim();
+  if (capiToken) {
+    const encrypted = await encryptSecret(capiToken);
+    operations.push(
+      prisma.siteSetting.upsert({
+        where: { key: "metaCapiAccessTokenEnc" },
+        update: { value: encrypted },
+        create: { key: "metaCapiAccessTokenEnc", value: encrypted, group: "tracking" },
+      }),
+    );
+  }
 
   await Promise.all(operations);
 

@@ -104,7 +104,7 @@ export default async function AdminOrdersPage({
                 <Link
                   href={`/admin/orders/${order.id}`}
                   key={order.id}
-                  className="grid grid-cols-[2fr_1fr_auto] items-center gap-4 rounded-lg border border-border bg-card p-4 no-underline transition-colors hover:border-primary/20 hover:bg-accent/50"
+                  className="grid grid-cols-1 items-start gap-2 rounded-lg border border-border bg-card p-4 no-underline transition-colors hover:border-primary/20 hover:bg-accent/50 sm:grid-cols-[2fr_1fr_auto] sm:items-center sm:gap-4"
                 >
                   <div className="flex flex-col gap-1">
                     <strong className="text-sm text-foreground">{order.orderNumber}</strong>

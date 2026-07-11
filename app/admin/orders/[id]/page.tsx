@@ -121,7 +121,7 @@ export default async function AdminOrderDetailPage({
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           {order.items.map((item) => (
-            <article key={item.id} className="grid grid-cols-[2fr_1fr_1fr] items-center gap-4 rounded-lg border border-border p-4">
+            <article key={item.id} className="grid grid-cols-1 items-start gap-2 rounded-lg border border-border p-4 sm:grid-cols-[2fr_1fr_1fr] sm:items-center sm:gap-4">
               <div>
                 <strong className="text-foreground">{item.name}</strong>
                 <span className="block text-sm text-muted-foreground">SKU: {item.sku || "—"} · Qty: {item.quantity}</span>

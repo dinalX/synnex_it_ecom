@@ -202,7 +202,3 @@ SiteHeader
 - Run `npm test`.
 - Run `npm run lint`.
 - Run `npm run build`.
-
-## License
-
-Private — Synnex IT Solution (Pvt) Ltd

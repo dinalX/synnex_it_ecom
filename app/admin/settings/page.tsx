@@ -5,7 +5,16 @@ import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 
 async function getCurrentSettings() {
-  const keys = ["siteTitle", "googleTagId", "facebookPixelId", "adminEmail", "offlinePaymentNotes"];
+  const keys = [
+    "siteTitle",
+    "googleTagId",
+    "gtmContainerId",
+    "facebookPixelId",
+    "metaCapiPixelId",
+    "metaCapiAccessTokenEnc",
+    "adminEmail",
+    "offlinePaymentNotes",
+  ];
   const settings = await prisma.siteSetting.findMany({
     where: { key: { in: keys } },
   });
@@ -13,12 +22,15 @@ async function getCurrentSettings() {
   for (const s of settings) {
     map[s.key] = s.value;
   }
-  return map;
+  // The token itself never reaches the form — only whether one is stored.
+  const capiTokenSaved = Boolean(map.metaCapiAccessTokenEnc);
+  delete map.metaCapiAccessTokenEnc;
+  return { map, capiTokenSaved };
 }
 
 export default async function AdminSettingsPage() {
   await requireAdminPage("/admin/settings", "settings.view");
-  const settings = await getCurrentSettings();
+  const { map: settings, capiTokenSaved } = await getCurrentSettings();
 
   return (
     <main className="admin-shell">
@@ -56,11 +68,36 @@ export default async function AdminSettingsPage() {
             />
           </label>
           <label>
+            Google Tag Manager container ID
+            <input
+              name="gtmContainerId"
+              placeholder="GTM-XXXXXXX"
+              defaultValue={settings.gtmContainerId || ""}
+            />
+          </label>
+          <label>
             Facebook Pixel ID
             <input
               name="facebookPixelId"
               placeholder="1234567890"
               defaultValue={settings.facebookPixelId || ""}
+            />
+          </label>
+          <label>
+            Meta Conversions API pixel ID
+            <input
+              name="metaCapiPixelId"
+              placeholder="1234567890"
+              defaultValue={settings.metaCapiPixelId || ""}
+            />
+          </label>
+          <label>
+            Meta Conversions API access token
+            <input
+              name="metaCapiAccessToken"
+              type="password"
+              autoComplete="off"
+              placeholder={capiTokenSaved ? "Token saved — enter a new value to replace it" : "EAAB..."}
             />
           </label>
           <label>

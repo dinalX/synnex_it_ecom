@@ -50,12 +50,12 @@ export default async function ProductPage({
     orderBy: { sortOrder: "asc" },
   });
 
-  const allImages = product.image
-    ? [
-        { id: "main", url: product.image, alt: product.name },
-        ...dbImages.map((img) => ({ id: img.id, url: img.url, alt: img.alt || product.name })),
-      ]
-    : dbImages.map((img) => ({ id: img.id, url: img.url, alt: img.alt || product.name }));
+  const galleryImages = dbImages.map((img) => ({ id: img.id, url: img.url, alt: img.alt || product.name }));
+  // product.image usually duplicates the first gallery row — only prepend it when it's a distinct photo.
+  const allImages =
+    product.image && !galleryImages.some((img) => img.url === product.image)
+      ? [{ id: "main", url: product.image, alt: product.name }, ...galleryImages]
+      : galleryImages;
 
   const { products: allProducts } = await fetchProducts({});
   const sameCategory = allProducts.filter((item) => item.category === product.category && item.id !== product.id);

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { errorResponse, validateBodySize, validateCSRF } from "@/lib/api";
+import { getMetaCapiCredentials } from "@/lib/site-settings";
 import { buildEventId, hashForMeta } from "@/lib/tracking";
 
 type CapiPayload = {
@@ -19,16 +20,16 @@ export async function POST(request: Request) {
   if (!bodyCheck.valid) return errorResponse(bodyCheck.error, 413);
 
   const payload = (await request.json()) as CapiPayload;
-  const pixelId = process.env.FACEBOOK_CAPI_PIXEL_ID;
-  const accessToken = process.env.FACEBOOK_CAPI_ACCESS_TOKEN;
+  const credentials = await getMetaCapiCredentials();
 
-  if (!pixelId || !accessToken) {
+  if (!credentials) {
     return NextResponse.json({
       ok: true,
       configured: false,
       eventId: buildEventId("local"),
     });
   }
+  const { pixelId, accessToken } = credentials;
 
   const eventId = buildEventId("synnex");
   const response = await fetch(

@@ -38,6 +38,7 @@ export function ProductGallery({ images, productName }: { images: GalleryImage[]
           sizes="(max-width: 980px) 100vw, 60vw"
         />
       </div>
+      {images.length > 1 && (
       <div className="product-gallery-thumbs">
         {images.map((img, i) => (
           <button
@@ -56,6 +57,7 @@ export function ProductGallery({ images, productName }: { images: GalleryImage[]
           </button>
         ))}
       </div>
+      )}
     </div>
   );
 }
