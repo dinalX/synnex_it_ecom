@@ -80,7 +80,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const updateQuantity = useCallback(async (id: string, quantity: number) => {
     if (quantity < 1) {
-      removeItem(id);
+      await removeItem(id);
       return;
     }
     try {

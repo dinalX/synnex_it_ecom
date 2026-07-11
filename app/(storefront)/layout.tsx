@@ -9,8 +9,11 @@ export default function StorefrontLayout({
 }) {
   return (
     <CartProvider>
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       <SiteHeader />
-      {children}
+      <div id="main-content" tabIndex={-1}>
+        {children}
+      </div>
       <SiteFooter />
     </CartProvider>
   );
