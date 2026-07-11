@@ -16,3 +16,6 @@ yarn-error.log*
 *.db-shm
 pnpm-debug.log*
 .DS_Store
+
+# Customer payment slips — sensitive, never committed
+private-uploads/

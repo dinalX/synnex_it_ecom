@@ -18,8 +18,14 @@ export type CheckoutOrderInput = {
 export type PaymentUploadInput = {
   reference?: string;
   amount?: number;
-  proofUrl: string;
   customerNote?: string;
+  /** Slip stored by the API route; storedUrl is the admin-gated serving path. */
+  file: {
+    originalName: string;
+    storedUrl: string;
+    mimeType: string;
+    size: number;
+  };
 };
 
 const PAYMENT_MODE_LABELS = {
@@ -53,13 +59,14 @@ export function normalizeCheckoutOrderInput(input: Record<string, FormDataEntryV
   };
 }
 
-export function normalizePaymentUploadInput(input: Record<string, FormDataEntryValue | string | undefined>): PaymentUploadInput {
+export function normalizePaymentUploadFields(
+  input: Record<string, FormDataEntryValue | string | undefined>,
+): Omit<PaymentUploadInput, "file"> {
   const amountValue = String(input.amount || "").trim();
 
   return {
     reference: String(input.reference || "").trim() || undefined,
     amount: amountValue ? Number(amountValue) : undefined,
-    proofUrl: String(input.proofUrl || "").trim(),
     customerNote: String(input.customerNote || "").trim() || undefined,
   };
 }
@@ -187,27 +194,10 @@ export async function createOrderFromCurrentCart(input: CheckoutOrderInput) {
   return order;
 }
 
-function normalizeProofUrl(value: string) {
-  try {
-    const url = new URL(value);
-    if (!["http:", "https:"].includes(url.protocol)) {
-      return null;
-    }
-    return url.toString();
-  } catch {
-    return null;
-  }
-}
-
 export async function createPaymentUpload(orderId: string, input: PaymentUploadInput) {
   const order = await prisma.order.findUnique({ where: { id: orderId } });
   if (!order) {
     throw new Error("Order not found");
-  }
-
-  const proofUrl = normalizeProofUrl(input.proofUrl);
-  if (!proofUrl) {
-    throw new Error("A valid payment proof URL is required");
   }
 
   const customer = await getCurrentUserSession();
@@ -223,9 +213,10 @@ export async function createPaymentUpload(orderId: string, input: PaymentUploadI
       status: "PendingReview",
       reference: input.reference,
       amount,
-      fileName: input.reference || `payment-proof-${order.orderNumber}`,
-      fileUrl: proofUrl,
-      fileMimeType: "text/uri-list",
+      fileName: input.file.originalName,
+      fileUrl: input.file.storedUrl,
+      fileMimeType: input.file.mimeType,
+      fileSize: input.file.size,
       customerNote: input.customerNote,
     },
   });

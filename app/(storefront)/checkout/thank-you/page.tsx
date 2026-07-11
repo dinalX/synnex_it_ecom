@@ -66,7 +66,7 @@ export default async function CheckoutThankYouPage({
               </div>
             </div>
             <div className="checkout-alert inline-note">
-              <p>{site.offlinePaymentNotes || "If you are paying by bank transfer, submit the proof link below so the Synnex team can review it quickly."}</p>
+              <p>{site.offlinePaymentNotes || "If you are paying by bank transfer, upload your deposit slip below so the Synnex team can review it quickly."}</p>
             </div>
             {paymentUpload === "success" ? (
               <div className="checkout-alert success-note">
@@ -78,7 +78,12 @@ export default async function CheckoutThankYouPage({
                 <p>{decodeURIComponent(paymentUpload)}</p>
               </div>
             ) : null}
-            <form action={`/api/orders/${order.id}/payments`} method="post" className="settings-form payment-proof-form">
+            <form
+              action={`/api/orders/${order.id}/payments`}
+              method="post"
+              encType="multipart/form-data"
+              className="settings-form payment-proof-form"
+            >
               <label>
                 Payment reference number
                 <input name="reference" placeholder="Bank transfer ref / deposit slip number" />
@@ -88,12 +93,12 @@ export default async function CheckoutThankYouPage({
                 <input name="amount" type="number" min="0" placeholder="Optional" />
               </label>
               <label className="span-2">
-                Payment proof link
+                Bank slip (photo or PDF, max 5MB)
                 <input
-                  name="proofUrl"
-                  type="url"
+                  name="file"
+                  type="file"
                   required
-                  placeholder="https://drive.google.com/... or another shareable proof URL"
+                  accept="image/jpeg,image/png,image/webp,image/gif,image/avif,application/pdf"
                 />
               </label>
               <label className="span-2">
