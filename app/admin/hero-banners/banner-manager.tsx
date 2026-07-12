@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -233,10 +232,7 @@ export function BannerManager({
             <div className="flex flex-col gap-2">
               <Label htmlFor="banner-title">Title</Label>
               <Input id="banner-title" name="title" required defaultValue={editingBanner?.title} />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="banner-subtitle">Subtitle</Label>
-              <Textarea id="banner-subtitle" name="subtitle" rows={2} defaultValue={editingBanner?.subtitle ?? ""} />
+              <p className="text-xs text-muted-foreground">Internal label only — not shown on the site.</p>
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="banner-image">Image</Label>
@@ -259,12 +255,11 @@ export function BannerManager({
               <Input id="banner-image-alt" name="imageAlt" defaultValue={editingBanner?.imageAlt ?? ""} />
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="banner-cta-label">CTA label</Label>
-              <Input id="banner-cta-label" name="ctaLabel" placeholder="Shop now" defaultValue={editingBanner?.ctaLabel ?? ""} />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="banner-cta-href">CTA link</Label>
+              <Label htmlFor="banner-cta-href">Link (where clicking the banner goes)</Label>
               <Input id="banner-cta-href" name="ctaHref" placeholder="/products" defaultValue={editingBanner?.ctaHref ?? ""} />
+              <p className="text-xs text-muted-foreground">
+                Leave blank to use the linked product&apos;s page instead.
+              </p>
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="banner-product">Linked product (optional)</Label>
@@ -275,16 +270,6 @@ export function BannerManager({
                   {products.map((product) => (
                     <SelectItem key={product.id} value={product.id}>{product.name}</SelectItem>
                   ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="banner-theme">Text theme</Label>
-              <Select name="theme" defaultValue={editingBanner?.theme ?? "light"}>
-                <SelectTrigger id="banner-theme" className="w-full"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">Light background</SelectItem>
-                  <SelectItem value="dark">Dark background</SelectItem>
                 </SelectContent>
               </Select>
             </div>

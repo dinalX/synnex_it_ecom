@@ -82,6 +82,20 @@ img {
   top: 12px;
 }
 
+/* Visually hidden but still available to screen readers/SEO — used where a
+   real heading is required but no visible text belongs on the page. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* The skip-link target is a programmatic focus stop, not an interactive
    control — don't paint a ring on the whole content region. */
 #main-content:focus {
@@ -777,15 +791,14 @@ a.hero-visual {
 .hero-carousel {
   position: relative;
   overflow: hidden;
-  min-height: calc(100vh - 180px);
+  /* clamp(), not min/max-height: a plain min-height taller than max-height
+     always wins by spec, which silently defeated the cap on tall viewports. */
+  height: clamp(420px, calc(100vh - 180px), 640px);
 }
 
 .hero-carousel-slide {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  padding: clamp(24px, 4vw, 56px) clamp(18px, 4vw, 56px) clamp(24px, 4vw, 48px);
   opacity: 0;
   visibility: hidden;
   transition: opacity 500ms ease, visibility 0s linear 500ms;
@@ -799,56 +812,14 @@ a.hero-visual {
   transition: opacity 500ms ease;
 }
 
+.hero-carousel-image-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
 .hero-carousel-image {
   object-fit: cover;
-  z-index: -1;
-}
-
-.hero-carousel-slide.theme-dark {
-  color: var(--white);
-}
-
-.hero-carousel-slide.theme-dark::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(120deg, rgba(10, 15, 25, 0.72) 0%, rgba(10, 15, 25, 0.35) 65%, rgba(10, 15, 25, 0.1) 100%);
-}
-
-.hero-carousel-slide.theme-light::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.55) 60%, rgba(255, 255, 255, 0.15) 100%);
-}
-
-.hero-carousel-copy {
-  max-width: 660px;
-  position: relative;
-}
-
-.hero-carousel-copy h1 {
-  margin: 0;
-  font-size: clamp(2.2rem, 5vw, 4.2rem);
-  line-height: 1;
-  letter-spacing: -0.01em;
-}
-
-.hero-carousel-copy p {
-  max-width: 590px;
-  margin: 20px 0 28px;
-  font-size: 1.02rem;
-  line-height: 1.7;
-}
-
-.theme-dark .hero-carousel-copy p {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.theme-light .hero-carousel-copy p {
-  color: #4d5a6e;
 }
 
 .hero-carousel-arrow {
@@ -882,11 +853,14 @@ a.hero-visual {
 
 .hero-carousel-dots {
   position: absolute;
-  bottom: 22px;
+  bottom: 18px;
   left: 50%;
   z-index: 3;
   display: flex;
   gap: 8px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.35);
   transform: translateX(-50%);
 }
 
@@ -895,7 +869,7 @@ a.hero-visual {
   height: 9px;
   border-radius: 999px;
   border: 0;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.55);
   transition: background 150ms ease, transform 150ms ease;
 }
 
@@ -904,36 +878,22 @@ a.hero-visual {
   transform: scale(1.25);
 }
 
-.theme-light .hero-carousel-dot {
-  background: rgba(17, 24, 39, 0.25);
-}
-
-.theme-light .hero-carousel-dot[data-active="true"] {
-  background: var(--ink);
-}
-
 @media (max-width: 980px) {
   .hero-carousel {
-    min-height: 620px;
-  }
-
-  .hero-carousel-slide {
-    align-items: flex-end;
-    padding-bottom: 200px;
+    min-height: 0;
+    max-height: none;
+    height: 480px;
   }
 }
 
 @media (max-width: 640px) {
   .hero-carousel {
-    min-height: 560px;
+    height: 340px;
   }
 
-  .hero-carousel-copy h1 {
-    font-size: 2rem;
-  }
-
-  .hero-carousel-slide .hero-product-card {
-    width: calc(100% - 36px);
+  .hero-carousel-arrow {
+    width: 36px;
+    height: 36px;
   }
 }
 

@@ -3,26 +3,18 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-import { formatCurrency } from "@/lib/api-client";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type CarouselProduct = {
   slug: string;
-  name: string;
-  price: number;
-  compareAt: number | null;
-  rating: number;
 };
 
 export type CarouselBanner = {
   id: string;
   title: string;
-  subtitle: string | null;
   imageUrl: string;
   imageAlt: string | null;
-  ctaLabel: string | null;
   ctaHref: string | null;
-  theme: string;
   product: CarouselProduct | null;
 };
 
@@ -73,54 +65,27 @@ export function HeroCarousel({ banners }: { banners: CarouselBanner[] }) {
     >
       {banners.map((banner, index) => {
         const isActive = index === activeIndex;
-        const discount =
-          banner.product?.compareAt && banner.product.compareAt > banner.product.price
-            ? Math.round(((banner.product.compareAt - banner.product.price) / banner.product.compareAt) * 100)
-            : 0;
+        const href = banner.ctaHref || (banner.product ? `/products/${banner.product.slug}` : null);
+        const alt = banner.imageAlt || banner.title;
 
         return (
           <div
             key={banner.id}
-            className={`hero-carousel-slide theme-${banner.theme}${isActive ? " is-active" : ""}`}
+            className={`hero-carousel-slide${isActive ? " is-active" : ""}`}
             aria-hidden={!isActive}
           >
-            <Image
-              src={banner.imageUrl}
-              alt={banner.imageAlt || banner.title}
-              fill
-              priority={index === 0}
-              className="hero-carousel-image"
-            />
-            <div className="hero-carousel-copy">
-              <h1>{banner.title}</h1>
-              {banner.subtitle ? <p>{banner.subtitle}</p> : null}
-              {banner.ctaLabel && banner.ctaHref ? (
-                <Link href={banner.ctaHref} className="primary-action" tabIndex={isActive ? 0 : -1}>
-                  {banner.ctaLabel}
-                </Link>
-              ) : null}
-            </div>
-            {banner.product ? (
+            {href ? (
               <Link
-                href={`/products/${banner.product.slug}`}
-                className="hero-product-card"
+                href={href}
+                className="hero-carousel-image-link"
                 tabIndex={isActive ? 0 : -1}
-                aria-label={`Featured product: ${banner.product.name}`}
+                aria-label={banner.title}
               >
-                <span>{discount > 0 ? "Featured deal" : "Featured product"}</span>
-                <strong>{banner.product.name}</strong>
-                <div className="hero-product-meta">
-                  {banner.product.compareAt && banner.product.compareAt > banner.product.price ? (
-                    <del>{formatCurrency(banner.product.compareAt)}</del>
-                  ) : null}
-                  <b>{formatCurrency(banner.product.price)}</b>
-                  <span className="hero-rating">
-                    <Star size={12} fill="currentColor" />
-                    {banner.product.rating}
-                  </span>
-                </div>
+                <Image src={banner.imageUrl} alt={alt} fill priority={index === 0} className="hero-carousel-image" />
               </Link>
-            ) : null}
+            ) : (
+              <Image src={banner.imageUrl} alt={alt} fill priority={index === 0} className="hero-carousel-image" />
+            )}
           </div>
         );
       })}

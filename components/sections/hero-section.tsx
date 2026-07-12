@@ -22,27 +22,23 @@ export async function HeroSection() {
   return (
     <div className="hero-shell">
       {banners.length > 0 ? (
-        <HeroCarousel
-          banners={banners.map((banner) => ({
-            id: banner.id,
-            title: banner.title,
-            subtitle: banner.subtitle,
-            imageUrl: banner.imageUrl,
-            imageAlt: banner.imageAlt,
-            ctaLabel: banner.ctaLabel,
-            ctaHref: banner.ctaHref,
-            theme: banner.theme,
-            product: banner.product
-              ? {
-                  slug: banner.product.slug,
-                  name: banner.product.name,
-                  price: banner.product.price,
-                  compareAt: banner.product.compareAt,
-                  rating: banner.product.rating,
-                }
-              : null,
-          }))}
-        />
+        <>
+          {/* The carousel is pure imagery with no visible heading, but the
+              page still needs exactly one real <h1> for SEO/screen readers. */}
+          <h1 className="sr-only">
+            POS, barcode, biometric, and IT hardware that keeps business moving.
+          </h1>
+          <HeroCarousel
+            banners={banners.map((banner) => ({
+              id: banner.id,
+              title: banner.title,
+              imageUrl: banner.imageUrl,
+              imageAlt: banner.imageAlt,
+              ctaHref: banner.ctaHref,
+              product: banner.product ? { slug: banner.product.slug } : null,
+            }))}
+          />
+        </>
       ) : (
         <section className="hero">
           <div className="hero-copy">
