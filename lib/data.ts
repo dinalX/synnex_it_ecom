@@ -88,6 +88,14 @@ export async function fetchTopRated(limit = 8) {
   });
 }
 
+export async function fetchActiveHeroBanners() {
+  return prisma.heroBanner.findMany({
+    where: { active: true },
+    orderBy: { sortOrder: "asc" },
+    include: { product: true },
+  });
+}
+
 export async function fetchProduct(slug: string) {
   return prisma.product.findUnique({
     where: { slug },
