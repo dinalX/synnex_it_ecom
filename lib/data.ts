@@ -60,6 +60,34 @@ export async function fetchProducts(params?: {
   };
 }
 
+/**
+ * Products on sale (compareAt above price), sorted by discount percentage.
+ * SQLite/Prisma can't compare two columns in a `where`, so the compareAt
+ * filter and discount sort are done in JS — cheap for this catalog size.
+ */
+export async function fetchDeals(limit = 8) {
+  const products = await prisma.product.findMany({
+    where: { published: true, compareAt: { not: null } },
+    include: { categoryRef: true, images: { orderBy: { sortOrder: "asc" } } },
+  });
+
+  return products
+    .filter((p) => p.compareAt !== null && p.compareAt > p.price)
+    .map((p) => ({ product: p, discount: (p.compareAt! - p.price) / p.compareAt! }))
+    .sort((a, b) => b.discount - a.discount)
+    .slice(0, limit)
+    .map((entry) => entry.product);
+}
+
+export async function fetchTopRated(limit = 8) {
+  return prisma.product.findMany({
+    where: { published: true },
+    include: { categoryRef: true, images: { orderBy: { sortOrder: "asc" } } },
+    orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
+    take: limit,
+  });
+}
+
 export async function fetchProduct(slug: string) {
   return prisma.product.findUnique({
     where: { slug },
