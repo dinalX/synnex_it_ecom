@@ -18,6 +18,8 @@ export const PERMISSIONS = [
   "payment-gateway.view",
   "payment-gateway.update",
   "admin.manage",
+  "hero-banner.view",
+  "hero-banner.manage",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -37,5 +39,6 @@ export const PERMISSION_GROUPS: { label: string; keys: Permission[] }[] = [
   { label: "Settings", keys: ["settings.view", "settings.update"] },
   { label: "Content", keys: ["career.manage", "download.manage", "page.manage"] },
   { label: "Payment gateways", keys: ["payment-gateway.view", "payment-gateway.update"] },
+  { label: "Hero banners", keys: ["hero-banner.view", "hero-banner.manage"] },
   { label: "Team", keys: ["admin.manage"] },
 ];
