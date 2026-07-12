@@ -1,5 +1,4 @@
 import { HeroSection } from "@/components/sections/hero-section";
-import { TrustBandSection } from "@/components/sections/trust-band-section";
 import { ProductRowSection } from "@/components/sections/product-row-section";
 import { CategoryShowcaseSection } from "@/components/sections/category-showcase-section";
 import { QuoteCtaSection } from "@/components/sections/quote-cta-section";
@@ -15,7 +14,6 @@ export default async function Home() {
   return (
     <main>
       <HeroSection />
-      <TrustBandSection />
       <ProductRowSection
         id="deals"
         eyebrow="Special offers"

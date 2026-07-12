@@ -8,12 +8,11 @@ import { HeroCarousel } from "@/components/hero-carousel";
 export async function HeroSection() {
   const [banners, deals, topRated] = await Promise.all([
     fetchActiveHeroBanners(),
-    fetchDeals(5),
+    fetchDeals(1),
     fetchTopRated(1),
   ]);
 
   const featured = deals[0] ?? topRated[0] ?? null;
-  const moreDeals = deals[0] ? deals.slice(1, 5) : [];
   const discount =
     featured?.compareAt && featured.compareAt > featured.price
       ? Math.round(((featured.compareAt - featured.price) / featured.compareAt) * 100)
@@ -86,34 +85,6 @@ export async function HeroSection() {
           ) : null}
         </section>
       )}
-
-      {moreDeals.length > 0 ? (
-        <div className="hero-deals-strip" aria-label="More ongoing discounts">
-          {moreDeals.map((product) => {
-            const pct =
-              product.compareAt && product.compareAt > product.price
-                ? Math.round(((product.compareAt - product.price) / product.compareAt) * 100)
-                : 0;
-            return (
-              <Link href={`/products/${product.slug}`} className="hero-deal-card" key={product.id}>
-                <span className="hero-deal-thumb">
-                  <Image src={product.image} alt={product.name} width={64} height={64} />
-                  {pct > 0 ? <span className="hero-deal-pct">-{pct}%</span> : null}
-                </span>
-                <span className="hero-deal-info">
-                  <strong>{product.name}</strong>
-                  <span className="hero-deal-price">
-                    <b>{formatCurrency(product.price)}</b>
-                    {product.compareAt && product.compareAt > product.price ? (
-                      <del>{formatCurrency(product.compareAt)}</del>
-                    ) : null}
-                  </span>
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-      ) : null}
     </div>
   );
 }
