@@ -3,10 +3,9 @@ import {
   ArrowRight,
   Barcode,
   Fingerprint,
-  Keyboard,
   Monitor,
   Package,
-  Wifi,
+  Printer,
 } from "lucide-react";
 import { fetchCategories } from "@/lib/data";
 
@@ -15,8 +14,7 @@ const iconByName: Record<string, React.ComponentType<{ size?: number }>> = {
   Monitor,
   Barcode,
   Fingerprint,
-  Wifi,
-  Keyboard,
+  Printer,
 };
 
 export async function CategoryShowcaseSection() {

@@ -7,7 +7,21 @@ const prisma = new PrismaClient();
 async function main() {
   // ─── Seed Product Categories ───────────────────────────────────────────────
 
-  const categories = [
+  // Mirrors the real synnex.lk category tree exactly (see productcat-sitemap.xml):
+  // 4 main categories, ~30 subcategories, with a few nested a third level deep.
+  type CategorySeed = {
+    slug: string;
+    name: string;
+    shortDescription?: string;
+    description?: string;
+    icon?: string;
+    accent?: string;
+    sortOrder: number;
+    featured?: boolean;
+    children?: CategorySeed[];
+  };
+
+  const categories: CategorySeed[] = [
     {
       slug: "pos-solution",
       name: "POS Solution",
@@ -21,12 +35,17 @@ async function main() {
       featured: true,
       children: [
         { slug: "pos-machine", name: "POS Machine", sortOrder: 1 },
-        { slug: "pos-printers", name: "POS Printers", sortOrder: 2 },
-        { slug: "cash-drawer", name: "Cash Drawer", sortOrder: 3 },
-        { slug: "cash-counting-machine", name: "Cash Counting Machine", sortOrder: 4 },
-        { slug: "handheld-pos", name: "Handheld POS", sortOrder: 5 },
-        { slug: "restaurant-pagers", name: "Restaurant Pagers", sortOrder: 6 },
-        { slug: "mobile-printers", name: "Mobile Printers", sortOrder: 7 },
+        { slug: "cash-register", name: "Cash Register", sortOrder: 2 },
+        { slug: "pos-printers", name: "POS Printers", sortOrder: 3 },
+        { slug: "pos-paper-roll", name: "POS Paper Roll", sortOrder: 4 },
+        { slug: "cash-drawer", name: "Cash Drawer", sortOrder: 5 },
+        { slug: "cash-counting-machine", name: "Cash Counting Machine", sortOrder: 6 },
+        { slug: "customer-display", name: "Customer Display", sortOrder: 7 },
+        { slug: "handheld-pos", name: "Handheld POS", sortOrder: 8 },
+        { slug: "kiosk", name: "Kiosk", sortOrder: 9 },
+        { slug: "mobile-data-collector", name: "Mobile Data Collector", sortOrder: 10 },
+        { slug: "mobile-printers", name: "Mobile Printers", sortOrder: 11 },
+        { slug: "restaurant-pagers", name: "Restaurant Pagers", sortOrder: 12 },
       ],
     },
     {
@@ -41,81 +60,127 @@ async function main() {
       sortOrder: 2,
       featured: true,
       children: [
-        { slug: "barcode-scanners", name: "Barcode Scanners", sortOrder: 1 },
-        { slug: "barcode-printers", name: "Barcode Printers", sortOrder: 2 },
-        { slug: "barcode-label-roll", name: "Barcode Label Roll", sortOrder: 3 },
+        {
+          slug: "barcode-label-printers",
+          name: "Barcode Label Printers",
+          sortOrder: 1,
+          children: [
+            { slug: "industrial-label-printers", name: "Industrial Label Printers", sortOrder: 1 },
+          ],
+        },
+        {
+          slug: "barcode-label-roll",
+          name: "Barcode Label Roll",
+          sortOrder: 2,
+          children: [
+            { slug: "direct-thermal-label-sticker-roll", name: "Direct Thermal Label Sticker Roll", sortOrder: 1 },
+            { slug: "thermal-transfer-label-sticker-roll", name: "Thermal Transfer Label Sticker Roll", sortOrder: 2 },
+            { slug: "thermal-transfer-wax-ribbon-roll", name: "Thermal Transfer Wax Ribbon Roll", sortOrder: 3 },
+          ],
+        },
+        {
+          slug: "barcode-scanners",
+          name: "Barcode Scanners",
+          sortOrder: 3,
+          children: [
+            { slug: "desktop-barcode-scanner", name: "Desktop Barcode Scanner", sortOrder: 1 },
+            { slug: "handheld-barcode-scanner", name: "Handheld Barcode Scanner", sortOrder: 2 },
+            { slug: "wireless-barcode-scanners", name: "Wireless Barcode Scanners", sortOrder: 3 },
+          ],
+        },
       ],
     },
     {
       slug: "biometrics-security-solution",
       name: "Biometrics & Security Solution",
       shortDescription:
-        "Fingerprint attendance systems, smart door locks, safe boxes, CCTV, and access control solutions.",
+        "Fingerprint attendance systems, smart door locks, safe boxes, and IP cameras.",
       description:
-        "Comprehensive biometric and security solutions including fingerprint time attendance, smart door locks, safe boxes, and access control systems.",
+        "Comprehensive biometric and security solutions including fingerprint time attendance, smart door locks, safe boxes, and wireless IP cameras.",
       icon: "Fingerprint",
       accent: "#6b7f82",
       sortOrder: 3,
       featured: true,
       children: [
-        { slug: "time-attendance-fingerprint", name: "Time Attendance Fingerprint", sortOrder: 1 },
+        { slug: "safe-locker", name: "Safe Locker", sortOrder: 1 },
         { slug: "smart-door-lock", name: "Smart Door Lock", sortOrder: 2 },
-        { slug: "safe-locker", name: "Safe Locker", sortOrder: 3 },
-        { slug: "access-control", name: "Access Control", sortOrder: 4 },
+        { slug: "time-attendance-fingerprint-solution", name: "Time Attendance Fingerprint Solution", sortOrder: 3 },
+        { slug: "wireless-ip-camera", name: "Wireless IP Camera", sortOrder: 4 },
       ],
     },
     {
-      slug: "networking-solution",
-      name: "Networking Solution",
+      slug: "pc-printer-solution",
+      name: "PC & Printer Solution",
       shortDescription:
-        "Routers, switches, cables, connectors, wireless access points, and network accessories.",
+        "PCs, monitors, printers, networking gear, and power accessories for the office.",
       description:
-        "Complete networking infrastructure solutions for businesses of all sizes.",
-      icon: "Wifi",
+        "Complete PC and printer solutions for the office — all-in-one PCs, monitors, keyboards and mice, printers, networking, and UPS/power backup.",
+      icon: "Printer",
       accent: "#2d6cdf",
       sortOrder: 4,
       featured: false,
       children: [
-        { slug: "routers-switches", name: "Routers & Switches", sortOrder: 1 },
-        { slug: "cables-connectors", name: "Cables & Connectors", sortOrder: 2 },
-        { slug: "wireless-access-points", name: "Wireless Access Points", sortOrder: 3 },
-      ],
-    },
-    {
-      slug: "computer-accessories",
-      name: "Computer Accessories",
-      shortDescription:
-        "Keyboards, mice, monitors, UPS, storage devices, and other PC peripherals.",
-      description:
-        "Quality computer accessories and peripherals for office and home use.",
-      icon: "Keyboard",
-      accent: "#d45113",
-      sortOrder: 5,
-      featured: false,
-      children: [
-        { slug: "keyboards-mice", name: "Keyboards & Mice", sortOrder: 1 },
-        { slug: "monitors", name: "Monitors", sortOrder: 2 },
-        { slug: "ups-power", name: "UPS & Power", sortOrder: 3 },
-        { slug: "storage-devices", name: "Storage Devices", sortOrder: 4 },
+        { slug: "all-in-one-pc", name: "All In One PC", sortOrder: 1 },
+        { slug: "key-board-and-mouse", name: "Key Board And Mouse", sortOrder: 2 },
+        { slug: "monitor", name: "Monitor", sortOrder: 3 },
+        { slug: "network-solution", name: "Network Solution", sortOrder: 4 },
+        { slug: "power-supply", name: "Power Supply", sortOrder: 5 },
+        {
+          slug: "printers-solution",
+          name: "Printers Solution",
+          sortOrder: 6,
+          children: [
+            { slug: "a4-printers", name: "A4 Printers", sortOrder: 1 },
+            { slug: "card-printer", name: "Card Printer", sortOrder: 2 },
+            { slug: "handheld-printer", name: "Handheld Printer", sortOrder: 3 },
+          ],
+        },
+        { slug: "ups", name: "UPS", sortOrder: 7 },
       ],
     },
   ];
 
-  for (const cat of categories) {
-    const { children, ...parentData } = cat;
-    const parent = await prisma.productCategory.upsert({
-      where: { slug: parentData.slug },
-      update: parentData,
-      create: parentData,
-    });
-    for (const child of children) {
-      await prisma.productCategory.upsert({
-        where: { slug: child.slug },
-        update: { ...child, parentId: parent.id },
-        create: { ...child, parentId: parent.id },
+  // Retire categories/slugs that no longer exist in the real taxonomy above —
+  // either renamed (old slug replaced by a new one) or fully removed (the old
+  // "Networking Solution" and "Computer Accessories" mains, superseded by
+  // "PC & Printer Solution"). onDelete: SetNull means this only clears the
+  // categoryId/parentId FKs it touches, never cascades into deleting products.
+  await prisma.productCategory.deleteMany({
+    where: {
+      slug: {
+        in: [
+          "networking-solution",
+          "routers-switches",
+          "cables-connectors",
+          "wireless-access-points",
+          "computer-accessories",
+          "keyboards-mice",
+          "monitors",
+          "ups-power",
+          "storage-devices",
+          "barcode-printers",
+          "time-attendance-fingerprint",
+          "access-control",
+        ],
+      },
+    },
+  });
+
+  async function upsertCategoryTree(nodes: CategorySeed[], parentId: string | null) {
+    for (const node of nodes) {
+      const { children, ...data } = node;
+      const record = await prisma.productCategory.upsert({
+        where: { slug: data.slug },
+        update: { ...data, parentId },
+        create: { ...data, parentId },
       });
+      if (children?.length) {
+        await upsertCategoryTree(children, record.id);
+      }
     }
   }
+
+  await upsertCategoryTree(categories, null);
 
   // ─── Seed Products ─────────────────────────────────────────────────────────
 
@@ -141,7 +206,7 @@ async function main() {
       slug: "ecr-lf100-electronic-cash-register",
       name: "ECR LF100 Electronic Cash Register",
       category: "pos-solution",
-      subcategory: "pos-machine",
+      subcategory: "cash-register",
       price: 75000,
       rating: 4.7,
       inventory: 25,
@@ -158,7 +223,7 @@ async function main() {
       slug: "t3-mini-cash-register-machine",
       name: "T3 MINI Cash Register Machine",
       category: "pos-solution",
-      subcategory: "pos-machine",
+      subcategory: "cash-register",
       price: 79000,
       rating: 4.7,
       inventory: 22,
@@ -175,7 +240,7 @@ async function main() {
       slug: "android-touch-cash-register-battery",
       name: "Android Touch Cash Register with Battery Backup",
       category: "pos-solution",
-      subcategory: "pos-machine",
+      subcategory: "cash-register",
       price: 125000,
       rating: 4.6,
       inventory: 15,
@@ -425,7 +490,7 @@ async function main() {
       slug: "beldon-bn-bs701d-2d-desktop-barcode-scanner",
       name: "Beldon BN-BS701D 2D Desktop Barcode Scanner",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "desktop-barcode-scanner",
       price: 29500,
       rating: 4.7,
       inventory: 35,
@@ -442,7 +507,7 @@ async function main() {
       slug: "beldon-bn-bs703d-2d-desktop-barcode-scanner",
       name: "BELDON BN-BS703D 2D Desktop Barcode Scanner",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "desktop-barcode-scanner",
       price: 22500,
       compareAt: 24500,
       rating: 4.6,
@@ -460,7 +525,7 @@ async function main() {
       slug: "beldon-bn-bs702d-2d-desktop-barcode-scanner",
       name: "BELDON BN-BS702D 2D Desktop Barcode Scanner",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "desktop-barcode-scanner",
       price: 19500,
       compareAt: 24000,
       rating: 4.5,
@@ -478,7 +543,7 @@ async function main() {
       slug: "posmax-pm-bsw234l-handheld-wireless-barcode-scanner",
       name: "POSMAX PM-BSW234L Handheld Wireless Barcode Scanner",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "wireless-barcode-scanners",
       price: 13500,
       rating: 4.4,
       inventory: 50,
@@ -495,7 +560,7 @@ async function main() {
       slug: "posmax-pm-bsw234r-2d-handheld-wireless-barcode-scanner",
       name: "POSMAX PM-BSW234R 2D Handheld Wireless Barcode Scanner",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "wireless-barcode-scanners",
       price: 18000,
       rating: 4.5,
       inventory: 38,
@@ -512,7 +577,7 @@ async function main() {
       slug: "beldon-bn-bs207r-handheld-wireless-barcode-scanner",
       name: "BELDON Handheld Wireless Barcode Scanner BN-BS207R",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "wireless-barcode-scanners",
       price: 12500,
       compareAt: 15000,
       rating: 4.3,
@@ -530,7 +595,7 @@ async function main() {
       slug: "beldon-bn-9066rt-wireless-scanner-with-cradle",
       name: "BELDON Wireless Barcode Scanner with Cradle Base (BN-9066RT)",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "wireless-barcode-scanners",
       price: 19500,
       rating: 4.5,
       inventory: 28,
@@ -547,7 +612,7 @@ async function main() {
       slug: "posmax-pm-bs909-ultra-fast-2d-scanner-with-stand",
       name: "POSMAX Ultra Fast 2D Barcode Scanner with Stand (PM-BS909)",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "desktop-barcode-scanner",
       price: 8500,
       rating: 4.6,
       inventory: 60,
@@ -564,7 +629,7 @@ async function main() {
       slug: "honeywell-oribit-desktop-barcode-reader-7120d",
       name: "HONEYWELL ORIBIT Desktop Barcode Reader 7120D",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "desktop-barcode-scanner",
       price: 45000,
       compareAt: 65000,
       rating: 4.7,
@@ -582,7 +647,7 @@ async function main() {
       slug: "honeywell-oribit-desktop-2d-barcode-reader-7120d",
       name: "HONEYWELL ORIBIT Desktop 2D Barcode Reader 7120D",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "desktop-barcode-scanner",
       price: 49000,
       rating: 4.8,
       inventory: 12,
@@ -599,7 +664,7 @@ async function main() {
       slug: "zebra-ds-9308-2d-desktop-barcode-scanner",
       name: "ZEBRA DS 9308 2D Desktop Barcode Scanner",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "desktop-barcode-scanner",
       price: 39000,
       rating: 4.7,
       inventory: 18,
@@ -616,7 +681,7 @@ async function main() {
       slug: "2d-budget-desktop-barcode-scanner-pm-bsd234",
       name: "2D Budget Desktop Barcode Scanner for Supermarket PM-BSD234",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "desktop-barcode-scanner",
       price: 11500,
       compareAt: 12500,
       rating: 4.3,
@@ -634,7 +699,7 @@ async function main() {
       slug: "zebra-ds8178-2d-handheld-wireless-barcode-reader",
       name: "ZEBRA DS8178 2D Handheld Wireless Barcode Reader",
       category: "barcode-solution",
-      subcategory: "barcode-scanners",
+      subcategory: "wireless-barcode-scanners",
       price: 175000,
       rating: 4.9,
       inventory: 8,
@@ -651,7 +716,7 @@ async function main() {
       slug: "bixolon-4-inch-thermal-transfer-label-printer-xt3-40",
       name: "BIXOLON 4-Inch Thermal Transfer Label Printer XT3-40",
       category: "barcode-solution",
-      subcategory: "barcode-printers",
+      subcategory: "barcode-label-printers",
       price: 285000,
       rating: 4.8,
       inventory: 5,
@@ -668,7 +733,7 @@ async function main() {
       slug: "zebra-4-inch-thermal-transfer-industrial-label-printer-zt230",
       name: "ZEBRA 4 Inch Thermal Transfer Industrial Label Printer ZT230",
       category: "barcode-solution",
-      subcategory: "barcode-printers",
+      subcategory: "barcode-label-printers",
       price: 295000,
       compareAt: 320000,
       rating: 4.9,
@@ -686,7 +751,7 @@ async function main() {
       slug: "zebra-heavy-duty-label-printer-zd-888ta",
       name: "ZEBRA Heavy Duty Label Printer ZD-888TA",
       category: "barcode-solution",
-      subcategory: "barcode-printers",
+      subcategory: "barcode-label-printers",
       price: 56500,
       compareAt: 58500,
       rating: 4.6,
@@ -829,7 +894,7 @@ async function main() {
       slug: "wm-5000v3-security-guard-tour-system",
       name: "WM-5000V3 Security Guard Tour System",
       category: "biometrics-security-solution",
-      subcategory: "access-control",
+      subcategory: "smart-door-lock",
       price: 46000,
       compareAt: 48000,
       rating: 4.4,
@@ -847,7 +912,7 @@ async function main() {
       slug: "beldon-bn-m11-door-access-control",
       name: "BELDON BN-M11 Door Access Control Solution",
       category: "biometrics-security-solution",
-      subcategory: "access-control",
+      subcategory: "smart-door-lock",
       price: 75000,
       compareAt: 79000,
       rating: 4.6,
@@ -901,7 +966,7 @@ async function main() {
       slug: "biometric-fingerprint-time-attendance-bn-t109b",
       name: "Biometric Fingerprint Time Attendance Machine BN-T109B",
       category: "biometrics-security-solution",
-      subcategory: "time-attendance-fingerprint",
+      subcategory: "time-attendance-fingerprint-solution",
       price: 29500,
       compareAt: 32000,
       rating: 4.5,
@@ -919,7 +984,7 @@ async function main() {
       slug: "biometric-fingerprint-time-attendance-bn-t109a",
       name: "Biometric Fingerprint Time Attendance Machine BN-T109A",
       category: "biometrics-security-solution",
-      subcategory: "time-attendance-fingerprint",
+      subcategory: "time-attendance-fingerprint-solution",
       price: 32500,
       compareAt: 35000,
       rating: 4.4,
@@ -937,7 +1002,7 @@ async function main() {
       slug: "beldon-bn-d2-glass-door-access-controller",
       name: "BELDON BN-D2 Smart Door Access Controller for Glass Door",
       category: "biometrics-security-solution",
-      subcategory: "access-control",
+      subcategory: "smart-door-lock",
       price: 59000,
       rating: 4.5,
       inventory: 6,
