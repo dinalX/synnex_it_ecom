@@ -1088,6 +1088,77 @@ async function main() {
     });
   }
 
+  // ─── Seed Hero Banners (rotating homepage carousel) ────────────────────────
+
+  const existingBannerCount = await prisma.heroBanner.count();
+  if (existingBannerCount === 0) {
+    const bootstrapAdmin = await prisma.adminUser.findFirst({ where: { role: "SuperAdmin" } });
+    const bannerProducts = await prisma.product.findMany({
+      where: { published: true },
+      orderBy: { rating: "desc" },
+      take: 2,
+    });
+
+    const banners: Array<{
+      title: string;
+      subtitle: string;
+      imageUrl: string;
+      imageAlt: string;
+      ctaLabel: string;
+      ctaHref: string;
+      productId: string | null;
+      theme: string;
+      sortOrder: number;
+    }> = [];
+
+    if (bannerProducts[0]) {
+      banners.push({
+        title: "Deal of the week",
+        subtitle: bannerProducts[0].shortDescription || bannerProducts[0].description.slice(0, 120),
+        imageUrl: bannerProducts[0].image,
+        imageAlt: bannerProducts[0].name,
+        ctaLabel: "Shop this deal",
+        ctaHref: `/products/${bannerProducts[0].slug}`,
+        productId: bannerProducts[0].id,
+        theme: "light",
+        sortOrder: 0,
+      });
+    }
+
+    banners.push({
+      title: "Islandwide Delivery, Always Genuine",
+      subtitle: "Free setup guidance and after-sales support on every POS system we sell.",
+      imageUrl: "/products/cash-register.svg",
+      imageAlt: "Synnex POS hardware",
+      ctaLabel: "Browse catalog",
+      ctaHref: "/products",
+      productId: null,
+      theme: "dark",
+      sortOrder: 1,
+    });
+
+    if (bannerProducts[1]) {
+      banners.push({
+        title: "Top rated by our customers",
+        subtitle: bannerProducts[1].shortDescription || bannerProducts[1].description.slice(0, 120),
+        imageUrl: bannerProducts[1].image,
+        imageAlt: bannerProducts[1].name,
+        ctaLabel: "Shop this deal",
+        ctaHref: `/products/${bannerProducts[1].slug}`,
+        productId: bannerProducts[1].id,
+        theme: "light",
+        sortOrder: 2,
+      });
+    }
+
+    for (const banner of banners) {
+      await prisma.heroBanner.create({
+        data: { ...banner, createdById: bootstrapAdmin?.id ?? null },
+      });
+    }
+    console.log(`   Hero banners seeded: ${banners.length}`);
+  }
+
   // ─── Seed Site Settings ────────────────────────────────────────────────────
 
   const settings = [
