@@ -8,10 +8,12 @@ import { MAX_IMAGE_UPLOAD_BYTES, sniffImageExtension } from "@/lib/uploads";
 import { UPLOADS_DIR_URL } from "@/prisma/feed-images";
 
 export async function POST(request: Request) {
-  // Uploads happen from both the create and edit product flows, so either
-  // permission is sufficient.
+  // Uploads happen from the product create/edit flows and the hero banner
+  // form, so any one of these permissions is sufficient.
   const admin =
-    (await requireAdminApi("product.create")) ?? (await requireAdminApi("product.update"));
+    (await requireAdminApi("product.create")) ??
+    (await requireAdminApi("product.update")) ??
+    (await requireAdminApi("hero-banner.manage"));
   if (!admin) return errorResponse("Unauthorized", 401);
 
   const csrfCheck = validateCSRF(request);
