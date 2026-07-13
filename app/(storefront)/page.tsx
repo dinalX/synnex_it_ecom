@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { HeroSection } from "@/components/sections/hero-section";
 import { ProductRowSection } from "@/components/sections/product-row-section";
 import { CategoryShowcaseSection } from "@/components/sections/category-showcase-section";
+import { FeaturedCollectionsSection } from "@/components/sections/featured-collections-section";
+import { QuickLinksSection } from "@/components/sections/quick-links-section";
 import { QuoteCtaSection } from "@/components/sections/quote-cta-section";
 import { JsonLd } from "@/components/json-ld";
 import { siteConfig } from "@/lib/site";
@@ -36,13 +38,8 @@ export default async function Home() {
         }}
       />
       <HeroSection />
-      <ProductRowSection
-        id="deals"
-        eyebrow="Special offers"
-        title="Hot deals"
-        viewAllHref="/products"
-        products={deals}
-      />
+      <QuickLinksSection />
+      <FeaturedCollectionsSection deals={deals} />
       <CategoryShowcaseSection />
       <ProductRowSection
         eyebrow="Customer favourites"
