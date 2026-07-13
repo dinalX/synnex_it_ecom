@@ -23,6 +23,25 @@ const AUTOPLAY_MS = 5000;
 export function HeroCarousel({ banners }: { banners: CarouselBanner[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  // Only the active slide's image is server-rendered (fast LCP); neighbours
+  // mount after hydration so every other slide stays off the network until
+  // it's about to be shown. Once loaded, a slide stays mounted.
+  const [loadedIndices, setLoadedIndices] = useState<Set<number>>(() => new Set([0]));
+
+  useEffect(() => {
+    // Deferred so neighbours never compete with the LCP image; 300ms is still
+    // far ahead of the 5s autoplay and any plausible manual interaction.
+    const timer = setTimeout(() => {
+      setLoadedIndices((prev) => {
+        const next = new Set(prev);
+        next.add(activeIndex);
+        next.add((activeIndex + 1) % banners.length);
+        next.add((activeIndex - 1 + banners.length) % banners.length);
+        return next;
+      });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [activeIndex, banners.length]);
 
   useEffect(() => {
     if (banners.length <= 1 || isPaused) return;
@@ -67,6 +86,16 @@ export function HeroCarousel({ banners }: { banners: CarouselBanner[] }) {
         const isActive = index === activeIndex;
         const href = banner.ctaHref || (banner.product ? `/products/${banner.product.slug}` : null);
         const alt = banner.imageAlt || banner.title;
+        const image = loadedIndices.has(index) ? (
+          <Image
+            src={banner.imageUrl}
+            alt={alt}
+            fill
+            sizes="100vw"
+            priority={index === 0}
+            className="hero-carousel-image"
+          />
+        ) : null;
 
         return (
           <div
@@ -81,10 +110,10 @@ export function HeroCarousel({ banners }: { banners: CarouselBanner[] }) {
                 tabIndex={isActive ? 0 : -1}
                 aria-label={banner.title}
               >
-                <Image src={banner.imageUrl} alt={alt} fill priority={index === 0} className="hero-carousel-image" />
+                {image}
               </Link>
             ) : (
-              <Image src={banner.imageUrl} alt={alt} fill priority={index === 0} className="hero-carousel-image" />
+              image
             )}
           </div>
         );

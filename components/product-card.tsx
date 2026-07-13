@@ -32,7 +32,13 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <article className="product-card">
       <Link href={`/products/${product.slug}`} className="product-image-link">
-        <Image src={product.image} alt={product.name} width={720} height={560} />
+        <Image
+          src={product.image}
+          alt={product.name}
+          width={720}
+          height={560}
+          sizes="(max-width: 640px) 50vw, (max-width: 1100px) 33vw, 25vw"
+        />
         <span className="product-category-badge" style={{ backgroundColor: product.accent }}>
           {product.category}
         </span>

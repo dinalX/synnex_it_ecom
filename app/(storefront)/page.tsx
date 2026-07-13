@@ -1,8 +1,17 @@
+import type { Metadata } from "next";
 import { HeroSection } from "@/components/sections/hero-section";
 import { ProductRowSection } from "@/components/sections/product-row-section";
 import { CategoryShowcaseSection } from "@/components/sections/category-showcase-section";
 import { QuoteCtaSection } from "@/components/sections/quote-cta-section";
+import { JsonLd } from "@/components/json-ld";
+import { siteConfig } from "@/lib/site";
 import { fetchDeals, fetchProducts, fetchTopRated } from "@/lib/data";
+
+export const metadata: Metadata = {
+  title: "POS Machines, Barcode Scanners & Biometric Security in Sri Lanka",
+  description:
+    "Shop POS machines, receipt printers, barcode scanners, cash drawers, biometric attendance systems, and smart door locks with islandwide delivery, installation, and after-sales support.",
+};
 
 export default async function Home() {
   const [deals, topRated, latest] = await Promise.all([
@@ -13,6 +22,19 @@ export default async function Home() {
 
   return (
     <main>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Hot deals",
+          itemListElement: deals.map((product, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: product.name,
+            url: `${siteConfig.url}/products/${product.slug}`,
+          })),
+        }}
+      />
       <HeroSection />
       <ProductRowSection
         id="deals"

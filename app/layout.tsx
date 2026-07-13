@@ -28,6 +28,11 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: "en_LK",
       type: "website",
     },
+    twitter: {
+      card: "summary_large_image",
+      title: site.name,
+      description: site.description,
+    },
     alternates: {
       canonical: site.url,
     },

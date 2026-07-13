@@ -10,6 +10,7 @@ import { fetchProduct, fetchProducts } from "@/lib/data";
 import { formatCurrency } from "@/lib/api-client";
 import { siteConfig } from "@/lib/site";
 import { prisma } from "@/lib/db";
+import { JsonLd } from "@/components/json-ld";
 
 export async function generateMetadata({
   params,
@@ -70,8 +71,45 @@ export default async function ProductPage({
       ? product.description.split(".")[0] + "."
       : product.description.slice(0, 160) + (product.description.length > 160 ? "..." : ""));
 
+  const productUrl = `${siteConfig.url}/products/${product.slug}`;
+
   return (
     <main className="product-detail-page">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          description: shortDesc,
+          sku: product.sku ?? undefined,
+          image: allImages.map((img) =>
+            img.url.startsWith("http") ? img.url : `${siteConfig.url}${img.url}`,
+          ),
+          url: productUrl,
+          offers: {
+            "@type": "Offer",
+            url: productUrl,
+            price: product.price,
+            priceCurrency: "LKR",
+            availability:
+              product.inventory > 0
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+            itemCondition: "https://schema.org/NewCondition",
+          },
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
+            { "@type": "ListItem", position: 2, name: "Products", item: `${siteConfig.url}/products` },
+            { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
+          ],
+        }}
+      />
       <nav className="breadcrumb" aria-label="Breadcrumb">
         <Link href="/">Home</Link>
         <ChevronRight size={14} />
