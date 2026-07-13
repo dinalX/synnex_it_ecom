@@ -3,14 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Loader2, ShoppingCart, Star } from "lucide-react";
+import { Eye, Loader2, ShoppingCart, Star } from "lucide-react";
 import { useCart } from "@/components/cart-provider";
+import { QuickViewDialog } from "@/components/quick-view-dialog";
 import { formatCurrency } from "@/lib/api-client";
+import { kokoMonthlyInstallment } from "@/lib/installments";
 import type { Product } from "@prisma/client";
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const [adding, setAdding] = useState(false);
+  const [quickViewOpen, setQuickViewOpen] = useState(false);
 
   async function handleAdd() {
     setAdding(true);
@@ -24,6 +27,7 @@ export function ProductCard({ product }: { product: Product }) {
   const discount = product.compareAt && product.compareAt > product.price
     ? Math.round(((product.compareAt - product.price) / product.compareAt) * 100)
     : 0;
+  const inStock = product.inventory > 0;
   const shortDesc = product.shortDescription
     || (product.description.includes(".")
       ? product.description.split(".")[0] + "."
@@ -50,6 +54,14 @@ export function ProductCard({ product }: { product: Product }) {
           {product.rating}
         </span>
       </Link>
+      <button
+        type="button"
+        className="quick-view-button"
+        onClick={() => setQuickViewOpen(true)}
+      >
+        <Eye size={14} />
+        Quick view
+      </button>
       <div className="product-card-body">
         <div className="product-card-title-wrap">
           <Link href={`/products/${product.slug}`}>
@@ -63,11 +75,29 @@ export function ProductCard({ product }: { product: Product }) {
           {product.compareAt ? <del>{formatCurrency(product.compareAt)}</del> : null}
           <strong>{formatCurrency(product.price)}</strong>
         </div>
-        <button className="add-to-cart" onClick={handleAdd} disabled={adding} aria-busy={adding}>
+        <p className="product-installment">
+          or 3 × {formatCurrency(kokoMonthlyInstallment(product.price))} with Koko
+        </p>
+        <p className={`product-stock ${inStock ? "in-stock" : "out-of-stock"}`}>
+          {inStock
+            ? product.inventory <= 10
+              ? `Only ${product.inventory} left in stock`
+              : "In stock"
+            : "Out of stock"}
+        </p>
+        <button
+          className="add-to-cart"
+          onClick={handleAdd}
+          disabled={adding || !inStock}
+          aria-busy={adding}
+        >
           {adding ? <Loader2 size={16} className="spin" /> : <ShoppingCart size={16} />}
-          {adding ? "Adding…" : "Add to Cart"}
+          {adding ? "Adding…" : inStock ? "Add to Cart" : "Out of stock"}
         </button>
       </div>
+      {quickViewOpen ? (
+        <QuickViewDialog product={product} onClose={() => setQuickViewOpen(false)} />
+      ) : null}
     </article>
   );
 }

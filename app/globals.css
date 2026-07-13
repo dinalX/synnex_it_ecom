@@ -1229,6 +1229,7 @@ a.hero-visual {
 }
 
 .product-card {
+  position: relative;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -1350,6 +1351,159 @@ a.hero-visual {
   font-size: 0.78rem;
   color: var(--muted);
   text-decoration: line-through;
+}
+
+.product-installment {
+  margin: 0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #4d5a6e;
+}
+
+.product-stock {
+  margin: 0;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.product-stock.in-stock {
+  color: var(--green);
+}
+
+.product-stock.out-of-stock {
+  color: var(--muted);
+}
+
+/* Quick view: button revealed on card hover/focus, dialog reuses the cart
+   drawer's modal contract. z-index sits with the cart layer (60). */
+.quick-view-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font-size: 0.76rem;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 150ms ease, background 150ms ease;
+}
+
+.product-card:hover .quick-view-button,
+.quick-view-button:focus-visible {
+  opacity: 1;
+}
+
+.quick-view-button:hover {
+  background: var(--white);
+  border-color: var(--ink);
+}
+
+.quick-view-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.quick-view-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(17, 24, 39, 0.5);
+}
+
+.quick-view-dialog {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  width: min(760px, 100%);
+  max-height: min(560px, calc(100vh - 36px));
+  overflow-y: auto;
+  border-radius: 12px;
+  padding: 24px;
+  background: var(--white);
+  box-shadow: 0 24px 70px rgba(17, 24, 39, 0.35);
+}
+
+.quick-view-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  background: var(--white);
+  border-color: var(--line);
+}
+
+.quick-view-media {
+  position: relative;
+  align-self: start;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #eef2f6;
+}
+
+.quick-view-media img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.quick-view-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.quick-view-body h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.quick-view-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--amber);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.quick-view-price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.quick-view-price strong {
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.quick-view-details-link {
+  align-self: flex-start;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+@media (max-width: 640px) {
+  .quick-view-dialog {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
 }
 
 .cart-summary div {
