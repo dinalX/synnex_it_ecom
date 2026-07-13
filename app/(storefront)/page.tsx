@@ -6,6 +6,7 @@ import { FeaturedCollectionsSection } from "@/components/sections/featured-colle
 import { QuickLinksSection } from "@/components/sections/quick-links-section";
 import { QuoteCtaSection } from "@/components/sections/quote-cta-section";
 import { JsonLd } from "@/components/json-ld";
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { siteConfig } from "@/lib/site";
 import { fetchDeals, fetchProducts, fetchTopRated } from "@/lib/data";
 
@@ -37,6 +38,7 @@ export default async function Home() {
           })),
         }}
       />
+      <ScrollReveal />
       <HeroSection />
       <QuickLinksSection />
       <FeaturedCollectionsSection deals={deals} />

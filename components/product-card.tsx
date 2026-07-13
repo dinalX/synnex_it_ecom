@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Eye, Loader2, ShoppingCart, Star } from "lucide-react";
+import { Check, Eye, Loader2, ShoppingCart, Star } from "lucide-react";
 import { useCart } from "@/components/cart-provider";
 import { QuickViewDialog } from "@/components/quick-view-dialog";
 import { formatCurrency } from "@/lib/api-client";
@@ -13,12 +13,15 @@ import type { Product } from "@prisma/client";
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const [adding, setAdding] = useState(false);
+  const [added, setAdded] = useState(false);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
 
   async function handleAdd() {
     setAdding(true);
     try {
       await addItem(product);
+      setAdded(true);
+      setTimeout(() => setAdded(false), 1400);
     } finally {
       setAdding(false);
     }
@@ -86,13 +89,19 @@ export function ProductCard({ product }: { product: Product }) {
             : "Out of stock"}
         </p>
         <button
-          className="add-to-cart"
+          className={`add-to-cart${added ? " is-added" : ""}`}
           onClick={handleAdd}
           disabled={adding || !inStock}
           aria-busy={adding}
         >
-          {adding ? <Loader2 size={16} className="spin" /> : <ShoppingCart size={16} />}
-          {adding ? "Adding…" : inStock ? "Add to Cart" : "Out of stock"}
+          {adding ? (
+            <Loader2 size={16} className="spin" />
+          ) : added ? (
+            <Check size={16} />
+          ) : (
+            <ShoppingCart size={16} />
+          )}
+          {adding ? "Adding…" : added ? "Added" : inStock ? "Add to Cart" : "Out of stock"}
         </button>
       </div>
       {quickViewOpen ? (

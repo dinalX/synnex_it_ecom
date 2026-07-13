@@ -48,7 +48,8 @@ export function HeaderActions({ totalItems, onOpenCart, isCartOpen }: HeaderActi
       >
         <ShoppingBag size={19} />
         {totalItems > 0 ? (
-          <span className="cart-count" aria-live="polite" aria-atomic="true">{totalItems}</span>
+          // key remounts the badge when the count changes, restarting the pulse.
+          <span key={totalItems} className="cart-count" aria-live="polite" aria-atomic="true">{totalItems}</span>
         ) : null}
       </button>
     </div>

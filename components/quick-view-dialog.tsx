@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Loader2, ShoppingCart, Star, X } from "lucide-react";
+import { Check, Loader2, ShoppingCart, Star, X } from "lucide-react";
 import { useCart } from "@/components/cart-provider";
 import { formatCurrency } from "@/lib/api-client";
 import { kokoMonthlyInstallment } from "@/lib/installments";
@@ -19,6 +19,7 @@ export function QuickViewDialog({
 }) {
   const { addItem } = useCart();
   const [adding, setAdding] = useState(false);
+  const [added, setAdded] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -62,6 +63,8 @@ export function QuickViewDialog({
     setAdding(true);
     try {
       await addItem(product);
+      setAdded(true);
+      setTimeout(() => setAdded(false), 1400);
     } finally {
       setAdding(false);
     }
@@ -127,13 +130,19 @@ export function QuickViewDialog({
               : "Out of stock"}
           </p>
           <button
-            className="add-to-cart"
+            className={`add-to-cart${added ? " is-added" : ""}`}
             onClick={handleAdd}
             disabled={adding || !inStock}
             aria-busy={adding}
           >
-            {adding ? <Loader2 size={16} className="spin" /> : <ShoppingCart size={16} />}
-            {adding ? "Adding…" : inStock ? "Add to Cart" : "Out of stock"}
+            {adding ? (
+              <Loader2 size={16} className="spin" />
+            ) : added ? (
+              <Check size={16} />
+            ) : (
+              <ShoppingCart size={16} />
+            )}
+            {adding ? "Adding…" : added ? "Added" : inStock ? "Add to Cart" : "Out of stock"}
           </button>
           <Link href={`/products/${product.slug}`} className="quick-view-details-link">
             View full details
