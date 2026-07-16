@@ -1,0 +1,290 @@
+{
+  "ecr-lf100-electronic-cash-register": {
+    "sku": "ECR-LF100",
+    "specs": "8 departments,2-line LCD,Receipt printer built-in,Daily sales report",
+    "rating": 4.7,
+    "inventory": 25
+  },
+  "t3-mini-cash-register-machine": {
+    "sku": "T3-MINI",
+    "specs": "Compact footprint,Thermal printing,Retail ready",
+    "rating": 4.7,
+    "inventory": 22
+  },
+  "android-touch-cash-register-battery": {
+    "sku": "ANDROID-TOUCH-CR",
+    "specs": "Android OS,Touch screen,Battery backup,Wi-Fi enabled",
+    "rating": 4.6,
+    "inventory": 15
+  },
+  "bn-tp081d-beldon-i7-touch-pos-machine": {
+    "sku": "BELDON-BN-TP081D",
+    "specs": "Intel i7 processor,Touch display,SSD storage,Windows OS",
+    "rating": 4.8,
+    "inventory": 10
+  },
+  "bn-tp081d-beldon-i7-dual-touch-pos": {
+    "sku": "BELDON-BN-TP081D-DUAL",
+    "specs": "Intel i7,Dual touch screens,Customer display,SSD storage",
+    "rating": 4.9,
+    "inventory": 8
+  },
+  "posmax-i7-dual-touch-pos-machine": {
+    "sku": "POSMAX-I7-DUAL",
+    "specs": "Intel i7,Dual touch screens,Customer display,Windows OS",
+    "rating": 4.7,
+    "inventory": 12
+  },
+  "android-z93-smart-mobile-pos-terminal": {
+    "sku": "ANDROID-Z93",
+    "specs": "Android OS,Portable design,Wi-Fi & 4G,Built-in printer",
+    "rating": 4.5,
+    "inventory": 18
+  },
+  "pos-machine-combo-offer-198k": {
+    "sku": "COMBO-198K",
+    "specs": "Touch POS terminal,Receipt printer,Cash drawer,Barcode scanner",
+    "rating": 4.9,
+    "inventory": 5
+  },
+  "pos-machine-combo-offer-165k": {
+    "sku": "COMBO-165K",
+    "specs": "POS terminal,Receipt printer,Cash drawer,Basic setup",
+    "rating": 4.8,
+    "inventory": 7
+  },
+  "x1-senraise-touch-pos-80mm-printer": {
+    "sku": "SENRAISE-X1",
+    "specs": "Touch screen,80mm thermal printer,Compact design,USB ports",
+    "rating": 4.6,
+    "inventory": 9
+  },
+  "x1-senraise-android-touch-pos": {
+    "sku": "SENRAISE-X1-ANDROID",
+    "specs": "Android OS,Touch display,Cloud sync,App ecosystem",
+    "rating": 4.5,
+    "inventory": 14
+  },
+  "beldon-bn-h10s-handheld-android-pos": {
+    "sku": "BELDON-BN-H10S",
+    "specs": "Handheld design,Android OS,Wi-Fi & 4G,Built-in printer",
+    "rating": 4.4,
+    "inventory": 20
+  },
+  "beldon-bn-pvc045-mix-value-cash-counter": {
+    "sku": "BELDON-BN-PVC045",
+    "specs": "Mix value counting,Fake note detection,High speed,LCD display",
+    "rating": 4.8,
+    "inventory": 6
+  },
+  "epson-tm-t100e-80mm-thermal-receipt-printer": {
+    "sku": "EPSON-TM-T100E",
+    "specs": "80mm thermal printing,USB interface,Easy paper load,Compact design",
+    "rating": 4.6,
+    "inventory": 30
+  },
+  "p61-restaurant-pager-system": {
+    "sku": "P61-PAGERS",
+    "specs": "Wireless pagers,Long range,Easy setup,Multi-pager support",
+    "rating": 4.5,
+    "inventory": 12
+  },
+  "p71-restaurant-pager-system": {
+    "sku": "P71-PAGERS",
+    "specs": "Extended range,LED display,Durable build,Multi-channel",
+    "rating": 4.4,
+    "inventory": 18
+  },
+  "beldon-bn-bs701d-2d-desktop-barcode-scanner": {
+    "sku": "BELDON-BN-BS701D",
+    "specs": "2D scanning,USB interface,High speed,All barcode types",
+    "rating": 4.7,
+    "inventory": 35
+  },
+  "beldon-bn-bs703d-2d-desktop-barcode-scanner": {
+    "sku": "BELDON-BN-BS703D",
+    "specs": "2D scanning,High motion tolerance,USB plug & play,Durable",
+    "rating": 4.6,
+    "inventory": 40
+  },
+  "beldon-bn-bs702d-2d-desktop-barcode-scanner": {
+    "sku": "BELDON-BN-BS702D",
+    "specs": "2D scanning,USB interface,Compact design,Easy setup",
+    "rating": 4.5,
+    "inventory": 45
+  },
+  "posmax-pm-bsw234l-handheld-wireless-barcode-scanner": {
+    "sku": "POSMAX-PM-BSW234L",
+    "specs": "2.4G wireless,USB receiver,Long battery life,Lightweight",
+    "rating": 4.4,
+    "inventory": 50
+  },
+  "posmax-pm-bsw234r-2d-handheld-wireless-barcode-scanner": {
+    "sku": "POSMAX-PM-BSW234R",
+    "specs": "2D wireless scanning,Extended range,USB cradle,Rechargeable",
+    "rating": 4.5,
+    "inventory": 38
+  },
+  "beldon-bn-bs207r-handheld-wireless-barcode-scanner": {
+    "sku": "BELDON-BN-BS207R",
+    "specs": "Wireless scanning,USB receiver,Lightweight,Economical",
+    "rating": 4.3,
+    "inventory": 0
+  },
+  "beldon-bn-9066rt-wireless-scanner-with-cradle": {
+    "sku": "BELDON-BN-9066RT",
+    "specs": "Wireless with cradle,Charging base,USB interface,Durable",
+    "rating": 4.5,
+    "inventory": 28
+  },
+  "posmax-pm-bs909-ultra-fast-2d-scanner-with-stand": {
+    "sku": "POSMAX-PM-BS909",
+    "specs": "2D scanning,Adjustable stand,Ultra-fast,Plug & play",
+    "rating": 4.6,
+    "inventory": 60
+  },
+  "honeywell-oribit-desktop-barcode-reader-7120d": {
+    "sku": "HONEYWELL-7120D",
+    "specs": "Omnidirectional scanning,High speed,USB interface,Premium build",
+    "rating": 4.7,
+    "inventory": 15
+  },
+  "honeywell-oribit-desktop-2d-barcode-reader-7120d": {
+    "sku": "HONEYWELL-7120D-2D",
+    "specs": "2D & 1D scanning,Omnidirectional,High performance,USB",
+    "rating": 4.8,
+    "inventory": 12
+  },
+  "zebra-ds-9308-2d-desktop-barcode-scanner": {
+    "sku": "ZEBRA-DS-9308",
+    "specs": "2D scanning,Heavy duty,USB interface,Omnidirectional",
+    "rating": 4.7,
+    "inventory": 18
+  },
+  "2d-budget-desktop-barcode-scanner-pm-bsd234": {
+    "sku": "POSMAX-PM-BSD234",
+    "specs": "2D scanning,Budget friendly,USB plug & play,Compact",
+    "rating": 4.3,
+    "inventory": 55
+  },
+  "zebra-ds8178-2d-handheld-wireless-barcode-reader": {
+    "sku": "ZEBRA-DS8178",
+    "specs": "2D wireless,Bluetooth,Long range,Industrial grade",
+    "rating": 4.9,
+    "inventory": 8
+  },
+  "bixolon-4-inch-thermal-transfer-label-printer-xt3-40": {
+    "sku": "BIXOLON-XT3-40",
+    "specs": "4-inch printing,Thermal transfer,USB & LAN,High speed",
+    "rating": 4.8,
+    "inventory": 5
+  },
+  "zebra-4-inch-thermal-transfer-industrial-label-printer-zt230": {
+    "sku": "ZEBRA-ZT230",
+    "specs": "4-inch industrial,Thermal transfer,USB & Ethernet,Rugged build",
+    "rating": 4.9,
+    "inventory": 4
+  },
+  "zebra-heavy-duty-label-printer-zd-888ta": {
+    "sku": "ZEBRA-ZD-888TA",
+    "specs": "Direct thermal & transfer,USB interface,Compact,Reliable",
+    "rating": 4.6,
+    "inventory": 10
+  },
+  "luxurious-safe-box-secure-storage": {
+    "sku": "SAFE-LUXURY",
+    "specs": "Premium build,Digital lock,Fire resistant,Spacious interior",
+    "rating": 4.9,
+    "inventory": 3
+  },
+  "safe-box-secure-storage-al-70b": {
+    "sku": "SAFE-AL-70B",
+    "specs": "Digital lock,Reinforced body,Office ready,Override key",
+    "rating": 4.5,
+    "inventory": 9
+  },
+  "safe-box-secure-storage-al-2014f": {
+    "sku": "SAFE-AL-2014F",
+    "specs": "Digital combination,Compact size,Steel construction,Scratch resistant",
+    "rating": 4.4,
+    "inventory": 12
+  },
+  "safe-box-secure-storage-al-70": {
+    "sku": "SAFE-AL-70",
+    "specs": "Electronic lock,Standard size,Heavy duty,Bolt-down ready",
+    "rating": 4.5,
+    "inventory": 10
+  },
+  "safe-box-secure-storage-al-50": {
+    "sku": "SAFE-AL-50",
+    "specs": "Compact design,Electronic lock,Portable,Steel body",
+    "rating": 4.3,
+    "inventory": 15
+  },
+  "safe-box-secure-storage-al-36": {
+    "sku": "SAFE-AL-36",
+    "specs": "Small size,Digital lock,Manual override,Affordable",
+    "rating": 4.2,
+    "inventory": 18
+  },
+  "safe-box-secure-storage-al-25": {
+    "sku": "SAFE-AL-25",
+    "specs": "Entry-level,Compact,Key lock,Budget friendly",
+    "rating": 4.1,
+    "inventory": 20
+  },
+  "wm-5000v3-security-guard-tour-system": {
+    "sku": "WM-5000V3",
+    "specs": "Electronic tracking,Tour management,USB download,Durable wand",
+    "rating": 4.4,
+    "inventory": 8
+  },
+  "beldon-bn-m11-door-access-control": {
+    "sku": "BELDON-BN-M11",
+    "specs": "Fingerprint & card,Easy installation,Access log,Multi-user",
+    "rating": 4.6,
+    "inventory": 7
+  },
+  "beldon-d05-smart-door-lock-tuya": {
+    "sku": "BELDON-D05",
+    "specs": "Tuya app control,Fingerprint,Keypad,Auto-lock",
+    "rating": 4.5,
+    "inventory": 14
+  },
+  "beldon-d01-smart-door-lock-tuya": {
+    "sku": "BELDON-D01",
+    "specs": "Tuya app,Fingerprint,PIN code,Easy install",
+    "rating": 4.4,
+    "inventory": 16
+  },
+  "biometric-fingerprint-time-attendance-bn-t109b": {
+    "sku": "BELDON-BN-T109B",
+    "specs": "Fingerprint sensor,Attendance log,USB download,LCD display",
+    "rating": 4.5,
+    "inventory": 0
+  },
+  "biometric-fingerprint-time-attendance-bn-t109a": {
+    "sku": "BELDON-BN-T109A",
+    "specs": "Fingerprint & card,Compact design,Attendance reports,USB",
+    "rating": 4.4,
+    "inventory": 0
+  },
+  "beldon-bn-d2-glass-door-access-controller": {
+    "sku": "BELDON-BN-D2",
+    "specs": "Glass door compatible,Fingerprint & card,Easy mount,Access log",
+    "rating": 4.5,
+    "inventory": 6
+  },
+  "beldon-bn-s01-3d-face-recognition-door-lock": {
+    "sku": "BELDON-BN-S01",
+    "specs": "3D face recognition,Anti-spoofing,Auto-lock,Premium security",
+    "rating": 4.7,
+    "inventory": 5
+  },
+  "beldon-bn-f-31-fingerprint-door-lock": {
+    "sku": "BELDON-BN-F-31",
+    "specs": "Fingerprint unlock,Key override,Easy install,Battery powered",
+    "rating": 4.3,
+    "inventory": 18
+  }
+}
