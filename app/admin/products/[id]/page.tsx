@@ -1,8 +1,11 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
-import { ProductForm } from "@/components/admin/product-form";
 import Link from "next/link";
+import { ProductForm } from "@/components/admin/product-form";
+import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default async function AdminProductEditPage({
   params,
@@ -11,51 +14,51 @@ export default async function AdminProductEditPage({
 }) {
   await requireAdminPage("/admin/products", "product.view");
   const { id } = await params;
-  const product = await prisma.product.findUnique({
-    where: { id },
-  });
+  const product = await prisma.product.findUnique({ where: { id } });
 
   if (!product) {
     notFound();
   }
 
   return (
-    <main className="admin-content-page">
-      <div className="admin-topbar">
-        <div>
-          <p className="eyebrow">Admin / products / {id}</p>
-          <h1>Edit Product</h1>
-        </div>
-        <Link href="/admin/products" className="secondary-action">Back to list</Link>
-      </div>
-
-      <section className="admin-panel">
-        <div className="panel-heading">
+    <main className="admin-shell">
+      <AdminSidebar />
+      <section className="admin-content-page">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="eyebrow">Editor</p>
-            <h2>{product.name}</h2>
+            <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Admin / products / {id}</p>
+            <h1 className="text-2xl font-bold text-foreground">Edit product</h1>
           </div>
+          <Button asChild variant="outline">
+            <Link href="/admin/products">Back to list</Link>
+          </Button>
         </div>
-        <div style={{ marginTop: "24px" }}>
-            <ProductForm 
-            initialData={{
-              id: product.id,
-              name: product.name,
-              slug: product.slug,
-              category: product.category,
-              price: product.price,
-              compareAt: product.compareAt ?? undefined,
-              inventory: product.inventory,
-              sku: product.sku ?? undefined,
-              image: product.image,
-              accent: product.accent,
-              description: product.description,
-              shortDescription: product.shortDescription ?? undefined,
-              specs: product.specs,
-              published: product.published,
-            }} 
-          />
-        </div>
+
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle className="text-lg">{product.name}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ProductForm
+              initialData={{
+                id: product.id,
+                name: product.name,
+                slug: product.slug,
+                category: product.category,
+                price: product.price,
+                compareAt: product.compareAt ?? undefined,
+                inventory: product.inventory,
+                sku: product.sku ?? undefined,
+                image: product.image,
+                accent: product.accent,
+                description: product.description,
+                shortDescription: product.shortDescription ?? undefined,
+                specs: product.specs,
+                published: product.published,
+              }}
+            />
+          </CardContent>
+        </Card>
       </section>
     </main>
   );

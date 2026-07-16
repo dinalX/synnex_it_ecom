@@ -1,8 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { createProduct, updateProduct } from "@/app/admin/products/actions";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createProduct, updateProduct } from "@/app/admin/products/actions";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
 interface ProductFormProps {
   initialData?: {
@@ -77,171 +82,97 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
   };
 
   return (
-    <form action={handleSubmit} className="settings-form">
-      <div className="span-2">
-        <h3 style={{ marginBottom: "20px", fontSize: "1.2rem", fontWeight: 800 }}>
-          {initialData?.id ? "Edit Product" : "Add New Product"}
-        </h3>
-      </div>
-
+    <form action={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
       {error && (
-        <div className="form-error span-2" style={{ marginBottom: "20px" }}>
-          {error}
-        </div>
+        <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600 md:col-span-2">{error}</p>
       )}
 
-      <label>
-        Name
-        <input
-          name="name"
-          type="text"
-          required
-          defaultValue={initialData?.name}
-          placeholder="e.g. POS Thermal Printer"
-        />
-      </label>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="product-name">Name</Label>
+        <Input id="product-name" name="name" required defaultValue={initialData?.name} placeholder="e.g. POS Thermal Printer" />
+      </div>
 
-      <label>
-        Slug
-        <input
-          name="slug"
-          type="text"
-          defaultValue={initialData?.slug}
-          placeholder="Optional - leave blank to keep current slug"
-        />
-      </label>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="product-slug">Slug</Label>
+        <Input id="product-slug" name="slug" defaultValue={initialData?.slug} placeholder="Optional — leave blank to keep current slug" />
+      </div>
 
-      <label>
-        Category
-        <input
-          name="category"
-          type="text"
-          required
-          defaultValue={initialData?.category}
-          placeholder="e.g. POS Solution"
-        />
-      </label>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="product-category">Category</Label>
+        <Input id="product-category" name="category" required defaultValue={initialData?.category} placeholder="e.g. POS Solution" />
+      </div>
 
-      <label>
-        Price (LKR)
-        <input
-          name="price"
-          type="number"
-          required
-          defaultValue={initialData?.price}
-          placeholder="0"
-        />
-      </label>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="product-price">Price (LKR)</Label>
+        <Input id="product-price" name="price" type="number" required defaultValue={initialData?.price} placeholder="0" />
+      </div>
 
-      <label>
-        Compare At Price (LKR)
-        <input
-          name="compareAt"
-          type="number"
-          defaultValue={initialData?.compareAt}
-          placeholder="Optional"
-        />
-      </label>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="product-compare-at">Compare at price (LKR)</Label>
+        <Input id="product-compare-at" name="compareAt" type="number" defaultValue={initialData?.compareAt} placeholder="Optional" />
+      </div>
 
-      <label>
-        Inventory
-        <input
-          name="inventory"
-          type="number"
-          required
-          defaultValue={initialData?.inventory}
-          placeholder="0"
-        />
-      </label>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="product-inventory">Inventory</Label>
+        <Input id="product-inventory" name="inventory" type="number" required defaultValue={initialData?.inventory} placeholder="0" />
+      </div>
 
-      <label>
-        SKU
-        <input
-          name="sku"
-          type="text"
-          defaultValue={initialData?.sku}
-          placeholder="Optional"
-        />
-      </label>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="product-sku">SKU</Label>
+        <Input id="product-sku" name="sku" defaultValue={initialData?.sku} placeholder="Optional" />
+      </div>
 
-      <label>
-        Image URL
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="product-accent">Accent color</Label>
         <input
+          id="product-accent"
+          name="accent"
+          type="color"
+          defaultValue={initialData?.accent || "#1f8a70"}
+          className="h-9 w-full rounded-md border border-input"
+        />
+      </div>
+
+      <div className="flex flex-col gap-2 md:col-span-2">
+        <Label htmlFor="product-image">Image</Label>
+        <Input
+          id="product-image"
           name="image"
-          type="text"
           required
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
           placeholder="/uploads/products/photo.jpg"
         />
-        <span style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "8px" }}>
-          <input
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
-            onChange={handleImageUpload}
-            disabled={isUploading}
-          />
-          {isUploading ? <em>Uploading…</em> : null}
-        </span>
+        <div className="flex items-center gap-3">
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" onChange={handleImageUpload} disabled={isUploading} />
+          {isUploading ? <span className="text-sm text-muted-foreground">Uploading…</span> : null}
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2 md:col-span-2">
+        <Label htmlFor="product-short-description">Short description</Label>
+        <Textarea id="product-short-description" name="shortDescription" defaultValue={initialData?.shortDescription} placeholder="Brief product summary (shown on product cards)" rows={2} />
+      </div>
+
+      <div className="flex flex-col gap-2 md:col-span-2">
+        <Label htmlFor="product-description">Description</Label>
+        <Textarea id="product-description" name="description" required defaultValue={initialData?.description} placeholder="Product description..." />
+      </div>
+
+      <div className="flex flex-col gap-2 md:col-span-2">
+        <Label htmlFor="product-specs">Specifications (Markdown or plain text)</Label>
+        <Textarea id="product-specs" name="specs" required defaultValue={initialData?.specs} placeholder={"Weight: 1.2kg\nDimensions: 10x10x10cm"} />
+      </div>
+
+      <label className="flex items-center gap-2 text-sm text-foreground md:col-span-2">
+        <Checkbox name="published" defaultChecked={initialData?.published ?? true} />
+        Published to store
       </label>
 
-      <label>
-        Accent Color
-        <input
-          name="accent"
-          type="color"
-          defaultValue={initialData?.accent || "#1f8a70"}
-        />
-      </label>
-
-      <label className="span-2">
-        Short Description
-        <textarea
-          name="shortDescription"
-          defaultValue={initialData?.shortDescription}
-          placeholder="Brief product summary (shown on product cards)"
-          rows={2}
-        />
-      </label>
-
-      <label className="span-2">
-        Description
-        <textarea
-          name="description"
-          required
-          defaultValue={initialData?.description}
-          placeholder="Product description..."
-        />
-      </label>
-
-      <label className="span-2">
-        Specifications (Markdown or plain text)
-        <textarea
-          name="specs"
-          required
-          defaultValue={initialData?.specs}
-          placeholder="Weight: 1.2kg&#10;Dimensions: 10x10x10cm"
-        />
-      </label>
-
-      <label className="span-2" style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
-        <input
-          name="published"
-          type="checkbox"
-          defaultChecked={initialData?.published ?? true}
-        />
-        <span>Published to store</span>
-      </label>
-
-      <div className="span-2" style={{ display: "flex", gap: "12px", marginTop: "20px" }}>
-        <button 
-          type="submit" 
-          className="primary-action" 
-          disabled={isLoading}
-          style={{ flex: 1 }}
-        >
+      <div className="md:col-span-2">
+        <Button type="submit" disabled={isLoading} className="w-full">
           {isLoading ? "Saving..." : initialData?.id ? "Update Product" : "Create Product"}
-        </button>
+        </Button>
       </div>
     </form>
   );
