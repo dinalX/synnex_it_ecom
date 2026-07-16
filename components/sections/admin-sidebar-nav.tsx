@@ -30,9 +30,9 @@ const navItems: { label: string; icon: typeof Gauge; href: string; permission?: 
   { label: "Home Sections", icon: LayoutList, href: "/admin/home-sections", permission: "home-section.view" },
   { label: "Customers", icon: Users, href: "/admin/orders" },
   { label: "Content", icon: FileText, href: "/admin/content" },
-  { label: "Careers", icon: BriefcaseBusiness, href: "/admin/careers", permission: "career.manage" },
-  { label: "Downloads", icon: Download, href: "/admin/downloads", permission: "download.manage" },
-  { label: "Pages", icon: Database, href: "/admin/pages", permission: "page.manage" },
+  { label: "Careers", icon: BriefcaseBusiness, href: "/admin/careers", permission: "career.view" },
+  { label: "Downloads", icon: Download, href: "/admin/downloads", permission: "download.view" },
+  { label: "Pages", icon: Database, href: "/admin/pages", permission: "page.view" },
   { label: "Settings", icon: Settings, href: "/admin/settings", permission: "settings.view" },
   { label: "Team", icon: UsersRound, href: "/admin/team", permission: "admin.manage" },
 ];

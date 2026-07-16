@@ -4,18 +4,7 @@ import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { requireAdminAction } from "@/lib/admin-access";
 import { isPrismaUniqueError } from "@/lib/order-service";
-
-function slugify(text: string) {
-  return text
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w-]+/g, "")
-    .replace(/--+/g, "-")
-    .replace(/^-+/, "")
-    .replace(/-+$/, "");
-}
+import { slugify } from "@/lib/slugify";
 
 export async function createProduct(formData: FormData) {
   await requireAdminAction("product.create");
