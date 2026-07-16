@@ -2950,6 +2950,43 @@ del {
   gap: 10px;
 }
 
+/* Shared drag-and-drop row chrome (components/admin/sortable-list.tsx) —
+   used on both the custom-CSS Products page and the shadcn Home Sections
+   page, so it lives here rather than in either page's own stylesheet. */
+.sortable-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.sortable-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--muted);
+  cursor: grab;
+  touch-action: none;
+}
+
+.sortable-drag-handle:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.sortable-drag-handle:active {
+  cursor: grabbing;
+}
+
+.sortable-row-content {
+  flex: 1;
+  min-width: 0;
+}
+
 .management-table article {
   display: grid;
   grid-template-columns: 1fr auto auto;

@@ -7,7 +7,7 @@ export default async function AdminProductsPage() {
   await requireAdminPage("/admin/products", "product.view");
   const products = await prisma.product.findMany({
     take: 100,
-    orderBy: { createdAt: "desc" },
+    orderBy: { sortOrder: "asc" },
   });
 
   return (

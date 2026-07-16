@@ -13,6 +13,7 @@ model Product {
   name        String
   category    String
   categoryId  String?
+  sortOrder   Int      @default(0)
   price       Int
   compareAt   Int?
   rating      Float    @default(5)
@@ -35,9 +36,11 @@ model Product {
   wishlistItems WishlistItem[]
   inventoryTransactions InventoryTransaction[]
   heroBanners HeroBanner[]
+  homeSectionItems HomeSectionItem[]
 
   @@index([categoryId])
   @@index([published])
+  @@index([sortOrder])
 }
 
 model Order {
@@ -664,4 +667,18 @@ model HeroBanner {
   @@index([active])
   @@index([sortOrder])
   @@index([productId])
+}
+
+model HomeSectionItem {
+  id        String   @id @default(cuid())
+  section   String
+  productId String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([section, productId])
+  @@index([section])
+  @@index([sortOrder])
 }

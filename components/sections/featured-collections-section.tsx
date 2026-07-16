@@ -1,17 +1,21 @@
 import { FeaturedCollectionsTabs, type CollectionTab } from "@/components/featured-collections-tabs";
-import { fetchCategories, fetchProducts } from "@/lib/data";
+import { fetchCategories, fetchHomeSection, fetchProducts } from "@/lib/data";
 import type { Product } from "@prisma/client";
 
 /**
  * Tabbed merchandising section: "Top Deals" plus one tab per main category.
  * All tab data is fetched server-side so switching is instant on the client.
+ * Each tab prefers an admin-curated product set (/admin/home-sections),
+ * falling back to the automatic category listing when nothing is curated.
  */
 export async function FeaturedCollectionsSection({ deals }: { deals: Product[] }) {
   const categories = await fetchCategories();
 
   const categoryTabs = await Promise.all(
     categories.map(async (category): Promise<CollectionTab> => {
-      const { products } = await fetchProducts({ category: category.slug, limit: 6 });
+      const products = await fetchHomeSection(category.slug, 6, () =>
+        fetchProducts({ category: category.slug, limit: 6 }).then((result) => result.products),
+      );
       return {
         key: category.slug,
         label: category.name,

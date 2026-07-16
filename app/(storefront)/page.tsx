@@ -8,7 +8,7 @@ import { QuoteCtaSection } from "@/components/sections/quote-cta-section";
 import { JsonLd } from "@/components/json-ld";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { siteConfig } from "@/lib/site";
-import { fetchDeals, fetchProducts, fetchTopRated } from "@/lib/data";
+import { fetchDeals, fetchHomeSection, fetchProducts, fetchTopRated } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "POS Machines, Barcode Scanners & Biometric Security in Sri Lanka",
@@ -17,10 +17,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [deals, topRated, latest] = await Promise.all([
-    fetchDeals(8),
-    fetchTopRated(8),
-    fetchProducts({ sort: "newest", limit: 8 }),
+  const [deals, topRated, latestProducts] = await Promise.all([
+    fetchHomeSection("top-deals", 8, () => fetchDeals(8)),
+    fetchHomeSection("top-rated", 8, () => fetchTopRated(8)),
+    fetchHomeSection("new-arrivals", 8, () =>
+      fetchProducts({ sort: "newest", limit: 8 }).then((result) => result.products),
+    ),
   ]);
 
   return (
@@ -54,7 +56,7 @@ export default async function Home() {
         eyebrow="Just in"
         title="New arrivals"
         viewAllHref="/products"
-        products={latest.products}
+        products={latestProducts}
       />
       <QuoteCtaSection />
     </main>

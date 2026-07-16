@@ -88,6 +88,27 @@ export async function fetchTopRated(limit = 8) {
   });
 }
 
+/**
+ * Curated-with-fallback fetch for a homepage merchandising slot. If an
+ * admin has curated `section` (via /admin/home-sections), that exact set
+ * and order wins; otherwise `fallback` runs today's automatic logic
+ * (discount %, rating, date) so an uncurated section is never empty.
+ */
+export async function fetchHomeSection<T>(
+  section: string,
+  limit: number,
+  fallback: () => Promise<T[]>,
+): Promise<T[]> {
+  const curated = await prisma.homeSectionItem.findMany({
+    where: { section },
+    orderBy: { sortOrder: "asc" },
+    take: limit,
+    include: { product: { include: { categoryRef: true, images: { orderBy: { sortOrder: "asc" } } } } },
+  });
+  if (curated.length === 0) return fallback();
+  return curated.map((item) => item.product) as T[];
+}
+
 export async function fetchActiveHeroBanners() {
   return prisma.heroBanner.findMany({
     where: { active: true },

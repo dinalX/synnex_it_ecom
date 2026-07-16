@@ -41,11 +41,13 @@ export async function createProduct(formData: FormData) {
   const slug = providedSlug ? slugify(providedSlug) : slugify(name);
 
   try {
+    const last = await prisma.product.findFirst({ orderBy: { sortOrder: "desc" }, select: { sortOrder: true } });
     await prisma.product.create({
       data: {
         name,
         slug,
         category,
+        sortOrder: (last?.sortOrder ?? 0) + 1,
         price,
         compareAt: compareAt || null,
         inventory,
@@ -123,6 +125,17 @@ export async function updateProduct(id: string, formData: FormData) {
 
   revalidatePath("/admin/products");
   revalidatePath(`/products/${slug}`);
+  return { success: true };
+}
+
+export async function reorderProducts(orderedIds: string[]) {
+  await requireAdminAction("product.update");
+
+  await prisma.$transaction(
+    orderedIds.map((id, index) => prisma.product.update({ where: { id }, data: { sortOrder: index } })),
+  );
+
+  revalidatePath("/admin/products");
   return { success: true };
 }
 
