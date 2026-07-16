@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
+import { DownloadManager } from "./download-manager";
 
 export default async function AdminDownloadsPage() {
-  await requireAdminPage("/admin/downloads", "download.manage");
+  await requireAdminPage("/admin/downloads", "download.view");
   const downloads = await prisma.driverDownload.findMany({
     orderBy: { updatedAt: "desc" },
   });
@@ -13,29 +13,7 @@ export default async function AdminDownloadsPage() {
     <main className="admin-shell">
       <AdminSidebar />
       <section className="admin-content-page">
-      <div className="admin-topbar">
-        <div>
-          <p className="eyebrow">Admin / downloads</p>
-          <h1>Driver downloads</h1>
-        </div>
-        <Link href="/admin" className="secondary-action">Dashboard</Link>
-      </div>
-
-      <section className="management-table">
-        {downloads.length === 0 && (
-          <article><div><strong>No downloads yet.</strong></div></article>
-        )}
-        {downloads.map((download) => (
-          <article key={download.id}>
-            <div>
-              <strong>{download.title}</strong>
-              <span>{download.deviceType} · {download.os} · v{download.version}</span>
-            </div>
-            <span>{download.published ? "Published" : "Draft"}</span>
-            <em>{download.fileUrl === "#" ? "Needs file" : "Ready"}</em>
-          </article>
-        ))}
-      </section>
+        <DownloadManager downloads={downloads} />
       </section>
     </main>
   );
