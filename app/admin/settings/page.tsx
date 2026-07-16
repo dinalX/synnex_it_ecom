@@ -27,6 +27,7 @@ async function getCurrentSettings() {
   for (const s of settings) {
     map[s.key] = s.value;
   }
+  // The token itself never reaches the form — only whether one is stored.
   const capiTokenSaved = Boolean(map.metaCapiAccessTokenEnc);
   delete map.metaCapiAccessTokenEnc;
   return { map, capiTokenSaved };
