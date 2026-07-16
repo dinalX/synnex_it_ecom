@@ -44,12 +44,12 @@ export default async function AdminOrdersPage({
     
     // Create a complex where condition for OR search
     orderWhere.OR = [
-      { orderNumber: { contains: cleanQuery, mode: "insensitive" } },
-      { customer: { contains: cleanQuery, mode: "insensitive" } },
+      { orderNumber: { contains: cleanQuery } },
+      { customer: { contains: cleanQuery } },
     ];
-    
+
     if (query.includes("@")) {
-      orderWhere.OR.push({ email: { contains: query, mode: "insensitive" } });
+      orderWhere.OR.push({ email: { contains: query } });
     }
   }
 
