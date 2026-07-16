@@ -4,12 +4,12 @@ import {
   Boxes,
   ChevronRight,
   CircleDollarSign,
-  Search,
   ShoppingCart,
 } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { formatCurrency } from "@/lib/api-client";
 import { AdminSidebar } from "@/components/sections/admin-sidebar";
+import { DashboardSearch } from "@/components/admin/dashboard-search";
 import { requireAdminPage } from "@/lib/admin-access";
 import { getStatusBadgeClass } from "@/lib/order-status";
 import { Badge } from "@/components/ui/badge";
@@ -76,7 +76,7 @@ async function getDashboardData() {
       placed: o.createdAt,
     })),
     inventory: inventoryRows.map((p) => ({
-      sku: p.sku || p.id.slice(0, 8).toUpperCase(),
+      sku: p.sku || p.id,
       name: p.name,
       category: p.category,
       stock: p.inventory,
@@ -106,13 +106,7 @@ export default async function AdminPage() {
               <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Admin dashboard</p>
               <h1 className="text-2xl font-bold text-foreground">Store operations</h1>
             </div>
-            <label className="flex h-11 w-full max-w-[420px] items-center gap-2 rounded-lg border border-border bg-card px-3">
-              <Search size={18} className="text-muted-foreground" />
-              <input
-                placeholder="Search orders, products, customers"
-                className="h-full w-full bg-transparent text-sm outline-none"
-              />
-            </label>
+            <DashboardSearch />
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -208,7 +202,7 @@ export default async function AdminPage() {
                 <Link href="/" className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
                   View storefront <ChevronRight size={16} />
                 </Link>
-                <Link href="/admin/content" className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
+                <Link href="/admin/products" className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
                   All functions <ChevronRight size={16} />
                 </Link>
               </div>

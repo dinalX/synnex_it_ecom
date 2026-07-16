@@ -13,9 +13,9 @@ import {
   GalleryHorizontal,
   Gauge,
   LayoutList,
+  LogOut,
   Package,
   Settings,
-  Users,
   UsersRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -28,7 +28,6 @@ const navItems: { label: string; icon: typeof Gauge; href: string; permission?: 
   { label: "Products", icon: Package, href: "/admin/products", permission: "product.view" },
   { label: "Hero Banners", icon: GalleryHorizontal, href: "/admin/hero-banners", permission: "hero-banner.view" },
   { label: "Home Sections", icon: LayoutList, href: "/admin/home-sections", permission: "home-section.view" },
-  { label: "Customers", icon: Users, href: "/admin/orders" },
   { label: "Content", icon: FileText, href: "/admin/content" },
   { label: "Careers", icon: BriefcaseBusiness, href: "/admin/careers", permission: "career.view" },
   { label: "Downloads", icon: Download, href: "/admin/downloads", permission: "download.view" },
@@ -102,6 +101,16 @@ export function AdminSidebarNav({
             );
           })}
         </nav>
+        <form action="/api/auth/logout" method="post" className="mt-auto pt-4">
+          <Button
+            type="submit"
+            variant="ghost"
+            className="w-full justify-start gap-2.5 font-semibold text-muted-foreground"
+          >
+            <LogOut size={18} />
+            Log out
+          </Button>
+        </form>
       </aside>
     </>
   );

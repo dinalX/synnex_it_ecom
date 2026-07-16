@@ -60,6 +60,9 @@ export default async function AccountPage() {
               <p>{customer?.status || "Active"}</p>
             </div>
           </div>
+          <form action="/api/auth/logout" method="post">
+            <button type="submit" className="secondary-action">Log out</button>
+          </form>
         </div>
 
         <div className="account-card">

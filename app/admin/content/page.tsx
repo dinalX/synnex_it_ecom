@@ -83,34 +83,6 @@ export default async function AdminContentPage() {
           );
         })}
       </section>
-
-      <section className="admin-panel editor-panel">
-        <div className="panel-heading">
-          <div>
-            <p className="eyebrow">Settings editor</p>
-            <h2>Example managed fields</h2>
-          </div>
-        </div>
-        <form className="settings-form">
-          <label>
-            Site title
-            <input defaultValue="Synnex IT Solution - POS Hardware Sri Lanka" />
-          </label>
-          <label>
-            Google Tag ID
-            <input placeholder="G-XXXXXXXXXX" />
-          </label>
-          <label>
-            Facebook Pixel ID
-            <input placeholder="1234567890" />
-          </label>
-          <label>
-            Offline payment notes
-            <textarea placeholder="Offline payment instructions..." />
-          </label>
-          <button type="button" className="primary-action">Save draft</button>
-        </form>
-      </section>
       </section>
     </main>
   );

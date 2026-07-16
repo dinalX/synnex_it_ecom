@@ -112,7 +112,7 @@ export function HomeSectionManager({
                 <Button
                   key={section.key}
                   variant={section.key === activeKey ? "secondary" : "ghost"}
-                  className="justify-between"
+                  className="h-auto justify-between whitespace-normal py-2 text-left"
                   onClick={() => {
                     setActiveKey(section.key);
                     setSearch("");

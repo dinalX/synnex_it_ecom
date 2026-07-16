@@ -150,7 +150,7 @@ export default async function AdminOrderDetailPage({
             )}
             <div className="flex justify-between text-base">
               <span className="font-semibold text-foreground">Total</span>
-              <strong className="text-foreground">{formatCurrency(order.total)} {order.currency}</strong>
+              <strong className="text-foreground">{formatCurrency(order.total)}</strong>
             </div>
           </div>
         </CardContent>

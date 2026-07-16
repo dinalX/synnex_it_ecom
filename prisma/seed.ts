@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "@/lib/password";
+import { generateSku } from "@/lib/sku";
 
 const prisma = new PrismaClient();
 
@@ -231,8 +232,21 @@ async function main() {
     };
   })
 
+  // Generate deterministic SKUs for products the curated overrides don't
+  // cover (most of the 171-product catalog import) — slug-sorted so
+  // reseeding never reshuffles an existing product's SKU.
+  const categoryCounters: Record<string, number> = {};
+  const generatedSkus = new Map<string, string>();
+  for (const p of [...products].sort((a, b) => a.slug.localeCompare(b.slug))) {
+    if (p.sku) continue;
+    const count = (categoryCounters[p.category] ?? 0) + 1;
+    categoryCounters[p.category] = count;
+    generatedSkus.set(p.slug, generateSku(p.category, count));
+  }
+
   for (const p of products) {
     const { subcategory, ...productData } = p;
+    const sku = p.sku ?? generatedSkus.get(p.slug) ?? null;
     const categoryRecord = await prisma.productCategory.findUnique({
       where: { slug: p.category },
     });
@@ -253,6 +267,7 @@ async function main() {
         compareAt: productData.compareAt,
         rating: productData.rating,
         inventory: productData.inventory,
+        sku,
         image: imageUrl,
         accent: productData.accent,
         description: productData.description,
@@ -261,6 +276,7 @@ async function main() {
       },
       create: {
         ...productData,
+        sku,
         image: imageUrl,
         categoryId: categoryRecord?.id ?? null,
         category: subcategoryRecord?.name ?? p.subcategory,
