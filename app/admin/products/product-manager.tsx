@@ -1,9 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { Modal } from "@/components/admin/modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductForm } from "@/components/admin/product-form";
 import { SortableList } from "@/components/admin/sortable-list";
 import { deleteProduct, reorderProducts } from "./actions";
@@ -15,29 +30,47 @@ interface Product {
   category: string;
   price: number;
   inventory: number;
+  sku: string | null;
 }
 
 interface ProductManagerProps {
   products: Product[];
 }
 
+const ALL_CATEGORIES = "all";
+
 export function ProductManager({ products }: ProductManagerProps) {
   const [items, setItems] = useState(products);
   const [prevProducts, setPrevProducts] = useState(products);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<{ id: string; name: string } | null>(null);
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState(ALL_CATEGORIES);
 
   // Re-sync local (optimistic) order when the server sends a fresh products
-  // list (e.g. after router.refresh()) — adjusting state during render per
-  // React's recommended pattern, not an effect (avoids an extra render pass).
+  // list — adjusting state during render per React's recommended pattern.
   if (products !== prevProducts) {
     setPrevProducts(products);
     setItems(products);
   }
 
+  const categories = useMemo(() => {
+    return Array.from(new Set(items.map((p) => p.category))).sort();
+  }, [items]);
+
+  const filtered = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return items.filter((p) => {
+      const matchesSearch = !query || p.name.toLowerCase().includes(query);
+      const matchesCategory = category === ALL_CATEGORIES || p.category === category;
+      return matchesSearch && matchesCategory;
+    });
+  }, [items, search, category]);
+
+  const isFiltered = search.trim() !== "" || category !== ALL_CATEGORIES;
+
   const handleDelete = async () => {
     if (!isDeleteOpen) return;
-
     try {
       await deleteProduct(isDeleteOpen.id);
       setIsDeleteOpen(null);
@@ -56,99 +89,113 @@ export function ProductManager({ products }: ProductManagerProps) {
     }
   }
 
-  return (
-    <>
-      <div className="admin-topbar">
-        <div>
-          <p className="eyebrow">Admin / products</p>
-          <h1>Product management</h1>
+  function renderRow(product: Product) {
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-card p-3">
+        <div className="min-w-0 flex-1">
+          <p className="font-medium text-foreground">{product.name}</p>
+          <p className="text-sm text-muted-foreground">
+            {product.category} · {product.sku ?? "No SKU"}
+          </p>
         </div>
-        <Link href="/admin" className="secondary-action">Dashboard</Link>
+        <span className="text-sm text-muted-foreground">{formatCurrency(product.price)}</span>
+        <span className="text-sm text-muted-foreground">{product.inventory} in stock</span>
+        <div className="flex gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link href={`/admin/products/${product.id}`}>Edit</Link>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsDeleteOpen({ id: product.id, name: product.name })}
+          >
+            <Trash2 size={14} />
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Admin / products</p>
+          <h1 className="text-2xl font-bold text-foreground">Product management</h1>
+        </div>
+        <Button onClick={() => setIsAddOpen(true)}>
+          <Plus size={16} /> Add product
+        </Button>
       </div>
 
-      <section className="admin-panel">
-        <div className="panel-heading">
-          <div>
-            <p className="eyebrow">Catalog</p>
-            <h2>Products</h2>
+      <Card>
+        <CardHeader className="flex-row flex-wrap items-center justify-between gap-3">
+          <CardTitle className="text-lg">{filtered.length} of {items.length} products</CardTitle>
+          <div className="flex flex-wrap gap-2">
+            <Input
+              placeholder="Search by name…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-56"
+            />
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL_CATEGORIES}>All categories</SelectItem>
+                {categories.map((c) => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <button onClick={() => setIsAddOpen(true)}>
-            <Plus size={16} />
-            Add product
-          </button>
-        </div>
-        <div className="management-table">
-          <SortableList
-            dndContextId="admin-products-list"
-            items={items}
-            onReorder={handleReorder}
-            renderItem={(product) => (
-              <article>
-                <div>
-                  <strong>{product.name}</strong>
-                  <span>{product.category} · {product.id.toUpperCase()}</span>
-                </div>
-                <span>{formatCurrency(product.price)}</span>
-                <em>{product.inventory} in stock</em>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <Link
-                    href={`/admin/products/${product.id}`}
-                    className="secondary-action"
-                    style={{ padding: "4px 8px", fontSize: "0.8rem" }}
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => setIsDeleteOpen({ id: product.id, name: product.name })}
-                    className="secondary-action"
-                    style={{ padding: "4px 8px", fontSize: "0.8rem", color: "var(--orange)", borderColor: "var(--line)" }}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </article>
-            )}
-          />
-        </div>
-      </section>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
+          {isFiltered ? (
+            <>
+              <p className="text-xs text-muted-foreground">
+                Drag-to-reorder is disabled while filtering — clear the search and category filters to reorder.
+              </p>
+              {filtered.map((product) => (
+                <div key={product.id}>{renderRow(product)}</div>
+              ))}
+              {filtered.length === 0 && (
+                <p className="py-6 text-center text-sm text-muted-foreground">No products match this filter.</p>
+              )}
+            </>
+          ) : (
+            <SortableList
+              dndContextId="admin-products-list"
+              items={items}
+              onReorder={handleReorder}
+              renderItem={renderRow}
+            />
+          )}
+        </CardContent>
+      </Card>
 
-      <Modal
-        isOpen={isAddOpen}
-        onClose={() => setIsAddOpen(false)}
-        title="Add New Product"
-      >
-        <ProductForm onSuccess={() => setIsAddOpen(false)} />
-      </Modal>
+      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Add New Product</DialogTitle>
+          </DialogHeader>
+          <ProductForm onSuccess={() => setIsAddOpen(false)} />
+        </DialogContent>
+      </Dialog>
 
-      <Modal
-        isOpen={!!isDeleteOpen}
-        onClose={() => setIsDeleteOpen(null)}
-        title="Delete Product"
-      >
-        <div style={{ textAlign: "center", padding: "20px" }}>
-          <p style={{ fontSize: "1.1rem", marginBottom: "24px" }}>
-            Are you sure you want to delete <strong>{isDeleteOpen?.name}</strong>?
-            <br />
-            <small style={{ color: "var(--muted)", fontWeight: "normal" }}>This action cannot be undone.</small>
+      <Dialog open={!!isDeleteOpen} onOpenChange={(open) => !open && setIsDeleteOpen(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Product</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Are you sure you want to delete <strong>{isDeleteOpen?.name}</strong>? This action cannot be undone.
           </p>
-          <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
-            <button
-              className="secondary-action"
-              onClick={() => setIsDeleteOpen(null)}
-              style={{ minWidth: "120px" }}
-            >
-              Cancel
-            </button>
-            <button
-              className="primary-action"
-              onClick={handleDelete}
-              style={{ minWidth: "120px", background: "var(--orange)" }}
-            >
-              Delete
-            </button>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsDeleteOpen(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDelete}>Delete</Button>
           </div>
-        </div>
-      </Modal>
-    </>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
