@@ -3,6 +3,8 @@ import { Database, Download, FileText, Settings, ShoppingBag, UserRoundPlus } fr
 import { prisma } from "@/lib/db";
 import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default async function AdminContentPage() {
   await requireAdminPage("/admin/content");
@@ -61,28 +63,38 @@ export default async function AdminContentPage() {
     <main className="admin-shell">
       <AdminSidebar />
       <section className="admin-content-page">
-      <div className="admin-topbar">
-        <div>
-          <p className="eyebrow">Managed content</p>
-          <h1>Admin control center</h1>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Admin / content</p>
+            <h1 className="text-2xl font-bold text-foreground">Admin control center</h1>
+          </div>
+          <Button asChild variant="outline">
+            <Link href="/admin">Dashboard</Link>
+          </Button>
         </div>
-        <Link href="/admin" className="secondary-action">Dashboard</Link>
-      </div>
 
-      <section className="management-grid">
-        {managementAreas.map((area) => {
-          const Icon = area.icon;
-          return (
-            <article className="management-card" key={area.title}>
-              <span><Icon size={22} /></span>
-              <strong>{area.count}</strong>
-              <h2>{area.title}</h2>
-              <p>{area.description}</p>
-              <Link href={area.href} className="management-link">Open</Link>
-            </article>
-          );
-        })}
-      </section>
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {managementAreas.map((area) => {
+            const Icon = area.icon;
+            return (
+              <Card key={area.title}>
+                <CardHeader>
+                  <span className="flex h-9 w-9 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                    <Icon size={20} />
+                  </span>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">{area.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-3">
+                  <strong className="text-2xl font-bold text-foreground">{area.count}</strong>
+                  <p className="text-sm text-muted-foreground">{area.description}</p>
+                  <Button asChild variant="outline" size="sm" className="self-start">
+                    <Link href={area.href}>Open</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       </section>
     </main>
   );
