@@ -148,7 +148,7 @@ export function PageManager({ pages }: { pages: PageContent[] }) {
                       <Button variant="outline" size="sm" onClick={() => handleTogglePublished(page)}>
                         {page.published ? "Unpublish" : "Publish"}
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => setDeleteTarget(page)}>
+                      <Button variant="outline" size="sm" aria-label="Delete" onClick={() => setDeleteTarget(page)}>
                         <Trash2 size={14} />
                       </Button>
                     </div>

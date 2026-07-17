@@ -15,6 +15,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -108,6 +109,7 @@ export function ProductManager({ products, categories: formCategories }: Product
           <Button
             variant="outline"
             size="sm"
+            aria-label="Delete"
             onClick={() => setIsDeleteOpen({ id: product.id, name: product.name })}
           >
             <Trash2 size={14} />
@@ -191,10 +193,10 @@ export function ProductManager({ products, categories: formCategories }: Product
           <p className="text-sm text-muted-foreground">
             Are you sure you want to delete <strong>{isDeleteOpen?.name}</strong>? This action cannot be undone.
           </p>
-          <div className="flex justify-end gap-3">
+          <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteOpen(null)}>Cancel</Button>
             <Button variant="destructive" onClick={handleDelete}>Delete</Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

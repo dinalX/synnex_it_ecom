@@ -258,9 +258,15 @@ export function ProductForm({ categories, initialData, onSuccess }: ProductFormP
         </label>
       </div>
 
-      <Button type="submit" disabled={isLoading} className="w-full">
-        {isLoading ? "Saving..." : initialData?.id ? "Update Product" : "Create Product"}
-      </Button>
+      {/* Matches DialogFooter's layout — ProductForm renders both inside a
+          Dialog (create) and standalone in a Card (edit page), so the
+          classes are applied directly rather than importing DialogFooter
+          into a context where there's no Dialog. */}
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Saving..." : initialData?.id ? "Update Product" : "Create Product"}
+        </Button>
+      </div>
     </form>
   );
 }
