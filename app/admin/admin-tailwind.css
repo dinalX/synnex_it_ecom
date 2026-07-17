@@ -3,17 +3,31 @@
  * Imported exclusively from app/admin/layout.tsx so this stylesheet
  * (and its utility classes) never load on storefront routes.
  *
- * Preflight (Tailwind's base reset) is intentionally NOT imported:
- * app/layout.tsx renders the storefront SiteHeader/SiteFooter around
- * admin pages too, and a global reset would make that shared chrome
- * look different when viewed inside /admin vs. the storefront.
+ * Full Preflight is still not imported — its broader resets (headings,
+ * lists, form elements generally) haven't been audited against every
+ * admin page built so far, so the surface stays intentionally small.
+ * But the storefront now renders under its own app/(storefront)/layout.tsx
+ * with the root app/layout.tsx reduced to a bare <html><body> shell, so
+ * admin no longer shares any chrome (SiteHeader/SiteFooter) with the
+ * storefront — the button reset below is safe with no bleed risk.
+ * Without it, every native <button> in admin (the shared Button
+ * component, Dialog's close button, etc.) fell back to the browser's
+ * default 2px outset border + gray fill, since none of them declare
+ * their own border/background reset (they assume Preflight normally
+ * handles it).
  *
  * All custom-property names below are prefixed with --admin- because
  * :root is document-global, not scoped to this stylesheet's importer —
- * an unprefixed name like --muted collides with the storefront's own
- * --muted variable in app/globals.css and silently overrides it
- * wherever SiteHeader/SiteFooter render inside /admin.
+ * an unprefixed name like --muted would collide with the storefront's
+ * own --muted variable in app/globals.css if the two ever did share a
+ * render tree again.
  */
+/* Explicit layer order: without this, "base" (first declared further down,
+ * after "utilities" is imported) would cascade AFTER "utilities" and win
+ * over utility classes like SelectTrigger's own border-input — the button
+ * reset must lose to any component's own explicit styling. */
+@layer theme, base, utilities;
+
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
@@ -22,6 +36,18 @@
 @source "../../components/sections/admin-sidebar-nav.tsx";
 @source "../../components/admin/**/*.{ts,tsx}";
 @source "./**/*.{ts,tsx}";
+
+@layer base {
+  button {
+    appearance: none;
+    border: 0;
+    background: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+}
 
 @theme inline {
   --color-background: var(--admin-background);
