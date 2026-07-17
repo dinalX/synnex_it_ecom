@@ -147,7 +147,7 @@ export function DownloadManager({ downloads }: { downloads: DriverDownload[] }) 
                       <Button variant="outline" size="sm" onClick={() => handleTogglePublished(download)}>
                         {download.published ? "Unpublish" : "Publish"}
                       </Button>
-                      <Button variant="outline" size="sm" aria-label="Delete" onClick={() => setDeleteTarget(download)}>
+                      <Button variant="outline" size="sm" aria-label="Delete" onClick={() => { setError(null); setDeleteTarget(download); }}>
                         <Trash2 size={14} />
                       </Button>
                     </div>

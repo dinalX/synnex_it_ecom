@@ -204,7 +204,7 @@ export function BannerManager({
                       <Button variant="outline" size="sm" onClick={() => handleToggleActive(banner)}>
                         {banner.active ? "Deactivate" : "Activate"}
                       </Button>
-                      <Button variant="outline" size="sm" aria-label="Delete" onClick={() => setDeleteTarget(banner)}>
+                      <Button variant="outline" size="sm" aria-label="Delete" onClick={() => { setError(null); setDeleteTarget(banner); }}>
                         <Trash2 size={14} />
                       </Button>
                     </div>

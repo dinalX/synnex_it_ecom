@@ -156,7 +156,7 @@ export function CareerManager({ jobs }: { jobs: JobPost[] }) {
                       <Button variant="outline" size="sm" onClick={() => handleTogglePublished(job)}>
                         {job.published ? "Unpublish" : "Publish"}
                       </Button>
-                      <Button variant="outline" size="sm" aria-label="Delete" onClick={() => setDeleteTarget(job)}>
+                      <Button variant="outline" size="sm" aria-label="Delete" onClick={() => { setError(null); setDeleteTarget(job); }}>
                         <Trash2 size={14} />
                       </Button>
                     </div>
