@@ -11,7 +11,7 @@ export async function createProduct(formData: FormData) {
 
   const name = formData.get("name") as string;
   const providedSlug = (formData.get("slug") as string | null)?.trim();
-  const category = formData.get("category") as string;
+  const categoryId = formData.get("categoryId") as string;
   const price = parseInt(formData.get("price") as string);
   const compareAt = parseInt(formData.get("compareAt") as string) || null;
   const inventory = parseInt(formData.get("inventory") as string);
@@ -23,8 +23,17 @@ export async function createProduct(formData: FormData) {
   const specs = formData.get("specs") as string;
   const published = formData.get("published") === "on";
 
-  if (!name || !category || isNaN(price) || isNaN(inventory)) {
+  if (!name || !categoryId || isNaN(price) || isNaN(inventory)) {
     throw new Error("Missing required fields");
+  }
+
+  // The form's category picker is the subcategory (e.g. "Cash Register"),
+  // matching what Product.category has always displayed. Product.categoryId
+  // is the main-category FK (the same convention prisma/seed.ts already
+  // uses), not the subcategory's own id.
+  const subcategory = await prisma.productCategory.findUnique({ where: { id: categoryId } });
+  if (!subcategory) {
+    throw new Error("Invalid category selected");
   }
 
   const slug = providedSlug ? slugify(providedSlug) : slugify(name);
@@ -35,7 +44,8 @@ export async function createProduct(formData: FormData) {
       data: {
         name,
         slug,
-        category,
+        category: subcategory.name,
+        categoryId: subcategory.parentId ?? subcategory.id,
         sortOrder: (last?.sortOrder ?? 0) + 1,
         price,
         compareAt: compareAt || null,
@@ -68,7 +78,7 @@ export async function updateProduct(id: string, formData: FormData) {
 
   const name = formData.get("name") as string;
   const providedSlug = (formData.get("slug") as string | null)?.trim();
-  const category = formData.get("category") as string;
+  const categoryId = formData.get("categoryId") as string;
   const price = parseInt(formData.get("price") as string);
   const compareAt = parseInt(formData.get("compareAt") as string) || null;
   const inventory = parseInt(formData.get("inventory") as string);
@@ -80,8 +90,13 @@ export async function updateProduct(id: string, formData: FormData) {
   const specs = formData.get("specs") as string;
   const published = formData.get("published") === "on";
 
-  if (!name || !category || isNaN(price) || isNaN(inventory)) {
+  if (!name || !categoryId || isNaN(price) || isNaN(inventory)) {
     throw new Error("Missing required fields");
+  }
+
+  const subcategory = await prisma.productCategory.findUnique({ where: { id: categoryId } });
+  if (!subcategory) {
+    throw new Error("Invalid category selected");
   }
 
   const slug = providedSlug ? slugify(providedSlug) : existing.slug;
@@ -92,7 +107,8 @@ export async function updateProduct(id: string, formData: FormData) {
       data: {
         name,
         slug,
-        category,
+        category: subcategory.name,
+        categoryId: subcategory.parentId ?? subcategory.id,
         price,
         compareAt: compareAt || null,
         inventory,

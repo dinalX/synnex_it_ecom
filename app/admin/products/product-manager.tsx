@@ -19,7 +19,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ProductForm } from "@/components/admin/product-form";
+import { ProductForm, type ProductFormCategory } from "@/components/admin/product-form";
 import { SortableList } from "@/components/admin/sortable-list";
 import { deleteProduct, reorderProducts } from "./actions";
 import { formatCurrency } from "@/lib/api-client";
@@ -35,11 +35,12 @@ interface Product {
 
 interface ProductManagerProps {
   products: Product[];
+  categories: ProductFormCategory[];
 }
 
 const ALL_CATEGORIES = "all";
 
-export function ProductManager({ products }: ProductManagerProps) {
+export function ProductManager({ products, categories: formCategories }: ProductManagerProps) {
   const [items, setItems] = useState(products);
   const [prevProducts, setPrevProducts] = useState(products);
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -178,7 +179,7 @@ export function ProductManager({ products }: ProductManagerProps) {
           <DialogHeader>
             <DialogTitle>Add New Product</DialogTitle>
           </DialogHeader>
-          <ProductForm onSuccess={() => setIsAddOpen(false)} />
+          <ProductForm categories={formCategories} onSuccess={() => setIsAddOpen(false)} />
         </DialogContent>
       </Dialog>
 

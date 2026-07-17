@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ProductForm } from "@/components/admin/product-form";
 import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
+import { getProductFormCategories } from "@/lib/product-categories";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -14,7 +15,10 @@ export default async function AdminProductEditPage({
 }) {
   await requireAdminPage("/admin/products", "product.view");
   const { id } = await params;
-  const product = await prisma.product.findUnique({ where: { id } });
+  const [product, categories] = await Promise.all([
+    prisma.product.findUnique({ where: { id } }),
+    getProductFormCategories(),
+  ]);
 
   if (!product) {
     notFound();
@@ -40,6 +44,7 @@ export default async function AdminProductEditPage({
           </CardHeader>
           <CardContent>
             <ProductForm
+              categories={categories}
               initialData={{
                 id: product.id,
                 name: product.name,
