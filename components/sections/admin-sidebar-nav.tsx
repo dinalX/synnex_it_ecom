@@ -149,13 +149,22 @@ export function AdminSidebarNav({
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              {/*
+                The <form> lives outside the DropdownMenuItem/asChild merge
+                and is associated to the button below via the `form`
+                attribute (not DOM nesting) — a Radix menu item's keyboard
+                activation calls .click() on whatever DOM node asChild
+                merges its role onto. A <form> has no native click-triggered
+                submit behavior (only a real submit <button> does), so
+                asChild must target the <button> itself for Enter/Space to
+                actually submit, not just a real mouse click on it.
+              */}
+              <form id="admin-logout-form" action="/api/auth/logout" method="post" className="hidden" />
               <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
-                <form action="/api/auth/logout" method="post" className="w-full">
-                  <button type="submit" className="flex w-full items-center gap-2">
-                    <LogOut size={16} />
-                    Log out
-                  </button>
-                </form>
+                <button type="submit" form="admin-logout-form" className="flex w-full items-center gap-2">
+                  <LogOut size={16} />
+                  Log out
+                </button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
