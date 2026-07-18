@@ -7,15 +7,19 @@ export async function AdminSidebar() {
 
   let role = "Admin";
   let permissions: string[] = [];
+  let name = "";
+  let email = "";
 
   if (session?.id) {
     const admin = await prisma.adminUser.findUnique({
       where: { id: session.id },
-      select: { role: true, permissions: { select: { key: true } } },
+      select: { role: true, name: true, email: true, permissions: { select: { key: true } } },
     });
     role = admin?.role ?? "Admin";
     permissions = admin?.permissions.map((p) => p.key) ?? [];
+    name = admin?.name ?? "";
+    email = admin?.email ?? "";
   }
 
-  return <AdminSidebarNav role={role} permissions={permissions} />;
+  return <AdminSidebarNav role={role} permissions={permissions} name={name} email={email} />;
 }

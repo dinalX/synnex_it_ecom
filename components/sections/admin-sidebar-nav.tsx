@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import {
+  Bell,
   BriefcaseBusiness,
+  ChevronsUpDown,
   ClipboardList,
   Database,
   Download,
@@ -16,10 +18,19 @@ import {
   LogOut,
   Package,
   Settings,
+  User,
   UsersRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { Permission } from "@/lib/permissions";
 
 const navItems: { label: string; icon: typeof Gauge; href: string; permission?: Permission }[] = [
@@ -39,9 +50,13 @@ const navItems: { label: string; icon: typeof Gauge; href: string; permission?: 
 export function AdminSidebarNav({
   role,
   permissions,
+  name,
+  email,
 }: {
   role: string;
   permissions: string[];
+  name: string;
+  email: string;
 }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -101,16 +116,50 @@ export function AdminSidebarNav({
             );
           })}
         </nav>
-        <form action="/api/auth/logout" method="post" className="mt-auto pt-4">
-          <Button
-            type="submit"
-            variant="ghost"
-            className="w-full justify-start gap-2.5 font-semibold text-muted-foreground"
-          >
-            <LogOut size={18} />
-            Log out
-          </Button>
-        </form>
+        <div className="mt-auto pt-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2.5 font-semibold text-muted-foreground"
+              >
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
+                  {name ? name.charAt(0).toUpperCase() : "?"}
+                </span>
+                <span className="min-w-0 flex-1 truncate text-left">{name || "Admin"}</span>
+                <ChevronsUpDown size={14} className="shrink-0" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" side="top" className="w-[calc(250px-3rem)]">
+              <DropdownMenuLabel className="flex flex-col gap-0.5 normal-case tracking-normal">
+                <span className="text-sm font-semibold text-foreground">{name || "Admin"}</span>
+                <span className="truncate text-xs font-normal text-muted-foreground">{email}</span>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/admin/profile">
+                  <User size={16} />
+                  Profile
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/admin/notifications">
+                  <Bell size={16} />
+                  Notifications
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
+                <form action="/api/auth/logout" method="post" className="w-full">
+                  <button type="submit" className="flex w-full items-center gap-2">
+                    <LogOut size={16} />
+                    Log out
+                  </button>
+                </form>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </aside>
     </>
   );
