@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 import { HomeSectionManager } from "./home-section-manager";
 
@@ -32,11 +31,8 @@ export default async function AdminHomeSectionsPage() {
   const sections = [...FIXED_SECTIONS, ...categories.map((c) => ({ key: c.slug, label: c.name }))];
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-      <section className="admin-content-page">
-        <HomeSectionManager sections={sections} items={items} products={products} />
-      </section>
-    </main>
+    <section className="admin-content-page">
+      <HomeSectionManager sections={sections} items={items} products={products} />
+    </section>
   );
 }

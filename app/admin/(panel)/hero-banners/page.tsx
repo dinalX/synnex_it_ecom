@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 import { BannerManager } from "./banner-manager";
 
@@ -19,11 +18,8 @@ export default async function AdminHeroBannersPage() {
   ]);
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-      <section className="admin-content-page">
-        <BannerManager banners={banners} products={products} />
-      </section>
-    </main>
+    <section className="admin-content-page">
+      <BannerManager banners={banners} products={products} />
+    </section>
   );
 }

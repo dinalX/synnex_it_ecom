@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { saveSettings } from "./actions";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -38,9 +37,7 @@ export default async function AdminSettingsPage() {
   const { map: settings, capiTokenSaved } = await getCurrentSettings();
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-      <section className="admin-content-page">
+    <section className="admin-content-page">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Admin / settings</p>
@@ -106,6 +103,5 @@ export default async function AdminSettingsPage() {
           </CardContent>
         </Card>
       </section>
-    </main>
   );
 }

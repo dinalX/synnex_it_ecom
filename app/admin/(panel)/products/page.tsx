@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/db";
 import { ProductManager } from "./product-manager";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 import { getProductFormCategories } from "@/lib/product-categories";
 
@@ -14,11 +13,8 @@ export default async function AdminProductsPage() {
   ]);
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-      <section className="admin-content-page">
-        <ProductManager products={products} categories={categories} />
-      </section>
-    </main>
+    <section className="admin-content-page">
+      <ProductManager products={products} categories={categories} />
+    </section>
   );
 }

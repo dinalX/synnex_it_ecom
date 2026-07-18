@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { formatCurrency } from "@/lib/api-client";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { OrderFilters } from "./order-filters";
 import { ORDER_STATUSES, getStatusBadgeClass } from "@/lib/order-status";
 import { requireAdminPage } from "@/lib/admin-access";
@@ -73,9 +72,7 @@ export default async function AdminOrdersPage({
   const countMap = new Map(statusCounts.map((s) => [s.status, s._count]));
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-      <section className="admin-content-page">
+    <section className="admin-content-page">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Admin / orders</p>
@@ -152,6 +149,5 @@ export default async function AdminOrdersPage({
           </CardContent>
         </Card>
       </section>
-    </main>
   );
 }

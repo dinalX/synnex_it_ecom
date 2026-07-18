@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { formatCurrency } from "@/lib/api-client";
 import Link from "next/link";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { reviewPaymentUpload, updateOrder } from "./actions";
 import { requireAdminPage } from "@/lib/admin-access";
 import {
@@ -53,9 +52,7 @@ export default async function AdminOrderDetailPage({
   }
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-      <section className="admin-content-page">
+    <section className="admin-content-page">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
@@ -258,6 +255,5 @@ export default async function AdminOrderDetailPage({
         </CardContent>
       </Card>
       </section>
-    </main>
   );
 }

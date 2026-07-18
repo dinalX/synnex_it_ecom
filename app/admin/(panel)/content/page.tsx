@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Database, Download, FileText, Settings, ShoppingBag, UserRoundPlus } from "lucide-react";
 import { prisma } from "@/lib/db";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -60,9 +59,7 @@ export default async function AdminContentPage() {
   ];
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-      <section className="admin-content-page">
+    <section className="admin-content-page">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Admin / content</p>
@@ -96,6 +93,5 @@ export default async function AdminContentPage() {
           })}
         </div>
       </section>
-    </main>
   );
 }

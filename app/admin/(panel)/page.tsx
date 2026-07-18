@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { formatCurrency } from "@/lib/api-client";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { DashboardSearch } from "@/components/admin/dashboard-search";
 import { requireAdminPage } from "@/lib/admin-access";
 import { getStatusBadgeClass } from "@/lib/order-status";
@@ -96,10 +95,7 @@ export default async function AdminPage() {
   const { stats, orders, inventory, fulfillment } = await getDashboardData();
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-
-      <section className="admin-main" id="dashboard">
+    <section className="admin-main" id="dashboard">
         <div className="flex flex-col gap-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
@@ -224,6 +220,5 @@ export default async function AdminPage() {
           </Card>
         </div>
       </section>
-    </main>
   );
 }

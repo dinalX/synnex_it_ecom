@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 import { TeamManager } from "./team-manager";
 
@@ -22,11 +21,8 @@ export default async function AdminTeamPage() {
   }));
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-      <section className="admin-content-page">
-        <TeamManager teamMembers={teamMembers} currentAdminId={currentAdmin?.id ?? ""} />
-      </section>
-    </main>
+    <section className="admin-content-page">
+      <TeamManager teamMembers={teamMembers} currentAdminId={currentAdmin?.id ?? ""} />
+    </section>
   );
 }

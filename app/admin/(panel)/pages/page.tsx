@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 import { PageManager } from "./page-manager";
 
@@ -10,11 +9,8 @@ export default async function AdminPagesPage() {
   });
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-      <section className="admin-content-page">
-        <PageManager pages={pages} />
-      </section>
-    </main>
+    <section className="admin-content-page">
+      <PageManager pages={pages} />
+    </section>
   );
 }

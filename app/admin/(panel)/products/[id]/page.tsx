@@ -2,7 +2,6 @@ import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ProductForm } from "@/components/admin/product-form";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 import { getProductFormCategories } from "@/lib/product-categories";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,9 +24,7 @@ export default async function AdminProductEditPage({
   }
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-      <section className="admin-content-page">
+    <section className="admin-content-page">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Admin / products / {id}</p>
@@ -65,6 +62,5 @@ export default async function AdminProductEditPage({
           </CardContent>
         </Card>
       </section>
-    </main>
   );
 }

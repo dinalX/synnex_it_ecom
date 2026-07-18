@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/db";
-import { AdminSidebar } from "@/components/sections/admin-sidebar";
 import { requireAdminPage } from "@/lib/admin-access";
 import { CareerManager } from "./career-manager";
 
@@ -10,11 +9,8 @@ export default async function AdminCareersPage() {
   });
 
   return (
-    <main className="admin-shell">
-      <AdminSidebar />
-      <section className="admin-content-page">
-        <CareerManager jobs={jobs} />
-      </section>
-    </main>
+    <section className="admin-content-page">
+      <CareerManager jobs={jobs} />
+    </section>
   );
 }
