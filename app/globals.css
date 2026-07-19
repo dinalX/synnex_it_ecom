@@ -4104,7 +4104,8 @@ del {
   .hero,
   .product-detail,
   .admin-shell,
-  .admin-grid {
+  .admin-grid,
+  .site-footer {
     grid-template-columns: 1fr;
   }
 
@@ -4206,6 +4207,11 @@ del {
   .product-grid.three,
   .product-grid-4x2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer-columns {
+    grid-template-columns: 1fr;
+    gap: 28px;
   }
 
   .span-2 {
