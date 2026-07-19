@@ -192,20 +192,20 @@ export async function createOrderFromCurrentCart(input: CheckoutOrderInput) {
   });
 
   try {
-    await notifyAdmins({
-      type: "order.new",
-      title: `New order ${order.orderNumber}`,
-      body: `${order.customer} — LKR ${order.total.toLocaleString()}`,
-      href: `/admin/orders/${order.id}`,
-    });
-    for (const crossing of lowStockCrossings) {
-      await notifyAdmins({
+    await notifyAdmins([
+      {
+        type: "order.new",
+        title: `New order ${order.orderNumber}`,
+        body: `${order.customer} — LKR ${order.total.toLocaleString()}`,
+        href: `/admin/orders/${order.id}`,
+      },
+      ...lowStockCrossings.map((crossing) => ({
         type: "stock.low",
         title: `Low stock: ${crossing.productName}`,
         body: `${crossing.afterQty} left`,
         href: `/admin/products/${crossing.productId}`,
-      });
-    }
+      })),
+    ]);
   } catch (e) {
     console.error("Failed to send admin notifications for order", order.id, e);
   }

@@ -26,17 +26,30 @@ export async function POST(request: Request) {
   }
 
   const tokenHash = hashResetToken(token);
-  const record = await prisma.adminPasswordResetToken.findUnique({ where: { tokenHash } });
 
-  if (!record || record.usedAt || record.expiresAt < new Date()) {
+  // Claim the token atomically first (usedAt: null guards against two
+  // concurrent submissions of the same token both passing validation and
+  // both updating the password) before doing anything else with it.
+  const claim = await prisma.adminPasswordResetToken.updateMany({
+    where: { tokenHash, usedAt: null, expiresAt: { gt: new Date() } },
+    data: { usedAt: new Date() },
+  });
+
+  if (claim.count !== 1) {
+    return errorResponse("This reset link is invalid or has expired", 400);
+  }
+
+  const record = await prisma.adminPasswordResetToken.findUnique({
+    where: { tokenHash },
+    include: { admin: true },
+  });
+
+  if (!record || !record.admin.active) {
     return errorResponse("This reset link is invalid or has expired", 400);
   }
 
   const passwordHash = await hashPassword(newPassword);
-  await prisma.$transaction([
-    prisma.adminUser.update({ where: { id: record.adminId }, data: { passwordHash } }),
-    prisma.adminPasswordResetToken.update({ where: { id: record.id }, data: { usedAt: new Date() } }),
-  ]);
+  await prisma.adminUser.update({ where: { id: record.adminId }, data: { passwordHash } });
 
   return jsonResponse({ success: true });
 }

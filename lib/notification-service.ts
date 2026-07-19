@@ -2,12 +2,11 @@ import { prisma } from "@/lib/db";
 
 export const LOW_STOCK_THRESHOLD = 5;
 
-export async function notifyAdmins(input: {
-  type: string;
-  title: string;
-  body?: string;
-  href?: string;
-}): Promise<void> {
+export async function notifyAdmins(
+  events: { type: string; title: string; body?: string; href?: string }[],
+): Promise<void> {
+  if (events.length === 0) return;
+
   const admins = await prisma.adminUser.findMany({
     where: { active: true },
     select: { id: true },
@@ -16,13 +15,15 @@ export async function notifyAdmins(input: {
   if (admins.length === 0) return;
 
   await prisma.adminNotification.createMany({
-    data: admins.map((admin) => ({
-      adminId: admin.id,
-      type: input.type,
-      title: input.title,
-      body: input.body,
-      href: input.href,
-    })),
+    data: admins.flatMap((admin) =>
+      events.map((event) => ({
+        adminId: admin.id,
+        type: event.type,
+        title: event.title,
+        body: event.body,
+        href: event.href,
+      })),
+    ),
   });
 }
 
