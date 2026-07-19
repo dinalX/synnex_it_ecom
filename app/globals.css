@@ -239,8 +239,7 @@ img {
   pointer-events: none;
 }
 
-.nav-dropdown.open .dropdown-menu,
-.category-pill-dropdown.open .dropdown-menu {
+.nav-dropdown.open .dropdown-menu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -360,57 +359,6 @@ img {
   font-weight: 800;
 }
 
-/* Categories Bar (Row 2) */
-.categories-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  padding: 0 clamp(18px, 4vw, 56px);
-  min-height: 52px;
-  border-top: 1px solid var(--line);
-  background: var(--white);
-  overflow: visible;
-}
-
-.categories-scroll {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 8px;
-  overflow-x: visible;
-  overflow-y: visible;
-  scroll-behavior: smooth;
-  padding: 8px 0;
-  -webkit-overflow-scrolling: touch;
-}
-
-.categories-scroll::-webkit-scrollbar {
-  height: 3px;
-}
-
-.categories-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.categories-scroll::-webkit-scrollbar-thumb {
-  background: var(--line);
-  border-radius: 3px;
-}
-
-/*
- * Below ~1120px the pill strip is wider than the viewport. The bar centers it,
- * which pushes the first pill off-screen with no way to reach it, and the pills'
- * absolute-positioned dropdowns rule out overflow-x scrolling (it would clip
- * them, and dropdown pills don't navigate on tap). Wrapping keeps every pill
- * reachable and every dropdown functional.
- */
-@media (max-width: 1120px) {
-  .categories-scroll {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-}
-
 .category-pill {
   display: inline-flex;
   align-items: center;
@@ -443,47 +391,6 @@ img {
   border-color: var(--blue);
   box-shadow: 0 6px 18px rgba(45, 108, 223, 0.2);
   transform: translateY(-2px);
-}
-
-.category-pill-dropdown {
-  position: relative;
-}
-
-.category-pill-dropdown > button {
-  list-style: none;
-  cursor: pointer;
-  display: inline-flex;
-  border: none;
-  background: transparent;
-  font-family: inherit;
-}
-
-.pill-chevron {
-  transition: transform 200ms ease;
-}
-
-.category-pill-dropdown.open .pill-chevron {
-  transform: rotate(180deg);
-}
-
-.category-pill-dropdown .dropdown-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  width: auto;
-  min-width: 160px;
-  padding: 8px;
-  border-radius: 8px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-4px);
-  transition: opacity 160ms ease, transform 160ms ease, visibility 160ms;
-  pointer-events: none;
-}
-
-.category-pill-dropdown .dropdown-menu a {
-  padding: 8px 12px;
-  white-space: nowrap;
 }
 
 .categories-divider {

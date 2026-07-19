@@ -6,7 +6,6 @@ import { Menu, X } from "lucide-react";
 import { CartDrawer } from "@/components/cart-drawer";
 import { useCart } from "@/components/cart-provider";
 import { HeaderSearch } from "@/components/header-search";
-import { ProductCategories } from "@/components/product-categories";
 import { HeaderActions } from "@/components/header-actions";
 import { MobileMenu } from "@/components/mobile-menu";
 import { NavDropdown, ProductsDropdown, SupportDropdown } from "@/components/nav-dropdown";
@@ -62,8 +61,6 @@ export function SiteHeader() {
         </div>
 
         {mobileOpen && <MobileMenu onClose={() => setMobileOpen(false)} />}
-
-        <ProductCategories />
       </header>
       <CartDrawer />
     </>
