@@ -1312,6 +1312,7 @@ a.hero-visual {
   text-overflow: ellipsis;
   font-size: 0.85rem;
   line-height: 1.45;
+  min-height: calc(1.45em * 2);
   color: var(--muted);
   margin-bottom: 4px;
 }

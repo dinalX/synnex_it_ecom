@@ -13,8 +13,8 @@ export async function FeaturedCollectionsSection({ deals }: { deals: Product[] }
 
   const categoryTabs = await Promise.all(
     categories.map(async (category): Promise<CollectionTab> => {
-      const products = await fetchHomeSection(category.slug, 6, () =>
-        fetchProducts({ category: category.slug, limit: 6 }).then((result) => result.products),
+      const products = await fetchHomeSection(category.slug, 12, () =>
+        fetchProducts({ category: category.slug, limit: 12 }).then((result) => result.products),
       );
       return {
         key: category.slug,
@@ -28,7 +28,7 @@ export async function FeaturedCollectionsSection({ deals }: { deals: Product[] }
   // deals[0] becomes the promo tile, so the Top Deals grid starts at deals[1].
   const promo = deals[0] ?? null;
   const tabs: CollectionTab[] = [
-    { key: "top-deals", label: "Top Deals", href: "/products", products: deals.slice(1, 7) },
+    { key: "top-deals", label: "Top Deals", href: "/products", products: deals.slice(1, 13) },
     ...categoryTabs.filter((tab) => tab.products.length > 0),
   ];
 

@@ -18,10 +18,10 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const [deals, topRated, latestProducts] = await Promise.all([
-    fetchHomeSection("top-deals", 8, () => fetchDeals(8)),
-    fetchHomeSection("top-rated", 8, () => fetchTopRated(8)),
-    fetchHomeSection("new-arrivals", 8, () =>
-      fetchProducts({ sort: "newest", limit: 8 }).then((result) => result.products),
+    fetchHomeSection("top-deals", 13, () => fetchDeals(13)),
+    fetchHomeSection("top-rated", 12, () => fetchTopRated(12)),
+    fetchHomeSection("new-arrivals", 12, () =>
+      fetchProducts({ sort: "newest", limit: 12 }).then((result) => result.products),
     ),
   ]);
 
