@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { Product } from "@prisma/client";
-import { ProductCard } from "@/components/product-card";
+import { ProductCarouselRow } from "@/components/product-carousel-row";
 
 export function ProductRowSection({
   eyebrow,
@@ -32,11 +32,7 @@ export function ProductRowSection({
           <ArrowRight size={16} />
         </Link>
       </div>
-      <div className="product-grid product-grid-4x2">
-        {products.map((product) => (
-          <ProductCard product={product} key={product.id} />
-        ))}
-      </div>
+      <ProductCarouselRow products={products} />
     </section>
   );
 }

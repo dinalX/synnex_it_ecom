@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { ProductCard } from "@/components/product-card";
+import { ProductCarouselRow } from "@/components/product-carousel-row";
 import { formatCurrency } from "@/lib/api-client";
 import type { Product } from "@prisma/client";
 
@@ -75,12 +75,11 @@ export function FeaturedCollectionsTabs({
         ) : null}
 
         <div className="fc-grid" role="tabpanel" aria-label={active.label}>
-          {active.products.map((product) => (
-            <ProductCard product={product} key={product.id} />
-          ))}
           {active.products.length === 0 ? (
             <p className="fc-empty">No products in this collection yet.</p>
-          ) : null}
+          ) : (
+            <ProductCarouselRow products={active.products} />
+          )}
         </div>
       </div>
 

@@ -1149,6 +1149,78 @@ a.hero-visual {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.product-carousel-wrap {
+  position: relative;
+  min-width: 0;
+  margin: 0 -4px;
+}
+
+.product-carousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 4px;
+  padding: 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.product-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.product-carousel-item {
+  flex: 0 0 auto;
+  width: 260px;
+  scroll-snap-align: start;
+}
+
+.product-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.12);
+  transform: translateY(-50%);
+  transition: opacity 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.product-carousel-arrow:hover:not(:disabled) {
+  box-shadow: 0 6px 18px rgba(17, 24, 39, 0.18);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.product-carousel-arrow:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.product-carousel-arrow-prev {
+  left: -8px;
+}
+
+.product-carousel-arrow-next {
+  right: -8px;
+}
+
+@media (max-width: 760px) {
+  .product-carousel-arrow {
+    display: none;
+  }
+
+  .product-carousel-item {
+    width: 200px;
+  }
+}
+
 .product-card {
   position: relative;
   overflow: hidden;
@@ -1499,6 +1571,14 @@ a.hero-visual {
   align-items: stretch;
 }
 
+/* .fc-grid is the direct grid item holding the carousel; grid items default
+   to min-width: auto (their content's min-content size), so the carousel's
+   wide single-row content would otherwise force this track — and the page —
+   to overflow horizontally despite the carousel's own overflow-x: auto. */
+.fc-grid {
+  min-width: 0;
+}
+
 .fc-promo-tile {
   position: relative;
   display: block;
@@ -1566,14 +1646,7 @@ a.hero-visual {
   font-weight: 800;
 }
 
-.fc-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-}
-
 .fc-empty {
-  grid-column: 1 / -1;
   margin: 0;
   padding: 40px 0;
   text-align: center;
