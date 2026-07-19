@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { getCurrentAdminSession } from "@/lib/auth";
+import { getUnreadCount } from "@/lib/notification-service";
 import { AdminSidebarNav } from "@/components/sections/admin-sidebar-nav";
 
 export async function AdminSidebar() {
@@ -9,6 +10,7 @@ export async function AdminSidebar() {
   let permissions: string[] = [];
   let name = "";
   let email = "";
+  let unreadCount = 0;
 
   if (session?.id) {
     const admin = await prisma.adminUser.findUnique({
@@ -19,7 +21,8 @@ export async function AdminSidebar() {
     permissions = admin?.permissions.map((p) => p.key) ?? [];
     name = admin?.name ?? "";
     email = admin?.email ?? "";
+    unreadCount = await getUnreadCount(session.id);
   }
 
-  return <AdminSidebarNav role={role} permissions={permissions} name={name} email={email} />;
+  return <AdminSidebarNav role={role} permissions={permissions} name={name} email={email} unreadCount={unreadCount} />;
 }

@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 import { getCurrentUserSession } from "@/lib/auth";
 import { calculateCartSubtotal, CART_SESSION_COOKIE, getCurrentActiveCart } from "@/lib/cart-session";
 import { prisma } from "@/lib/db";
+import { notifyAdmins, LOW_STOCK_THRESHOLD } from "@/lib/notification-service";
 
 export type CheckoutOrderInput = {
   customer: string;
@@ -92,6 +93,8 @@ export async function createOrderFromCurrentCart(input: CheckoutOrderInput) {
   const orderNumber = generateOrderNumber();
   const paymentMode = normalizePaymentMode(input.paymentMode);
 
+  const lowStockCrossings: { productId: string; productName: string; afterQty: number }[] = [];
+
   const order = await prisma.$transaction(async (tx) => {
     const createdOrder = await tx.order.create({
       data: {
@@ -152,6 +155,9 @@ export async function createOrderFromCurrentCart(input: CheckoutOrderInput) {
             afterQty,
           },
         });
+        if (beforeQty >= LOW_STOCK_THRESHOLD && afterQty < LOW_STOCK_THRESHOLD) {
+          lowStockCrossings.push({ productId: item.productId, productName: item.product.name, afterQty });
+        }
       } else {
         const beforeQty = item.product.inventory;
         const afterQty = beforeQty - item.quantity;
@@ -170,6 +176,9 @@ export async function createOrderFromCurrentCart(input: CheckoutOrderInput) {
             afterQty,
           },
         });
+        if (beforeQty >= LOW_STOCK_THRESHOLD && afterQty < LOW_STOCK_THRESHOLD) {
+          lowStockCrossings.push({ productId: item.productId, productName: item.product.name, afterQty });
+        }
       }
     }
 
@@ -181,6 +190,25 @@ export async function createOrderFromCurrentCart(input: CheckoutOrderInput) {
 
     return createdOrder;
   });
+
+  try {
+    await notifyAdmins({
+      type: "order.new",
+      title: `New order ${order.orderNumber}`,
+      body: `${order.customer} — LKR ${order.total.toLocaleString()}`,
+      href: `/admin/orders/${order.id}`,
+    });
+    for (const crossing of lowStockCrossings) {
+      await notifyAdmins({
+        type: "stock.low",
+        title: `Low stock: ${crossing.productName}`,
+        body: `${crossing.afterQty} left`,
+        href: `/admin/products/${crossing.productId}`,
+      });
+    }
+  } catch (e) {
+    console.error("Failed to send admin notifications for order", order.id, e);
+  }
 
   const cookieStore = await cookies();
   cookieStore.set(CART_SESSION_COOKIE, "", {

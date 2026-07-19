@@ -366,6 +366,7 @@ model AdminUser {
   paymentGatewayConfigs PaymentGatewayConfig[]
   createdHeroBanners    HeroBanner[]
   passwordResetTokens   AdminPasswordResetToken[] @relation("AdminPasswordResetTokens")
+  notifications         AdminNotification[]       @relation("AdminNotifications")
 
   @@index([role])
   @@index([active])
@@ -398,6 +399,22 @@ model AdminPasswordResetToken {
 
   @@index([adminId])
   @@index([expiresAt])
+}
+
+model AdminNotification {
+  id        String    @id @default(cuid())
+  adminId   String
+  type      String
+  title     String
+  body      String?
+  href      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  admin AdminUser @relation("AdminNotifications", fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId, readAt])
+  @@index([createdAt])
 }
 
 model PaymentGatewayConfig {

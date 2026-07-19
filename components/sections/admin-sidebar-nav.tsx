@@ -53,11 +53,13 @@ export function AdminSidebarNav({
   permissions,
   name,
   email,
+  unreadCount,
 }: {
   role: string;
   permissions: string[];
   name: string;
   email: string;
+  unreadCount: number;
 }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -144,9 +146,16 @@ export function AdminSidebarNav({
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/admin/notifications">
-                  <Bell size={16} />
-                  Notifications
+                <Link href="/admin/notifications" className="justify-between">
+                  <span className="flex items-center gap-2">
+                    <Bell size={16} />
+                    Notifications
+                  </span>
+                  {unreadCount > 0 && (
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-xs font-semibold text-destructive-foreground">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
               </DropdownMenuItem>
               <ThemeToggle />
