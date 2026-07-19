@@ -94,9 +94,9 @@ export function ProductManager({ products, categories: formCategories }: Product
   function renderRow(product: Product) {
     return (
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-card p-3">
-        <div className="min-w-0 flex-1">
-          <p className="font-medium text-foreground">{product.name}</p>
-          <p className="text-sm text-muted-foreground">
+        <div className="min-w-0 flex-1 basis-full sm:basis-auto">
+          <p className="truncate font-medium text-foreground">{product.name}</p>
+          <p className="truncate text-sm text-muted-foreground">
             {product.category} · {product.sku ?? "No SKU"}
           </p>
         </div>

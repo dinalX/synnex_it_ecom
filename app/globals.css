@@ -2347,6 +2347,16 @@ del {
   padding: clamp(28px, 5vw, 58px);
 }
 
+/* .admin-content-page is a grid item under .admin-shell (250px 1fr);
+   grid items default to min-width: auto, so a wide child (e.g. a Table
+   with many columns) forces the whole grid — and the page — to overflow
+   horizontally even though the Table itself scrolls internally. .admin-main
+   (the dashboard's own wrapper) already guards against this; this class
+   needs the same guard for every other admin page. */
+.admin-content-page {
+  min-width: 0;
+}
+
 .simple-hero {
   max-width: 900px;
   padding: 30px 0 clamp(28px, 5vw, 54px);
@@ -3497,7 +3507,12 @@ del {
   cursor: pointer;
 }
 
-@media (max-width: 768px) {
+/* max-width: 767px (not 768px) to match Tailwind's max-md: boundary exactly
+   (max-md compiles to `not all and (min-width: 48rem)`, i.e. width < 768px) —
+   components/sections/admin-sidebar-nav.tsx's collapsible <aside> uses
+   max-md: utilities, so at exactly 768px a mismatched 768px query here would
+   show this toggle button while the sidebar stays in its desktop layout. */
+@media (max-width: 767px) {
   .admin-mobile-toggle {
     display: inline-flex;
   }
