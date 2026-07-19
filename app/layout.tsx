@@ -1,8 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { Hanken_Grotesk } from "next/font/google";
 import { AnalyticsEvents } from "@/components/analytics-events";
 import { AnalyticsScripts } from "@/components/analytics-scripts";
 import { getSiteConfig } from "@/lib/site-settings";
 import "./globals.css";
+
+const hankenGrotesk = Hanken_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteConfig();
@@ -40,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#2d6cdf",
+  themeColor: "#111111",
 };
 
 export default function RootLayout({
@@ -49,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={hankenGrotesk.variable} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <AnalyticsScripts />
         <AnalyticsEvents />

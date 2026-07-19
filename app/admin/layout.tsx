@@ -20,7 +20,11 @@ export default function AdminLayout({
   return (
     <>
       <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
-      {children}
+      {/* Admin has its own design system (admin-tailwind.css) and shouldn't
+          inherit the storefront's brand webfont from the shared body rule —
+          this wraps every /admin/* route, including login/forgot/reset
+          password which render outside the (panel) group's .admin-shell. */}
+      <div className="admin-font-reset">{children}</div>
     </>
   );
 }

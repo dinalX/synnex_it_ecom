@@ -16,7 +16,7 @@ export default function OpenGraphImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: "80px",
-          background: "linear-gradient(135deg, #101828 0%, #1d3a6e 100%)",
+          background: "linear-gradient(135deg, #0a0a0a 0%, #262626 100%)",
           color: "#ffffff",
           fontFamily: "sans-serif",
         }}
@@ -34,7 +34,8 @@ export default function OpenGraphImage() {
               width: "72px",
               height: "72px",
               borderRadius: "16px",
-              background: "#2d6cdf",
+              background: "#ffffff",
+              color: "#111111",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

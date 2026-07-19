@@ -159,11 +159,11 @@ export function CartDrawer() {
 function ShoppingIllustration() {
   return (
     <svg viewBox="0 0 120 90" aria-hidden="true" className="empty-illustration">
-      <rect x="21" y="26" width="76" height="48" rx="10" fill="#eff6ff" />
+      <rect x="21" y="26" width="76" height="48" rx="10" fill="#f0f0f2" />
       <path d="M39 35c0-12 8-21 20-21s20 9 20 21" fill="none" stroke="#1f8a70" strokeWidth="6" />
-      <path d="M36 40h48l-5 28H42z" fill="#ffffff" stroke="#0f172a" strokeWidth="4" />
+      <path d="M36 40h48l-5 28H42z" fill="#ffffff" stroke="#111111" strokeWidth="4" />
       <circle cx="48" cy="77" r="5" fill="#d45113" />
-      <circle cx="73" cy="77" r="5" fill="#2d6cdf" />
+      <circle cx="73" cy="77" r="5" fill="#111111" />
     </svg>
   );
 }

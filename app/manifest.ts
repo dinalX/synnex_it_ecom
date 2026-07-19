@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Sri Lankan POS hardware, barcode, biometric security, and IT equipment supplier',
     start_url: '/',
     display: 'standalone',
-    background_color: '#fbfcfd',
-    theme_color: '#2d6cdf',
+    background_color: '#fafafa',
+    theme_color: '#111111',
     icons: [
       {
         src: '/icons/icon-192x192.png',
