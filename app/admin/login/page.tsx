@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default async function AdminLoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirect?: string; error?: string }>;
+  searchParams: Promise<{ redirect?: string; error?: string; reset?: string }>;
 }) {
   const params = await searchParams;
   const redirectTo = params.redirect || "/admin";
@@ -43,6 +43,9 @@ export default async function AdminLoginPage({
           {params.error ? (
             <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">Invalid admin credentials.</p>
           ) : null}
+          {params.reset ? (
+            <p className="rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">Password updated — log in with your new password.</p>
+          ) : null}
           <form action="/api/auth/login" method="post" className="flex flex-col gap-4">
             <input type="hidden" name="role" value="admin" />
             <input type="hidden" name="redirectTo" value={redirectTo} />
@@ -56,6 +59,9 @@ export default async function AdminLoginPage({
             </div>
             <Button className="w-full" type="submit">Login</Button>
           </form>
+          <Link href="/admin/forgot-password" className="text-center text-sm text-muted-foreground hover:underline">
+            Forgot password?
+          </Link>
           <Link href="/" className="text-center text-sm text-primary hover:underline">
             Back to storefront
           </Link>

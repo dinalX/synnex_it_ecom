@@ -365,6 +365,7 @@ model AdminUser {
   permissionsGranted    AdminPermission[]      @relation("PermissionsGrantedBy")
   paymentGatewayConfigs PaymentGatewayConfig[]
   createdHeroBanners    HeroBanner[]
+  passwordResetTokens   AdminPasswordResetToken[] @relation("AdminPasswordResetTokens")
 
   @@index([role])
   @@index([active])
@@ -383,6 +384,20 @@ model AdminPermission {
   @@unique([adminId, key])
   @@index([adminId])
   @@index([key])
+}
+
+model AdminPasswordResetToken {
+  id        String    @id @default(cuid())
+  adminId   String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  admin AdminUser @relation("AdminPasswordResetTokens", fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([expiresAt])
 }
 
 model PaymentGatewayConfig {

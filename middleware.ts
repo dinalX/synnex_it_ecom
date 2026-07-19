@@ -40,7 +40,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
-  if (pathname.startsWith("/admin/login")) {
+  if (
+    pathname.startsWith("/admin/login") ||
+    pathname.startsWith("/admin/forgot-password") ||
+    pathname.startsWith("/admin/reset-password")
+  ) {
     return NextResponse.next();
   }
 
