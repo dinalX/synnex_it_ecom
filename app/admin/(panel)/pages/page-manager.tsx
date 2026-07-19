@@ -135,7 +135,7 @@ export function PageManager({ pages }: { pages: PageContent[] }) {
                   <TableCell className="font-medium">{page.title}</TableCell>
                   <TableCell className="max-w-xs truncate text-sm text-muted-foreground">{page.summary}</TableCell>
                   <TableCell>
-                    <Badge className={page.published ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-700"}>
+                    <Badge className={page.published ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"}>
                       {page.published ? "Published" : "Draft"}
                     </Badge>
                   </TableCell>

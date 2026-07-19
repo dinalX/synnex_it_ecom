@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/admin/theme-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -148,6 +149,7 @@ export function AdminSidebarNav({
                   Notifications
                 </Link>
               </DropdownMenuItem>
+              <ThemeToggle />
               <DropdownMenuSeparator />
               {/*
                 The <form> lives outside the DropdownMenuItem/asChild merge

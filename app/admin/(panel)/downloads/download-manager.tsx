@@ -137,7 +137,7 @@ export function DownloadManager({ downloads }: { downloads: DriverDownload[] }) 
                   <TableCell className="text-sm text-muted-foreground">{download.os}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">v{download.version}</TableCell>
                   <TableCell>
-                    <Badge className={download.published ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-700"}>
+                    <Badge className={download.published ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"}>
                       {download.published ? "Published" : "Draft"}
                     </Badge>
                   </TableCell>

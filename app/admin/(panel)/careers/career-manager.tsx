@@ -146,7 +146,7 @@ export function CareerManager({ jobs }: { jobs: JobPost[] }) {
                   <TableCell className="text-sm text-muted-foreground">{job.location}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{job.type}</TableCell>
                   <TableCell>
-                    <Badge className={job.published ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-700"}>
+                    <Badge className={job.published ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"}>
                       {job.published ? "Published" : "Draft"}
                     </Badge>
                   </TableCell>

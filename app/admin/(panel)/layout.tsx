@@ -6,7 +6,7 @@ export default function AdminPanelLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="admin-shell">
+    <main className="admin-shell bg-background text-foreground">
       <AdminSidebar />
       {children}
     </main>
