@@ -9,17 +9,6 @@ type Category = {
   name: string;
 };
 
-const solutionItems = [
-  { label: "POS Solution", href: "/services/pos" },
-  { label: "Barcode Solution", href: "/services/barcode" },
-  { label: "Biometrics & Security", href: "/services/security" },
-];
-
-const supportItems = [
-  { label: "Software Drivers", href: "/downloads" },
-  { label: "Careers", href: "/careers" },
-];
-
 interface MobileMenuProps {
   onClose: () => void;
 }
@@ -53,7 +42,7 @@ export function MobileMenu({ onClose }: MobileMenuProps) {
   return (
     <div id="mobile-menu" ref={panelRef} className="mobile-menu-panel" role="dialog" aria-modal={true} aria-label="Mobile menu">
       <div className="mobile-menu-section">
-        <strong>Products</strong>
+        <strong>Categories</strong>
         {categories.map((cat) => (
           <Link
             key={cat.slug}
@@ -65,20 +54,10 @@ export function MobileMenu({ onClose }: MobileMenuProps) {
         ))}
       </div>
       <div className="mobile-menu-section">
-        <strong>Solutions</strong>
-        {solutionItems.map((item) => (
-          <Link key={item.href} href={item.href} onClick={onClose}>
-            {item.label}
-          </Link>
-        ))}
-      </div>
-      <div className="mobile-menu-section">
-        <strong>Support</strong>
-        {supportItems.map((item) => (
-          <Link key={item.href} href={item.href} onClick={onClose}>
-            {item.label}
-          </Link>
-        ))}
+        <Link href="/products" onClick={onClose}>All Products</Link>
+        <Link href="/pages/about" onClick={onClose}>About Us</Link>
+        <Link href="/contact" onClick={onClose}>Contact Us</Link>
+        <Link href="/careers" onClick={onClose}>Careers</Link>
       </div>
       <Link href="/account" className="mobile-menu-login" onClick={onClose}>
         My Account

@@ -2284,6 +2284,17 @@ del {
   line-height: 1.75;
 }
 
+/* Renders PageContent.body (admin-authored HTML, e.g. About Us) */
+.page-content-body {
+  display: flex;
+  max-width: 760px;
+  flex-direction: column;
+  gap: 16px;
+  color: #4d5a6e;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
 .info-grid,
 .management-grid {
   display: grid;
