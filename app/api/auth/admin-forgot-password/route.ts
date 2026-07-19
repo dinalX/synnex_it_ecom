@@ -20,27 +20,43 @@ export async function POST(request: Request) {
     return errorResponse("Email is required", 400);
   }
 
+  // Both branches below are wrapped so the response is identical (status,
+  // body, and roughly constant time) whether or not `email` matches an
+  // active admin — a real timing gap or an unhandled exception on the
+  // "found" path would otherwise let an attacker distinguish valid admin
+  // emails from invalid ones.
+  const started = Date.now();
   const admin = await prisma.adminUser.findUnique({ where: { email } });
 
   if (admin && admin.active) {
-    await prisma.adminPasswordResetToken.deleteMany({ where: { adminId: admin.id, usedAt: null } });
+    try {
+      await prisma.adminPasswordResetToken.deleteMany({ where: { adminId: admin.id, usedAt: null } });
 
-    const { token, tokenHash } = generateResetToken();
-    await prisma.adminPasswordResetToken.create({
-      data: {
-        adminId: admin.id,
-        tokenHash,
-        expiresAt: new Date(Date.now() + 60 * 60 * 1000),
-      },
-    });
+      const { token, tokenHash } = generateResetToken();
+      await prisma.adminPasswordResetToken.create({
+        data: {
+          adminId: admin.id,
+          tokenHash,
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+        },
+      });
 
-    const resetUrl = `${siteConfig.url}/admin/reset-password?token=${token}`;
-    await sendEmail({
-      to: admin.email,
-      subject: "Reset your Synnex admin password",
-      text: `Reset your password: ${resetUrl}\n\nThis link expires in 1 hour. If you didn't request this, ignore this email.`,
-      html: `<p>Reset your password: <a href="${resetUrl}">${resetUrl}</a></p><p>This link expires in 1 hour. If you didn't request this, ignore this email.</p>`,
-    });
+      const resetUrl = `${siteConfig.url}/admin/reset-password?token=${token}`;
+      await sendEmail({
+        to: admin.email,
+        subject: "Reset your Synnex admin password",
+        text: `Reset your password: ${resetUrl}\n\nThis link expires in 1 hour. If you didn't request this, ignore this email.`,
+        html: `<p>Reset your password: <a href="${resetUrl}">${resetUrl}</a></p><p>This link expires in 1 hour. If you didn't request this, ignore this email.</p>`,
+      });
+    } catch (e) {
+      console.error("Failed to process admin password reset request", e);
+    }
+  }
+
+  const MIN_RESPONSE_MS = 200;
+  const elapsed = Date.now() - started;
+  if (elapsed < MIN_RESPONSE_MS) {
+    await new Promise((resolve) => setTimeout(resolve, MIN_RESPONSE_MS - elapsed));
   }
 
   return jsonResponse({ message: GENERIC_MESSAGE });
