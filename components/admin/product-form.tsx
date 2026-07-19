@@ -120,7 +120,7 @@ export function ProductForm({ categories, initialData, onSuccess }: ProductFormP
   return (
     <form action={handleSubmit} onSubmit={handleFormSubmit} className="flex flex-col gap-6">
       {error && (
-        <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
+        <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-950 dark:text-red-400">{error}</p>
       )}
 
       <div className="flex flex-col gap-4">

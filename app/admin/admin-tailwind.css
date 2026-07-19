@@ -121,3 +121,17 @@
 }
 
 @custom-variant dark (&:where([data-admin-theme="dark"], [data-admin-theme="dark"] *));
+
+/*
+ * .admin-shell's own background (app/globals.css — out of bounds for
+ * this admin-only stylesheet to edit) is a plain, unlayered rule.
+ * Unlayered CSS always outranks anything declared inside @layer
+ * (Tailwind's utilities included), so the bg-background utility class
+ * on the same element can never override it, no matter how the two
+ * stylesheets happen to be ordered. This rule is also unlayered, but
+ * strictly more specific (an attribute selector plus a class, vs. just
+ * a class), so it wins on specificity alone regardless of import order.
+ */
+[data-admin-theme="dark"] .admin-shell {
+  background: var(--admin-background);
+}

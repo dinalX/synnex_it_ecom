@@ -41,10 +41,10 @@ export default async function AdminLoginPage({
             </p>
           </div>
           {params.error ? (
-            <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">Invalid admin credentials.</p>
+            <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-950 dark:text-red-400">Invalid admin credentials.</p>
           ) : null}
           {params.reset ? (
-            <p className="rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">Password updated — log in with your new password.</p>
+            <p className="rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">Password updated — log in with your new password.</p>
           ) : null}
           <form action="/api/auth/login" method="post" className="flex flex-col gap-4">
             <input type="hidden" name="role" value="admin" />
