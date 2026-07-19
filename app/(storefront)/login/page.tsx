@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { LockKeyhole } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -38,7 +37,6 @@ export default async function LoginPage({
           </label>
           <button className="primary-action" type="submit">Continue</button>
         </form>
-        <Link href="/admin/login" className="auth-link">Admin login</Link>
       </section>
     </main>
   );
