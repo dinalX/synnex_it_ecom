@@ -331,10 +331,6 @@ img {
   font-weight: 900;
 }
 
-.mobile-menu {
-  display: none;
-}
-
 .mobile-menu-panel {
   display: none;
 }
@@ -366,6 +362,93 @@ img {
   border-top: 1px solid var(--line);
   color: var(--brand);
   font-weight: 800;
+}
+
+/* Mobile bottom navigation — replaces the top bar's hamburger/cart icons on
+   mobile (see .desktop-icon and site-header.tsx); hidden entirely at the
+   same 980px breakpoint the desktop nav takes over at. */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .mobile-bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 55;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 60px;
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--white);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -4px 20px rgba(17, 24, 39, 0.08);
+  }
+}
+
+.mobile-bottom-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+}
+
+.mobile-bottom-nav-item:hover,
+.mobile-bottom-nav-item:focus-visible {
+  color: var(--ink);
+}
+
+.mobile-bottom-nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: grid;
+  min-width: 18px;
+  height: 18px;
+  place-items: center;
+  border-radius: 999px;
+  padding: 0 4px;
+  background: var(--brand);
+  color: var(--white);
+  font-size: 0.65rem;
+  font-weight: 900;
+}
+
+.mobile-bottom-search-panel {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(100% + 8px);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(17, 24, 39, 0.12), 0 2px 8px rgba(17, 24, 39, 0.06);
+}
+
+.mobile-bottom-search-panel form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+}
+
+.mobile-bottom-search-panel input {
+  flex: 1;
+  height: 42px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 0.95rem;
+  color: var(--ink);
+  min-width: 0;
 }
 
 .category-pill {
@@ -1366,6 +1449,32 @@ a.hero-visual {
 
 .product-stock.out-of-stock {
   color: var(--muted);
+}
+
+/* Mobile product cards: image, name, price (+ discount badge on the image)
+   only — category/rating badges, description, installment line, stock line,
+   and the Add to Cart button all drop, and the card becomes a plain
+   tap-through to the product page instead of a buy-here surface. */
+@media (max-width: 640px) {
+  .product-category-badge,
+  .product-rating-badge,
+  .product-card-desc,
+  .product-installment,
+  .product-stock,
+  .add-to-cart {
+    display: none;
+  }
+
+  .product-card-body {
+    grid-template-rows: auto auto;
+    min-height: 0;
+    gap: 4px;
+    padding: 10px 12px 12px;
+  }
+
+  .product-card-title-wrap {
+    min-height: 0;
+  }
 }
 
 /* Quick view: button revealed on card hover/focus, dialog reuses the cart
@@ -3190,6 +3299,14 @@ del {
   color: var(--white);
 }
 
+/* Clears the fixed .mobile-bottom-nav (60px) so the last footer line isn't
+   hidden behind it; must come after the padding shorthand above to win. */
+@media (max-width: 980px) {
+  .site-footer {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+}
+
 .footer-brand p {
   max-width: 520px;
   color: #cbd5e1;
@@ -4084,10 +4201,6 @@ del {
 @media (max-width: 980px) {
   .desktop-nav {
     display: none;
-  }
-
-  .mobile-menu {
-    display: inline-flex;
   }
 
   .mobile-menu-panel {

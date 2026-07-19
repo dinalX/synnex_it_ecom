@@ -39,7 +39,7 @@ export function HeaderActions({ totalItems, onOpenCart, isCartOpen }: HeaderActi
         <LogIn size={19} />
       </Link>
       <button
-        className="icon-button cart-button"
+        className="icon-button cart-button desktop-icon"
         onClick={onOpenCart}
         aria-label="Open cart"
         aria-haspopup="dialog"

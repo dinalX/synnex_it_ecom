@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
 import { CartDrawer } from "@/components/cart-drawer";
 import { useCart } from "@/components/cart-provider";
 import { HeaderSearch } from "@/components/header-search";
 import { HeaderActions } from "@/components/header-actions";
 import { MobileMenu } from "@/components/mobile-menu";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { NavDropdown, ProductsDropdown, SupportDropdown } from "@/components/nav-dropdown";
 import { useHoverDropdown } from "@/components/use-hover-dropdown";
 
@@ -47,21 +47,17 @@ export function SiteHeader() {
           <div className="top-row-right">
             <HeaderSearch />
             <HeaderActions totalItems={totalItems} onOpenCart={openCart} isCartOpen={isCartOpen} />
-            <button
-              id="mobile-menu-toggle"
-              className={"icon-button mobile-menu" + (mobileOpen ? " active" : "")}
-              onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label={mobileOpen ? "Close menu" : "Open menu"}
-              aria-expanded={mobileOpen}
-              aria-controls="mobile-menu"
-            >
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
           </div>
         </div>
 
         {mobileOpen && <MobileMenu onClose={() => setMobileOpen(false)} />}
       </header>
+      <MobileBottomNav
+        totalItems={totalItems}
+        onOpenCart={openCart}
+        menuOpen={mobileOpen}
+        onToggleMenu={() => setMobileOpen((open) => !open)}
+      />
       <CartDrawer />
     </>
   );
