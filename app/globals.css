@@ -222,6 +222,7 @@ img {
   gap: 24px;
   width: max-content;
   min-width: 700px;
+  max-width: calc(100vw - 200px);
   padding: 16px 20px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -3061,6 +3062,13 @@ del {
 
 .download-card {
   grid-template-columns: auto 1fr auto;
+}
+
+@media (max-width: 640px) {
+  .job-card,
+  .download-card {
+    grid-template-columns: 1fr;
+  }
 }
 
 .management-card strong {
