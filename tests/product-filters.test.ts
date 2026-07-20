@@ -32,7 +32,7 @@ test("subcategory narrows results after category resolution", () => {
   const where = buildProductWhereInput({
     search: "scanner",
     category: { id: "cat_1", name: "Barcode Solution" },
-    subcategory: { id: "sub_1" },
+    subcategory: { name: "Barcode Scanners" },
   });
 
   assert.deepEqual(where, {
@@ -50,7 +50,7 @@ test("subcategory narrows results after category resolution", () => {
           { category: "Barcode Solution" },
         ],
       },
-      { categoryId: "sub_1" },
+      { category: "Barcode Scanners" },
     ],
   });
 });

@@ -14,12 +14,12 @@ export async function fetchProducts(params?: {
   const skip = (page - 1) * limit;
 
   let categoryFilter: { id: string; name: string } | null = null;
-  let subcategoryFilter: { id: string } | null = null;
+  let subcategoryFilter: { name: string } | null = null;
 
   if (params?.subcategory) {
     const sub = await prisma.productCategory.findUnique({ where: { slug: params.subcategory } });
     if (sub) {
-      subcategoryFilter = { id: sub.id };
+      subcategoryFilter = { name: sub.name };
     }
   }
 

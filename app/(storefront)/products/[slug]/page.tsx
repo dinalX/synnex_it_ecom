@@ -6,7 +6,7 @@ import { Star, CheckCircle2, ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { AddProductButton } from "@/components/add-product-button";
 import { ProductGallery } from "@/components/product-gallery";
-import { fetchProduct, fetchProducts } from "@/lib/data";
+import { fetchProduct } from "@/lib/data";
 import { formatCurrency } from "@/lib/api-client";
 import { siteConfig } from "@/lib/site";
 import { prisma } from "@/lib/db";
@@ -58,10 +58,24 @@ export default async function ProductPage({
       ? [{ id: "main", url: product.image, alt: product.name }, ...galleryImages]
       : galleryImages;
 
-  const { products: allProducts } = await fetchProducts({});
-  const sameCategory = allProducts.filter((item) => item.category === product.category && item.id !== product.id);
-  const otherProducts = allProducts.filter((item) => item.category !== product.category && item.id !== product.id);
-  const related = [...sameCategory, ...otherProducts].slice(0, 4);
+  const relatedInclude = { categoryRef: true, images: { orderBy: { sortOrder: "asc" as const } } };
+  const sameCategory = await prisma.product.findMany({
+    where: { published: true, category: product.category, id: { not: product.id } },
+    include: relatedInclude,
+    orderBy: { rating: "desc" },
+    take: 4,
+  });
+  const related = sameCategory.length < 4
+    ? [
+        ...sameCategory,
+        ...(await prisma.product.findMany({
+          where: { published: true, category: { not: product.category }, id: { not: product.id } },
+          include: relatedInclude,
+          orderBy: { rating: "desc" },
+          take: 4 - sameCategory.length,
+        })),
+      ]
+    : sameCategory;
 
   const specs = product.specs.split(",").map((s: string) => s.trim()).filter(Boolean);
 

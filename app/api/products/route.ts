@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   const { skip, take } = getPagination(page, limit);
 
   let categoryFilter: { id: string; name: string } | null = null;
-  let subcategoryFilter: { id: string } | null = null;
+  let subcategoryFilter: { name: string } | null = null;
 
   if (category) {
     const cat = await prisma.productCategory.findUnique({ where: { slug: category } });
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   if (subcategory) {
     const sub = await prisma.productCategory.findUnique({ where: { slug: subcategory } });
     if (sub) {
-      subcategoryFilter = { id: sub.id };
+      subcategoryFilter = { name: sub.name };
     }
   }
 

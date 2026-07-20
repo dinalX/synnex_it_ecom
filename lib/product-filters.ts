@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client";
 
 type ProductCategoryFilter = { id: string; name: string };
-type ProductSubcategoryFilter = { id: string };
+type ProductSubcategoryFilter = { name: string };
 
 export function buildProductWhereInput({
   search,
@@ -34,7 +34,11 @@ export function buildProductWhereInput({
   }
 
   if (subcategory) {
-    andClauses.push({ categoryId: subcategory.id });
+    // Product.categoryId always stores the top-level parent category's id
+    // (see prisma/seed.ts and app/admin/(panel)/products/actions.ts) — a
+    // subcategory's own id is never stored on Product. Product.category
+    // holds the subcategory's name instead, so that's what narrows here.
+    andClauses.push({ category: subcategory.name });
   }
 
   if (andClauses.length > 0) {
