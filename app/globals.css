@@ -1346,6 +1346,7 @@ a.hero-visual {
   z-index: 2;
   border-radius: 999px;
   padding: 4px 8px;
+  background: rgba(17, 17, 17, 0.72);
   color: var(--white);
   font-size: 0.65rem;
   font-weight: 850;
@@ -1354,6 +1355,7 @@ a.hero-visual {
   max-width: calc(100% - 50px);
   overflow: hidden;
   text-overflow: ellipsis;
+  backdrop-filter: blur(4px);
 }
 
 .product-rating-badge {
@@ -3740,11 +3742,6 @@ del {
 
 .newsletter-form button:hover {
   background: var(--brand-hover);
-}
-
-/* Product card accent border */
-.product-card {
-  border-top: 3px solid var(--accent, var(--green));
 }
 
 /* Status badges */

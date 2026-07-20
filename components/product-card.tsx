@@ -46,7 +46,7 @@ export function ProductCard({ product }: { product: Product }) {
           height={560}
           sizes="(max-width: 640px) 50vw, (max-width: 1100px) 33vw, 25vw"
         />
-        <span className="product-category-badge" style={{ backgroundColor: product.accent }}>
+        <span className="product-category-badge">
           {product.category}
         </span>
         {discount > 0 && (
