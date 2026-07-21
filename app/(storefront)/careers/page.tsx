@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowUpRight, BriefcaseBusiness, MapPin } from "lucide-react";
 import { careerPosts } from "@/lib/content";
 import { prisma } from "@/lib/db";
+import { JobCardItem } from "@/components/job-card-item";
 
 export const metadata: Metadata = {
   title: "Careers",
@@ -31,9 +30,10 @@ export default async function CareersPage() {
         location: job.location,
         type: job.type,
         summary: job.summary,
+        description: job.description || job.summary,
         requirements: splitRequirements(job.requirements),
       }))
-    : careerPosts;
+    : careerPosts.map((job) => ({ ...job, description: job.summary }));
 
   return (
     <main className="simple-page">
@@ -47,32 +47,7 @@ export default async function CareersPage() {
 
       <section className="jobs-list">
         {jobList.map((job) => (
-          <article className="job-card" id={job.slug} key={job.slug}>
-            <div>
-              <p className="eyebrow">{job.department}</p>
-              <h2>{job.title}</h2>
-              <p>{job.summary}</p>
-              <div className="job-meta">
-                <span>
-                  <MapPin size={16} />
-                  {job.location}
-                </span>
-                <span>
-                  <BriefcaseBusiness size={16} />
-                  {job.type}
-                </span>
-              </div>
-            </div>
-            <ul>
-              {job.requirements.map((requirement) => (
-                <li key={requirement}>{requirement}</li>
-              ))}
-            </ul>
-            <Link href="mailto:careers@synnex.lk" className="secondary-action">
-              Apply
-              <ArrowUpRight size={16} />
-            </Link>
-          </article>
+          <JobCardItem job={job} summary={job.summary} key={job.slug} />
         ))}
       </section>
     </main>

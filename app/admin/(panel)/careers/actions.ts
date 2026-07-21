@@ -13,14 +13,15 @@ function readJobPostFields(formData: FormData) {
   const location = ((formData.get("location") as string) || "").trim();
   const type = ((formData.get("type") as string) || "").trim();
   const summary = ((formData.get("summary") as string) || "").trim();
+  const description = ((formData.get("description") as string) || "").trim();
   const requirements = ((formData.get("requirements") as string) || "").trim();
   const published = formData.get("published") === "on";
 
-  if (!title || !department || !location || !type || !summary || !requirements) {
+  if (!title || !department || !location || !type || !summary || !description || !requirements) {
     throw new Error("All fields are required");
   }
 
-  return { title, department, location, type, summary, requirements, published };
+  return { title, department, location, type, summary, description, requirements, published };
 }
 
 export async function createJobPost(formData: FormData) {

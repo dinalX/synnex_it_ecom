@@ -641,10 +641,30 @@ model JobPost {
   location     String
   type         String
   summary      String
+  description  String   @default("")
   requirements String
   published    Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  applications JobApplication[]
+}
+
+model JobApplication {
+  id        String   @id @default(cuid())
+  jobPostId String
+  name      String
+  email     String
+  phone     String?
+  message   String?
+  ipAddress String
+  createdAt DateTime @default(now())
+
+  jobPost JobPost @relation(fields: [jobPostId], references: [id], onDelete: Cascade)
+
+  @@index([jobPostId])
+  @@index([ipAddress])
+  @@index([createdAt])
 }
 
 model DriverDownload {

@@ -48,11 +48,23 @@ type JobPost = {
   location: string;
   type: string;
   summary: string;
+  description: string;
   requirements: string;
   published: boolean;
 };
 
-export function CareerManager({ jobs }: { jobs: JobPost[] }) {
+type JobApplication = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  message: string | null;
+  ipAddress: string;
+  createdAt: Date;
+  jobPost: { title: string };
+};
+
+export function CareerManager({ jobs, applications }: { jobs: JobPost[]; applications: JobApplication[] }) {
   const router = useRouter();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<JobPost | null>(null);
@@ -175,6 +187,48 @@ export function CareerManager({ jobs }: { jobs: JobPost[] }) {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">{applications.length} applications (rate-limited to 1 per IP per week)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Applicant</TableHead>
+                <TableHead>Job</TableHead>
+                <TableHead>Contact</TableHead>
+                <TableHead>Message</TableHead>
+                <TableHead>IP</TableHead>
+                <TableHead>Applied</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {applications.map((app) => (
+                <TableRow key={app.id}>
+                  <TableCell className="font-medium">{app.name}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{app.jobPost.title}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    <div>{app.email}</div>
+                    {app.phone && <div>{app.phone}</div>}
+                  </TableCell>
+                  <TableCell className="max-w-[240px] truncate text-sm text-muted-foreground">{app.message || "—"}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{app.ipAddress}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{new Date(app.createdAt).toLocaleDateString()}</TableCell>
+                </TableRow>
+              ))}
+              {applications.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-sm text-muted-foreground">
+                    No applications yet.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="max-h-[85vh] overflow-y-auto">
           <DialogHeader>
@@ -205,8 +259,12 @@ export function CareerManager({ jobs }: { jobs: JobPost[] }) {
               </Select>
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="job-summary">Summary</Label>
+              <Label htmlFor="job-summary">Summary (short, shown on the card)</Label>
               <Textarea id="job-summary" name="summary" required defaultValue={editingJob?.summary} rows={2} />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="job-description">Full description (shown in the apply popup)</Label>
+              <Textarea id="job-description" name="description" required defaultValue={editingJob?.description} rows={6} />
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="job-requirements">Requirements</Label>

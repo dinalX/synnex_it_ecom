@@ -1612,6 +1612,59 @@ a.hero-visual {
   }
 }
 
+.job-dialog {
+  position: relative;
+  width: min(600px, 100%);
+  max-height: min(680px, calc(100vh - 36px));
+  overflow-y: auto;
+  border-radius: 12px;
+  padding: 32px;
+  background: var(--white);
+  box-shadow: 0 24px 70px rgba(17, 24, 39, 0.35);
+}
+
+.job-dialog h2 {
+  margin: 6px 0 4px;
+  font-size: 1.6rem;
+  font-weight: 850;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.job-dialog-desc {
+  margin: 16px 0;
+  color: var(--muted);
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.job-dialog-requirements {
+  margin: 0 0 20px;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.job-dialog hr {
+  margin: 22px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.job-dialog .form-success {
+  border-radius: 8px;
+  padding: 14px;
+  background: #ecfdf5;
+  color: var(--green);
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .job-dialog {
+    padding: 20px;
+  }
+}
+
 /* Quick-link strip under the hero */
 .quick-links {
   display: grid;
@@ -3052,6 +3105,21 @@ del {
   gap: 22px;
   align-items: center;
   padding: 22px;
+}
+
+.job-card {
+  transition: box-shadow 150ms ease, transform 150ms ease;
+}
+
+.job-card:hover {
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.1);
+  transform: translateY(-1px);
+}
+
+.job-card h2 {
+  font-size: 1.3rem;
+  font-weight: 850;
+  letter-spacing: -0.01em;
 }
 
 .job-card ul {

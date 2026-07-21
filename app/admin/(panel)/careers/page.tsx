@@ -4,13 +4,18 @@ import { CareerManager } from "./career-manager";
 
 export default async function AdminCareersPage() {
   await requireAdminPage("/admin/careers", "career.view");
-  const jobs = await prisma.jobPost.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const [jobs, applications] = await Promise.all([
+    prisma.jobPost.findMany({ orderBy: { createdAt: "desc" } }),
+    prisma.jobApplication.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      include: { jobPost: { select: { title: true } } },
+    }),
+  ]);
 
   return (
     <section className="admin-content-page">
-      <CareerManager jobs={jobs} />
+      <CareerManager jobs={jobs} applications={applications} />
     </section>
   );
 }
