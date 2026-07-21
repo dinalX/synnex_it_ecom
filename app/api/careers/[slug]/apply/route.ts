@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db";
 import { errorResponse, jsonResponse, validateBodySize, validateCSRF } from "@/lib/api";
+import { isLinkedInProfileUrl, isValidEmail, isValidHttpUrl } from "@/lib/form-validation";
+import { checkUrlReachable } from "@/lib/url-check";
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -32,8 +34,23 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
   const linkedinUrl = (body.linkedinUrl || "").trim() || null;
   const cvUrl = (body.cvUrl || "").trim();
   const message = (body.message || "").trim() || null;
+
   if (!name || !email) return errorResponse("Name and email are required");
+  if (!isValidEmail(email)) return errorResponse("Enter a valid email address");
+  if (linkedinUrl && !isLinkedInProfileUrl(linkedinUrl)) {
+    return errorResponse("Enter a valid LinkedIn profile URL (e.g. https://linkedin.com/in/your-name)");
+  }
   if (!cvUrl) return errorResponse("CV URL is required");
+  if (!isValidHttpUrl(cvUrl)) return errorResponse("Enter a valid CV URL starting with http:// or https://");
+
+  // Confirm the CV link actually resolves to something (a private/login-gated
+  // CV still counts — see checkUrlReachable). LinkedIn is format-validated only:
+  // it aggressively blocks server-side probes, so a fetch would give false
+  // negatives on genuine profile URLs.
+  const cvCheck = await checkUrlReachable(cvUrl);
+  if (!cvCheck.ok) {
+    return errorResponse(`We couldn't open your CV link — ${cvCheck.reason}. Please check it and try again.`);
+  }
 
   const ipAddress = getRequestIp(request);
   const recent = await prisma.jobApplication.findFirst({

@@ -1614,21 +1614,50 @@ a.hero-visual {
 
 .job-dialog {
   position: relative;
-  width: min(600px, 100%);
-  max-height: min(680px, calc(100vh - 36px));
-  overflow-y: auto;
-  border-radius: 12px;
-  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  width: min(640px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow: hidden;
+  border-radius: 14px;
   background: var(--white);
   box-shadow: 0 24px 70px rgba(17, 24, 39, 0.35);
 }
 
-.job-dialog h2 {
-  margin: 6px 0 4px;
-  font-size: 1.6rem;
+.job-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 0 0 auto;
+  padding: 22px clamp(20px, 4vw, 30px) 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--white);
+}
+
+.job-dialog-header h2 {
+  margin: 4px 0 0;
+  font-size: clamp(1.35rem, 4vw, 1.7rem);
   font-weight: 850;
   letter-spacing: -0.01em;
+  line-height: 1.15;
   color: var(--ink);
+}
+
+.job-dialog-close {
+  flex: 0 0 auto;
+  background: var(--white);
+  border-color: var(--line);
+}
+
+.job-dialog-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 18px clamp(20px, 4vw, 30px) clamp(22px, 4vw, 30px);
+}
+
+.job-dialog-body .job-meta {
+  margin-top: 0;
 }
 
 .job-dialog-desc {
@@ -1639,30 +1668,92 @@ a.hero-visual {
 }
 
 .job-dialog-requirements {
-  margin: 0 0 20px;
+  margin: 0 0 4px;
   padding-left: 20px;
   color: var(--muted);
   line-height: 1.8;
 }
 
-.job-dialog hr {
-  margin: 22px 0;
-  border: 0;
+.job-apply-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+  padding-top: 22px;
   border-top: 1px solid var(--line);
 }
 
-.job-dialog .form-success {
+.job-apply-form h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 850;
+  color: var(--ink);
+}
+
+.job-apply-form label {
+  display: grid;
+  gap: 6px;
+  color: #344256;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.job-apply-form .field-hint {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.job-apply-form .required-mark {
+  color: var(--orange);
+}
+
+.job-apply-form input,
+.job-apply-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 14px;
+  padding: 11px 12px;
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+}
+
+.job-apply-form input:focus,
+.job-apply-form textarea:focus {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+  border-color: var(--brand);
+}
+
+.job-apply-form input[aria-invalid="true"],
+.job-apply-form textarea[aria-invalid="true"] {
+  border-color: var(--orange);
+}
+
+.job-apply-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.job-apply-form .field-error {
+  color: var(--orange);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.job-apply-submit {
+  margin-top: 4px;
+  width: 100%;
+  justify-content: center;
+}
+
+.job-dialog .form-success {
+  margin-top: 22px;
+  border-radius: 8px;
+  padding: 16px;
   background: #ecfdf5;
   color: var(--green);
   font-weight: 800;
-}
-
-@media (max-width: 640px) {
-  .job-dialog {
-    padding: 20px;
-  }
 }
 
 /* Quick-link strip under the hero */
@@ -2635,10 +2726,13 @@ del {
 }
 
 .info-card h2,
+.info-card h3,
 .job-card h2,
 .download-card h2,
 .management-card h2 {
   margin: 18px 0 8px;
+  font-size: 1.05rem;
+  font-weight: 800;
 }
 
 .info-card p,
@@ -2647,6 +2741,36 @@ del {
 .management-card p {
   color: var(--muted);
   line-height: 1.6;
+}
+
+/* Combined services page: one section per service */
+.services-section {
+  padding: clamp(28px, 5vw, 48px) 0;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 96px;
+}
+
+.services-section-head {
+  max-width: 760px;
+  margin-bottom: 24px;
+}
+
+.services-section-head h2 {
+  margin: 6px 0 12px;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 850;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.services-section-head p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.services-section-head .hero-actions {
+  margin-top: 20px;
 }
 
 /* Products Page */

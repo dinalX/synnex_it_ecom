@@ -41,7 +41,7 @@ export function SiteHeader() {
               <NavDropdown
                 id="services"
                 label="Services"
-                href="/services/pos"
+                href="/services"
                 menuClassName="support-menu"
                 isOpen={openId === "services"}
                 onOpen={open}

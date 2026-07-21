@@ -46,5 +46,5 @@ export async function saveSettings(formData: FormData) {
 
   revalidatePath("/admin/settings");
   revalidatePath("/");
-  revalidatePath("/services/[slug]", "page");
+  revalidatePath("/services");
 }

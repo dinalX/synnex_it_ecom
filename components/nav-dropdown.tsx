@@ -106,9 +106,9 @@ export function ProductsDropdown() {
 
 export function ServicesDropdown() {
   const items = [
-    { label: "POS Solution", href: "/services/pos" },
-    { label: "Barcode Solution", href: "/services/barcode" },
-    { label: "Biometrics & Security", href: "/services/security" },
+    { label: "POS Solution", href: "/services#pos" },
+    { label: "Barcode Solution", href: "/services#barcode" },
+    { label: "Biometrics & Security", href: "/services#security" },
   ];
 
   return (

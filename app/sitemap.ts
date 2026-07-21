@@ -6,8 +6,7 @@ import { prisma } from "@/lib/db";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = await getSiteConfig();
-  const staticRoutes = ["", "/careers", "/checkout", "/downloads"];
-  const serviceRoutes = ["/services/pos", "/services/barcode", "/services/security"];
+  const staticRoutes = ["", "/services", "/careers", "/checkout", "/downloads"];
 
   let productRoutes: string[] = [];
   try {
@@ -29,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const careerRoutes = (jobs.length ? jobs : careerPosts).map((job) => `/careers#${job.slug}`);
   const downloadRoutes = (downloads.length ? downloads : driverDownloads).map((download) => `/downloads#${download.slug}`);
 
-  return [...staticRoutes, ...serviceRoutes, ...productRoutes, ...careerRoutes, ...downloadRoutes].map((route) => ({
+  return [...staticRoutes, ...productRoutes, ...careerRoutes, ...downloadRoutes].map((route) => ({
     url: `${site.url}${route}`,
     lastModified: new Date(),
     changeFrequency: route.includes("/products") ? "weekly" : "monthly",
