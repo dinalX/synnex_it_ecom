@@ -651,14 +651,16 @@ model JobPost {
 }
 
 model JobApplication {
-  id        String   @id @default(cuid())
-  jobPostId String
-  name      String
-  email     String
-  phone     String?
-  message   String?
-  ipAddress String
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  jobPostId   String
+  name        String
+  email       String
+  phone       String?
+  linkedinUrl String?
+  cvUrl       String
+  message     String?
+  ipAddress   String
+  createdAt   DateTime @default(now())
 
   jobPost JobPost @relation(fields: [jobPostId], references: [id], onDelete: Cascade)
 

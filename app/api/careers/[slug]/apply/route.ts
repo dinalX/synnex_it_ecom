@@ -19,7 +19,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
   const job = await prisma.jobPost.findUnique({ where: { slug } });
   if (!job || !job.published) return errorResponse("Job post not found", 404);
 
-  let body: { name?: string; email?: string; phone?: string; message?: string };
+  let body: { name?: string; email?: string; phone?: string; linkedinUrl?: string; cvUrl?: string; message?: string };
   try {
     body = await request.json();
   } catch {
@@ -29,8 +29,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
   const name = (body.name || "").trim();
   const email = (body.email || "").trim();
   const phone = (body.phone || "").trim() || null;
+  const linkedinUrl = (body.linkedinUrl || "").trim() || null;
+  const cvUrl = (body.cvUrl || "").trim();
   const message = (body.message || "").trim() || null;
   if (!name || !email) return errorResponse("Name and email are required");
+  if (!cvUrl) return errorResponse("CV URL is required");
 
   const ipAddress = getRequestIp(request);
   const recent = await prisma.jobApplication.findFirst({
@@ -41,7 +44,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
   }
 
   await prisma.jobApplication.create({
-    data: { jobPostId: job.id, name, email, phone, message, ipAddress },
+    data: { jobPostId: job.id, name, email, phone, linkedinUrl, cvUrl, message, ipAddress },
   });
 
   return jsonResponse({ success: true }, 201);

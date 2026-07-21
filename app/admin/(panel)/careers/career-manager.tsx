@@ -58,8 +58,9 @@ type JobApplication = {
   name: string;
   email: string;
   phone: string | null;
+  linkedinUrl: string | null;
+  cvUrl: string;
   message: string | null;
-  ipAddress: string;
   createdAt: Date;
   jobPost: { title: string };
 };
@@ -189,7 +190,7 @@ export function CareerManager({ jobs, applications }: { jobs: JobPost[]; applica
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">{applications.length} applications (rate-limited to 1 per IP per week)</CardTitle>
+          <CardTitle className="text-lg">{applications.length} applications (rate-limited to 1 per applicant per week)</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -198,8 +199,8 @@ export function CareerManager({ jobs, applications }: { jobs: JobPost[]; applica
                 <TableHead>Applicant</TableHead>
                 <TableHead>Job</TableHead>
                 <TableHead>Contact</TableHead>
+                <TableHead>Links</TableHead>
                 <TableHead>Message</TableHead>
-                <TableHead>IP</TableHead>
                 <TableHead>Applied</TableHead>
               </TableRow>
             </TableHeader>
@@ -212,8 +213,15 @@ export function CareerManager({ jobs, applications }: { jobs: JobPost[]; applica
                     <div>{app.email}</div>
                     {app.phone && <div>{app.phone}</div>}
                   </TableCell>
-                  <TableCell className="max-w-[240px] truncate text-sm text-muted-foreground">{app.message || "—"}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{app.ipAddress}</TableCell>
+                  <TableCell className="text-sm">
+                    <div className="flex flex-col gap-0.5">
+                      <a href={app.cvUrl} target="_blank" rel="noopener noreferrer" className="text-primary underline">CV</a>
+                      {app.linkedinUrl && (
+                        <a href={app.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-primary underline">LinkedIn</a>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="max-w-[220px] truncate text-sm text-muted-foreground">{app.message || "—"}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{new Date(app.createdAt).toLocaleDateString()}</TableCell>
                 </TableRow>
               ))}

@@ -22,6 +22,8 @@ export function JobDetailDialog({ job, onClose }: { job: JobDetail; onClose: () 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [cvUrl, setCvUrl] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -70,7 +72,7 @@ export function JobDetailDialog({ job, onClose }: { job: JobDetail; onClose: () 
       const res = await fetch(`/api/careers/${job.slug}/apply`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, message }),
+        body: JSON.stringify({ name, email, phone, linkedinUrl, cvUrl, message }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
@@ -164,6 +166,25 @@ export function JobDetailDialog({ job, onClose }: { job: JobDetail; onClose: () 
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+              />
+            </label>
+            <label>
+              LinkedIn URL (optional)
+              <input
+                type="url"
+                placeholder="https://linkedin.com/in/…"
+                value={linkedinUrl}
+                onChange={(e) => setLinkedinUrl(e.target.value)}
+              />
+            </label>
+            <label>
+              CV URL
+              <input
+                type="url"
+                required
+                placeholder="Link to your CV (Google Drive, Dropbox, etc.)"
+                value={cvUrl}
+                onChange={(e) => setCvUrl(e.target.value)}
               />
             </label>
             <label>
