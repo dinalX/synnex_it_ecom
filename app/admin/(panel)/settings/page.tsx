@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BarChart3, Globe, MessageCircle, Wallet } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { saveSettings } from "./actions";
 import { requireAdminPage } from "@/lib/admin-access";
@@ -7,6 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+
+function SectionIcon({ icon: Icon }: { icon: typeof Globe }) {
+  return (
+    <span className="flex h-9 w-9 items-center justify-center rounded-md bg-accent text-accent-foreground">
+      <Icon size={18} />
+    </span>
+  );
+}
 
 async function getCurrentSettings() {
   const keys = [
@@ -50,12 +59,13 @@ export default async function AdminSettingsPage() {
           </Button>
         </div>
 
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="text-lg">Tracking, payments, and site content</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form action={saveSettings} className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <form action={saveSettings} className="mt-6 flex flex-col gap-6">
+          <Card>
+            <CardHeader className="flex-row items-center gap-3">
+              <SectionIcon icon={Globe} />
+              <CardTitle className="text-lg">Site content</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="siteTitle">Site title</Label>
                 <Input
@@ -64,6 +74,19 @@ export default async function AdminSettingsPage() {
                   defaultValue={settings.siteTitle || "Synnex IT Solution - POS Hardware Sri Lanka"}
                 />
               </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="adminEmail">Admin email</Label>
+                <Input id="adminEmail" name="adminEmail" type="email" defaultValue={settings.adminEmail || "admin@synnex.lk"} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex-row items-center gap-3">
+              <SectionIcon icon={BarChart3} />
+              <CardTitle className="text-lg">Analytics &amp; tracking</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="googleTagId">Google Tag ID</Label>
                 <Input id="googleTagId" name="googleTagId" placeholder="G-XXXXXXXXXX" defaultValue={settings.googleTagId || ""} />
@@ -80,7 +103,7 @@ export default async function AdminSettingsPage() {
                 <Label htmlFor="metaCapiPixelId">Meta Conversions API pixel ID</Label>
                 <Input id="metaCapiPixelId" name="metaCapiPixelId" placeholder="1234567890" defaultValue={settings.metaCapiPixelId || ""} />
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 md:col-span-2">
                 <Label htmlFor="metaCapiAccessToken">Meta Conversions API access token</Label>
                 <Input
                   id="metaCapiAccessToken"
@@ -90,12 +113,17 @@ export default async function AdminSettingsPage() {
                   placeholder={capiTokenSaved ? "Token saved — enter a new value to replace it" : "EAAB..."}
                 />
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex-row items-center gap-3">
+              <SectionIcon icon={MessageCircle} />
+              <CardTitle className="text-lg">WhatsApp contact numbers</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="adminEmail">Admin email</Label>
-                <Input id="adminEmail" name="adminEmail" type="email" defaultValue={settings.adminEmail || "admin@synnex.lk"} />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="whatsappTechnicalNumber">WhatsApp number — technical support</Label>
+                <Label htmlFor="whatsappTechnicalNumber">Technical support</Label>
                 <Input
                   id="whatsappTechnicalNumber"
                   name="whatsappTechnicalNumber"
@@ -104,7 +132,7 @@ export default async function AdminSettingsPage() {
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="whatsappSalesNumber">WhatsApp number — sales / bulk orders</Label>
+                <Label htmlFor="whatsappSalesNumber">Sales / bulk orders</Label>
                 <Input
                   id="whatsappSalesNumber"
                   name="whatsappSalesNumber"
@@ -112,16 +140,26 @@ export default async function AdminSettingsPage() {
                   defaultValue={settings.whatsappSalesNumber || "94112559466"}
                 />
               </div>
-              <div className="flex flex-col gap-2 md:col-span-2">
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex-row items-center gap-3">
+              <SectionIcon icon={Wallet} />
+              <CardTitle className="text-lg">Payments</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="offlinePaymentNotes">Offline payment notes</Label>
                 <Textarea id="offlinePaymentNotes" name="offlinePaymentNotes" defaultValue={settings.offlinePaymentNotes || ""} />
               </div>
-              <div className="md:col-span-2">
-                <Button type="submit">Save settings</Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          <div>
+            <Button type="submit">Save settings</Button>
+          </div>
+        </form>
       </section>
   );
 }
