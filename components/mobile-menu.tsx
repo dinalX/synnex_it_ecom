@@ -54,6 +54,12 @@ export function MobileMenu({ onClose }: MobileMenuProps) {
         ))}
       </div>
       <div className="mobile-menu-section">
+        <strong>Services</strong>
+        <Link href="/services/pos" onClick={onClose}>POS Solution</Link>
+        <Link href="/services/barcode" onClick={onClose}>Barcode Solution</Link>
+        <Link href="/services/security" onClick={onClose}>Biometrics &amp; Security</Link>
+      </div>
+      <div className="mobile-menu-section">
         <Link href="/products" onClick={onClose}>All Products</Link>
         <Link href="/pages/about" onClick={onClose}>About Us</Link>
         <Link href="/contact" onClick={onClose}>Contact Us</Link>

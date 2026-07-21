@@ -104,11 +104,11 @@ export function ProductsDropdown() {
   );
 }
 
-export function SupportDropdown() {
+export function ServicesDropdown() {
   const items = [
-    { label: "Software Drivers", href: "/downloads" },
-    { label: "Careers", href: "/careers" },
-    { label: "Checkout", href: "/checkout" },
+    { label: "POS Solution", href: "/services/pos" },
+    { label: "Barcode Solution", href: "/services/barcode" },
+    { label: "Biometrics & Security", href: "/services/security" },
   ];
 
   return (
