@@ -4,6 +4,8 @@ import {
   Boxes,
   ChevronRight,
   CircleDollarSign,
+  MessageCircle,
+  Package,
   ShoppingCart,
 } from "lucide-react";
 import { prisma } from "@/lib/db";
@@ -28,11 +30,13 @@ async function getDashboardData() {
   const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
   const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
   const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
   const [
     orderCount, productCount, recentOrders, inventoryRows,
     thisMonthOrders, lastMonthOrders,
     thisMonthRevenue, lastMonthRevenue,
+    technicalWhatsappClicks, bulkWhatsappClicks,
   ] = await Promise.all([
     prisma.order.count(),
     prisma.product.count(),
@@ -49,6 +53,8 @@ async function getDashboardData() {
     prisma.order.count({ where: { createdAt: { gte: lastMonthStart, lte: lastMonthEnd } } }),
     prisma.order.aggregate({ _sum: { total: true }, where: { createdAt: { gte: thisMonthStart } } }),
     prisma.order.aggregate({ _sum: { total: true }, where: { createdAt: { gte: lastMonthStart, lte: lastMonthEnd } } }),
+    prisma.whatsappClick.count({ where: { kind: "technical", createdAt: { gte: thirtyDaysAgo } } }),
+    prisma.whatsappClick.count({ where: { kind: "bulk", createdAt: { gte: thirtyDaysAgo } } }),
   ]);
 
   const rev = thisMonthRevenue._sum.total || 0;
@@ -87,12 +93,13 @@ async function getDashboardData() {
       { label: "Processing", value: recentOrders.filter((o) => o.fulfillmentStatus === "Processing").length },
       { label: "Shipped", value: recentOrders.filter((o) => o.fulfillmentStatus === "Fulfilled").length },
     ],
+    whatsapp: { technical: technicalWhatsappClicks, bulk: bulkWhatsappClicks },
   };
 }
 
 export default async function AdminPage() {
   await requireAdminPage("/admin");
-  const { stats, orders, inventory, fulfillment } = await getDashboardData();
+  const { stats, orders, inventory, fulfillment, whatsapp } = await getDashboardData();
 
   return (
     <section className="admin-main" id="dashboard">
@@ -184,6 +191,33 @@ export default async function AdminPage() {
                     </div>
                   </div>
                 ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                  <MessageCircle size={20} />
+                </span>
+                <CardTitle className="text-sm font-medium text-muted-foreground">WhatsApp: Technical support</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <strong className="text-2xl font-bold text-foreground">{whatsapp.technical}</strong>
+                <p className="mt-1 text-xs text-muted-foreground">clicks, last 30 days</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                  <Package size={20} />
+                </span>
+                <CardTitle className="text-sm font-medium text-muted-foreground">WhatsApp: Bulk order inquiries</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <strong className="text-2xl font-bold text-foreground">{whatsapp.bulk}</strong>
+                <p className="mt-1 text-xs text-muted-foreground">clicks, last 30 days</p>
               </CardContent>
             </Card>
           </div>

@@ -714,3 +714,13 @@ model HomeSectionItem {
   @@index([section])
   @@index([sortOrder])
 }
+
+model WhatsappClick {
+  id        String   @id @default(cuid())
+  kind      String
+  service   String
+  createdAt DateTime @default(now())
+
+  @@index([kind])
+  @@index([createdAt])
+}

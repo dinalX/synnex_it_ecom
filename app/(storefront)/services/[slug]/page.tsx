@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, BadgeCheck, PackageCheck, Settings } from "lucide-react";
+import { BadgeCheck, PackageCheck, Settings } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
+import { WhatsappCtaButtons } from "@/components/whatsapp-cta-buttons";
 import { fetchProducts } from "@/lib/data";
 import { siteConfig } from "@/lib/site";
+import { isWhatsappClickService } from "@/lib/whatsapp-click";
 
 const services: Record<string, { title: string; summary: string; category: string; points: string[] }> = {
   pos: {
@@ -53,7 +55,7 @@ export default async function ServicePage({
 }) {
   const { slug } = await params;
   const service = services[slug];
-  if (!service) notFound();
+  if (!service || !isWhatsappClickService(slug)) notFound();
 
   const { products: matchingProducts } = await fetchProducts({ category: slug });
 
@@ -64,10 +66,7 @@ export default async function ServicePage({
         <h1>{service.title}</h1>
         <p>{service.summary}</p>
         <div className="hero-actions">
-          <Link href="/checkout" className="primary-action">
-            Request quotation
-            <ArrowRight size={18} />
-          </Link>
+          <WhatsappCtaButtons service={slug} title={service.title} />
           <Link href="/downloads" className="secondary-action">Drivers and support</Link>
         </div>
       </section>
