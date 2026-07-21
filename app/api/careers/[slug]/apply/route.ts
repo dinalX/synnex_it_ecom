@@ -30,13 +30,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
 
   const name = (body.name || "").trim();
   const email = (body.email || "").trim();
-  const phone = (body.phone || "").trim() || null;
+  const phone = (body.phone || "").trim();
   const linkedinUrl = (body.linkedinUrl || "").trim() || null;
   const cvUrl = (body.cvUrl || "").trim();
   const message = (body.message || "").trim() || null;
 
   if (!name || !email) return errorResponse("Name and email are required");
   if (!isValidEmail(email)) return errorResponse("Enter a valid email address");
+  if (!phone) return errorResponse("Phone number is required");
   if (linkedinUrl && !isLinkedInProfileUrl(linkedinUrl)) {
     return errorResponse("Enter a valid LinkedIn profile URL (e.g. https://linkedin.com/in/your-name)");
   }

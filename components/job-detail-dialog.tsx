@@ -15,7 +15,7 @@ export interface JobDetail {
   requirements: string[];
 }
 
-type FieldErrors = Partial<Record<"name" | "email" | "linkedinUrl" | "cvUrl", string>>;
+type FieldErrors = Partial<Record<"name" | "email" | "phone" | "linkedinUrl" | "cvUrl", string>>;
 
 export function JobDetailDialog({ job, onClose }: { job: JobDetail; onClose: () => void }) {
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -73,6 +73,7 @@ export function JobDetailDialog({ job, onClose }: { job: JobDetail; onClose: () 
     if (!name.trim()) errors.name = "Please enter your full name.";
     if (!email.trim()) errors.email = "Please enter your email.";
     else if (!isValidEmail(email)) errors.email = "Enter a valid email address.";
+    if (!phone.trim()) errors.phone = "Please enter your phone number.";
     if (linkedinUrl.trim() && !isLinkedInProfileUrl(linkedinUrl)) {
       errors.linkedinUrl = "Enter a valid LinkedIn profile URL (linkedin.com/in/…).";
     }
@@ -192,12 +193,14 @@ export function JobDetailDialog({ job, onClose }: { job: JobDetail; onClose: () 
                 {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
               </label>
               <label>
-                Phone <span className="field-hint">(optional)</span>
+                Phone <span className="required-mark">*</span>
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                  aria-invalid={fieldErrors.phone ? "true" : undefined}
                 />
+                {fieldErrors.phone && <span className="field-error">{fieldErrors.phone}</span>}
               </label>
               <label>
                 LinkedIn URL <span className="field-hint">(optional)</span>

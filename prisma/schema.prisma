@@ -655,7 +655,7 @@ model JobApplication {
   jobPostId   String
   name        String
   email       String
-  phone       String?
+  phone       String
   linkedinUrl String?
   cvUrl       String
   message     String?

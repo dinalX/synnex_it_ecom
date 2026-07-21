@@ -57,7 +57,7 @@ type JobApplication = {
   id: string;
   name: string;
   email: string;
-  phone: string | null;
+  phone: string;
   linkedinUrl: string | null;
   cvUrl: string;
   message: string | null;
@@ -211,7 +211,7 @@ export function CareerManager({ jobs, applications }: { jobs: JobPost[]; applica
                   <TableCell className="text-sm text-muted-foreground">{app.jobPost.title}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">
                     <div>{app.email}</div>
-                    {app.phone && <div>{app.phone}</div>}
+                    <div>{app.phone}</div>
                   </TableCell>
                   <TableCell className="text-sm">
                     <div className="flex flex-col gap-0.5">
