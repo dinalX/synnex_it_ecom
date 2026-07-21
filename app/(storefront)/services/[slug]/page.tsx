@@ -2,29 +2,24 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BadgeCheck, PackageCheck, Settings } from "lucide-react";
-import { ProductCard } from "@/components/product-card";
 import { WhatsappCtaButtons } from "@/components/whatsapp-cta-buttons";
-import { fetchProducts } from "@/lib/data";
 import { siteConfig } from "@/lib/site";
 import { isWhatsappClickService } from "@/lib/whatsapp-click";
 
-const services: Record<string, { title: string; summary: string; category: string; points: string[] }> = {
+const services: Record<string, { title: string; summary: string; points: string[] }> = {
   pos: {
     title: "POS Solution",
     summary: "Complete retail and restaurant billing setups with POS terminals, receipt printers, cash drawers, scanners, installation, and support.",
-    category: "POS Solution",
     points: ["Billing counters", "Restaurants and pharmacies", "Hardware installation"],
   },
   barcode: {
     title: "Barcode Solution",
     summary: "Barcode scanning, labeling, and stock handling hardware for retail counters, stores, and warehouse teams.",
-    category: "Barcode Solution",
     points: ["Wireless scanners", "Stock room workflows", "Retail checkout speed"],
   },
   security: {
     title: "Biometrics & Security",
     summary: "Attendance, access control, smart locks, and secure storage solutions for offices and retail operations.",
-    category: "Biometrics & Security",
     points: ["Fingerprint attendance", "Access control", "Secure storage"],
   },
 };
@@ -57,8 +52,6 @@ export default async function ServicePage({
   const service = services[slug];
   if (!service || !isWhatsappClickService(slug)) notFound();
 
-  const { products: matchingProducts } = await fetchProducts({ category: slug });
-
   return (
     <main className="simple-page">
       <section className="simple-hero">
@@ -82,20 +75,6 @@ export default async function ServicePage({
             </article>
           );
         })}
-      </section>
-
-      <section className="product-section related-products">
-        <div className="section-heading compact">
-          <div>
-            <p className="eyebrow">Related products</p>
-            <h2>{service.title} catalog</h2>
-          </div>
-        </div>
-        <div className="product-grid three">
-          {matchingProducts.map((product) => (
-            <ProductCard product={product} key={product.id} />
-          ))}
-        </div>
       </section>
     </main>
   );
