@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import {
   Bell,
@@ -17,6 +17,8 @@ import {
   LayoutList,
   LogOut,
   Package,
+  PanelLeftClose,
+  PanelLeftOpen,
   Settings,
   User,
   UsersRound,
@@ -63,6 +65,27 @@ export function AdminSidebarNav({
 }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    // Reads state a pre-hydration inline script (app/admin/layout.tsx) already
+    // set on <html> from localStorage before first paint — see theme-toggle.tsx
+    // for why this is a mount-time sync rather than derived state.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCollapsed(document.documentElement.getAttribute("data-sidebar-collapsed") === "true");
+  }, []);
+
+  function toggleCollapsed() {
+    const next = !collapsed;
+    setCollapsed(next);
+    if (next) {
+      document.documentElement.setAttribute("data-sidebar-collapsed", "true");
+      localStorage.setItem("adminSidebarCollapsed", "true");
+    } else {
+      document.documentElement.removeAttribute("data-sidebar-collapsed");
+      localStorage.setItem("adminSidebarCollapsed", "false");
+    }
+  }
 
   const isSuperAdmin = role === "SuperAdmin";
   const visibleItems = navItems.filter(
@@ -83,19 +106,40 @@ export function AdminSidebarNav({
         <div className="admin-mobile-overlay" onClick={() => setMobileOpen(false)} />
       )}
 
+      <button
+        type="button"
+        className="admin-sidebar-expand-button fixed left-3 top-3 z-[60] h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-muted-foreground shadow-sm hover:text-foreground"
+        onClick={toggleCollapsed}
+        aria-label="Show sidebar"
+      >
+        <PanelLeftOpen size={18} />
+      </button>
+
       <aside
         className={cn(
-          "sticky top-0 flex h-screen w-[250px] flex-col overflow-y-auto border-r border-border bg-card p-6",
+          "admin-sidebar-aside sticky top-0 flex h-screen w-[250px] flex-col overflow-y-auto border-r border-border bg-card p-6",
           "max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-[100] max-md:shadow-lg max-md:transition-transform max-md:duration-300 max-md:-translate-x-full",
           mobileOpen && "max-md:translate-x-0",
         )}
       >
-        <Link href="/" className="mb-8 flex items-center gap-2 text-lg font-bold text-foreground no-underline">
-          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-sm text-primary-foreground">
-            S
-          </span>
-          <span>Synnex</span>
-        </Link>
+        <div className="mb-8 flex items-center justify-between gap-2">
+          <Link href="/" className="flex items-center gap-2 text-lg font-bold text-foreground no-underline">
+            <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-sm text-primary-foreground">
+              S
+            </span>
+            <span>Synnex</span>
+          </Link>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground max-md:hidden"
+            onClick={toggleCollapsed}
+            aria-label="Hide sidebar"
+          >
+            <PanelLeftClose size={18} />
+          </Button>
+        </div>
         <nav aria-label="Admin navigation" className="flex flex-col gap-1">
           {visibleItems.map((item) => {
             const Icon = item.icon;

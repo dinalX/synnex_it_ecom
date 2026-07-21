@@ -8,6 +8,9 @@ const THEME_SCRIPT = `
     if (theme === "dark") {
       document.documentElement.setAttribute("data-admin-theme", "dark");
     }
+    if (localStorage.getItem("adminSidebarCollapsed") === "true") {
+      document.documentElement.setAttribute("data-sidebar-collapsed", "true");
+    }
   } catch (e) {}
 })();
 `;

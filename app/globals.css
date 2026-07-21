@@ -2454,6 +2454,37 @@ del {
   grid-template-columns: 250px 1fr;
   min-height: 100vh;
   background: #f2f5f8;
+  transition: grid-template-columns 200ms ease;
+}
+
+.admin-sidebar-aside {
+  transition: width 200ms ease, padding 200ms ease;
+}
+
+.admin-sidebar-expand-button {
+  display: none;
+}
+
+/* Desktop-only: the sidebar's mobile show/hide (max-width: 767px) already
+   uses transform + a fixed overlay, so this collapse feature — a separate
+   concern — only applies above that breakpoint to avoid the two fighting
+   over the same <aside>. */
+@media (min-width: 768px) {
+  html[data-sidebar-collapsed="true"] .admin-shell {
+    grid-template-columns: 0px 1fr;
+  }
+
+  html[data-sidebar-collapsed="true"] .admin-sidebar-aside {
+    width: 0;
+    min-width: 0;
+    padding: 0;
+    border-right-width: 0;
+    overflow: hidden;
+  }
+
+  html[data-sidebar-collapsed="true"] .admin-sidebar-expand-button {
+    display: inline-flex;
+  }
 }
 
 .simple-page,
