@@ -3,8 +3,6 @@
 import { MessageCircle, Package } from "lucide-react";
 import type { WhatsappClickService } from "@/lib/whatsapp-click";
 
-const WHATSAPP_NUMBER = "94112559466";
-
 function track(kind: "technical" | "bulk", service: WhatsappClickService) {
   fetch("/api/whatsapp-click", {
     method: "POST",
@@ -13,11 +11,18 @@ function track(kind: "technical" | "bulk", service: WhatsappClickService) {
   }).catch(() => {});
 }
 
-export function WhatsappCtaButtons({ service, title }: { service: WhatsappClickService; title: string }) {
+interface WhatsappCtaButtonsProps {
+  service: WhatsappClickService;
+  title: string;
+  technicalNumber: string;
+  salesNumber: string;
+}
+
+export function WhatsappCtaButtons({ service, title, technicalNumber, salesNumber }: WhatsappCtaButtonsProps) {
   return (
     <>
       <a
-        href={`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(`Hi, I need technical support for ${title}.`)}`}
+        href={`https://api.whatsapp.com/send?phone=${technicalNumber}&text=${encodeURIComponent(`Hi, I need technical support for ${title}.`)}`}
         target="_blank"
         rel="noopener noreferrer"
         className="primary-action"
@@ -27,7 +32,7 @@ export function WhatsappCtaButtons({ service, title }: { service: WhatsappClickS
         WhatsApp Technical Support
       </a>
       <a
-        href={`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(`Hi, I'd like a bulk order quote for ${title}.`)}`}
+        href={`https://api.whatsapp.com/send?phone=${salesNumber}&text=${encodeURIComponent(`Hi, I'd like a bulk order quote for ${title}.`)}`}
         target="_blank"
         rel="noopener noreferrer"
         className="secondary-action"

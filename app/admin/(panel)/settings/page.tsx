@@ -18,6 +18,8 @@ async function getCurrentSettings() {
     "metaCapiAccessTokenEnc",
     "adminEmail",
     "offlinePaymentNotes",
+    "whatsappTechnicalNumber",
+    "whatsappSalesNumber",
   ];
   const settings = await prisma.siteSetting.findMany({
     where: { key: { in: keys } },
@@ -91,6 +93,24 @@ export default async function AdminSettingsPage() {
               <div className="flex flex-col gap-2">
                 <Label htmlFor="adminEmail">Admin email</Label>
                 <Input id="adminEmail" name="adminEmail" type="email" defaultValue={settings.adminEmail || "admin@synnex.lk"} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="whatsappTechnicalNumber">WhatsApp number — technical support</Label>
+                <Input
+                  id="whatsappTechnicalNumber"
+                  name="whatsappTechnicalNumber"
+                  placeholder="94112559466"
+                  defaultValue={settings.whatsappTechnicalNumber || "94112559466"}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="whatsappSalesNumber">WhatsApp number — sales / bulk orders</Label>
+                <Input
+                  id="whatsappSalesNumber"
+                  name="whatsappSalesNumber"
+                  placeholder="94112559466"
+                  defaultValue={settings.whatsappSalesNumber || "94112559466"}
+                />
               </div>
               <div className="flex flex-col gap-2 md:col-span-2">
                 <Label htmlFor="offlinePaymentNotes">Offline payment notes</Label>

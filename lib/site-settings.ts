@@ -9,10 +9,17 @@ export type SiteSettings = typeof siteConfig & {
   facebookPixelId: string;
   adminEmail: string;
   offlinePaymentNotes: string;
+  whatsappTechnicalNumber: string;
+  whatsappSalesNumber: string;
 };
 
+const DEFAULT_WHATSAPP_NUMBER = "94112559466";
+
 export const getSiteConfig = cache(async (): Promise<SiteSettings> => {
-  const keys = ["siteTitle", "googleTagId", "gtmContainerId", "facebookPixelId", "adminEmail", "offlinePaymentNotes"];
+  const keys = [
+    "siteTitle", "googleTagId", "gtmContainerId", "facebookPixelId", "adminEmail", "offlinePaymentNotes",
+    "whatsappTechnicalNumber", "whatsappSalesNumber",
+  ];
   const settings = await prisma.siteSetting.findMany({
     where: { key: { in: keys } },
   });
@@ -30,6 +37,8 @@ export const getSiteConfig = cache(async (): Promise<SiteSettings> => {
     facebookPixelId: map.facebookPixelId || process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || "",
     adminEmail: map.adminEmail || process.env.ADMIN_EMAIL || "",
     offlinePaymentNotes: map.offlinePaymentNotes || "",
+    whatsappTechnicalNumber: map.whatsappTechnicalNumber || DEFAULT_WHATSAPP_NUMBER,
+    whatsappSalesNumber: map.whatsappSalesNumber || DEFAULT_WHATSAPP_NUMBER,
   };
 });
 

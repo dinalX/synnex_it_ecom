@@ -16,6 +16,8 @@ export async function saveSettings(formData: FormData) {
     metaCapiPixelId: (formData.get("metaCapiPixelId") as string || "").trim(),
     adminEmail: formData.get("adminEmail") as string || "",
     offlinePaymentNotes: formData.get("offlinePaymentNotes") as string || "",
+    whatsappTechnicalNumber: (formData.get("whatsappTechnicalNumber") as string || "").trim(),
+    whatsappSalesNumber: (formData.get("whatsappSalesNumber") as string || "").trim(),
   };
 
   const operations = Object.entries(entries).map(([key, value]) =>
@@ -44,4 +46,5 @@ export async function saveSettings(formData: FormData) {
 
   revalidatePath("/admin/settings");
   revalidatePath("/");
+  revalidatePath("/services/[slug]", "page");
 }

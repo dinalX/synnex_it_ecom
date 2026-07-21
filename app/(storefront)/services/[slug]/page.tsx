@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { BadgeCheck, PackageCheck, Settings } from "lucide-react";
 import { WhatsappCtaButtons } from "@/components/whatsapp-cta-buttons";
 import { siteConfig } from "@/lib/site";
+import { getSiteConfig } from "@/lib/site-settings";
 import { isWhatsappClickService } from "@/lib/whatsapp-click";
 
 const services: Record<string, { title: string; summary: string; points: string[] }> = {
@@ -52,6 +53,8 @@ export default async function ServicePage({
   const service = services[slug];
   if (!service || !isWhatsappClickService(slug)) notFound();
 
+  const config = await getSiteConfig();
+
   return (
     <main className="simple-page">
       <section className="simple-hero">
@@ -59,7 +62,12 @@ export default async function ServicePage({
         <h1>{service.title}</h1>
         <p>{service.summary}</p>
         <div className="hero-actions">
-          <WhatsappCtaButtons service={slug} title={service.title} />
+          <WhatsappCtaButtons
+            service={slug}
+            title={service.title}
+            technicalNumber={config.whatsappTechnicalNumber}
+            salesNumber={config.whatsappSalesNumber}
+          />
           <Link href="/downloads" className="secondary-action">Drivers and support</Link>
         </div>
       </section>
