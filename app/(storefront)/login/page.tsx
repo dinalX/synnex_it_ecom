@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirect?: string; error?: string }>;
+  searchParams: Promise<{ redirect?: string; error?: string; reset?: string }>;
 }) {
   const params = await searchParams;
   const redirectTo = params.redirect || "/checkout";
@@ -25,6 +25,7 @@ export default async function LoginPage({
         <h1>Login before checkout</h1>
         <p>Use your email to continue with an offline payment request or quotation.</p>
         {params.error ? <div className="form-error">Enter a valid email and password.</div> : null}
+        {params.reset ? <div className="form-notice">Password updated — log in with your new password.</div> : null}
         <form action="/api/auth/login" method="post" className="auth-form">
           <input type="hidden" name="role" value="user" />
           <input type="hidden" name="redirectTo" value={redirectTo} />
@@ -38,9 +39,14 @@ export default async function LoginPage({
           </label>
           <button className="primary-action" type="submit">Continue</button>
         </form>
-        <Link href={`/register?redirect=${encodeURIComponent(redirectTo)}`} className="auth-link">
-          New customer? Create an account
-        </Link>
+        <div className="auth-links">
+          <Link href="/forgot-password" className="auth-link">
+            Forgot password?
+          </Link>
+          <Link href={`/register?redirect=${encodeURIComponent(redirectTo)}`} className="auth-link">
+            New customer? Create an account
+          </Link>
+        </div>
       </section>
     </main>
   );

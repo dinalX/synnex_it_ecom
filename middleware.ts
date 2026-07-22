@@ -75,5 +75,7 @@ export const config = {
     "/api/admin/:path*",
     "/api/auth/admin-forgot-password",
     "/api/auth/admin-reset-password",
+    "/api/auth/customer-forgot-password",
+    "/api/auth/customer-reset-password",
   ],
 };

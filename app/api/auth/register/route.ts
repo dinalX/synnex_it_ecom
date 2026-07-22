@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { errorResponse, validateBodySize, validateCSRF } from "@/lib/api";
 import { hashPassword } from "@/lib/password";
+import { validateNewPassword } from "@/lib/password-policy";
 import { createSessionRedirect } from "@/lib/session-response";
 
 async function parseRequest(request: Request) {
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
   const name = (body.name || "").trim();
   const phone = body.phone?.trim() || null;
   const password = body.password || "";
-  const confirmPassword = body.confirmPassword;
+  const confirmPassword = body.confirmPassword || "";
   const redirectTo = safeRedirect(body.redirectTo || "/checkout");
 
   const fail = (error: string) =>
@@ -38,8 +39,8 @@ export async function POST(request: Request) {
     );
 
   if (!email || !name) return fail("invalid");
-  if (password.length < 6) return fail("weak");
-  if (confirmPassword !== undefined && confirmPassword !== password) return fail("mismatch");
+  const policyError = validateNewPassword(password, confirmPassword);
+  if (policyError) return fail(policyError.includes("match") ? "mismatch" : "weak");
 
   const existing = await prisma.customer.findUnique({ where: { email } });
   if (existing) return fail("exists");

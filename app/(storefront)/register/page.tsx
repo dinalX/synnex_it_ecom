@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const ERROR_MESSAGES: Record<string, string> = {
   invalid: "Enter your name and email to continue.",
-  weak: "Password must be at least 6 characters.",
+  weak: "Password must be at least 8 characters.",
   mismatch: "Passwords do not match.",
   exists: "An account with this email already exists — log in instead.",
 };
@@ -49,11 +49,11 @@ export default async function RegisterPage({
           </label>
           <label>
             Password
-            <input name="password" type="password" placeholder="Minimum 6 characters" minLength={6} required />
+            <input name="password" type="password" placeholder="Minimum 8 characters" minLength={8} required />
           </label>
           <label>
             Confirm password
-            <input name="confirmPassword" type="password" placeholder="Re-enter your password" minLength={6} required />
+            <input name="confirmPassword" type="password" placeholder="Re-enter your password" minLength={8} required />
           </label>
           <button className="primary-action" type="submit">Create account</button>
         </form>

@@ -3756,11 +3756,29 @@ del {
   font-weight: 800;
 }
 
+.form-notice {
+  border-radius: 8px;
+  padding: 12px;
+  background: #ecfdf5;
+  color: var(--green);
+  font-weight: 800;
+}
+
 .auth-link {
   display: inline-block;
   margin-top: 18px;
   color: var(--brand);
   font-weight: 850;
+}
+
+.auth-links {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.auth-links .auth-link {
+  margin-top: 0;
 }
 
 .checkout-panel {
