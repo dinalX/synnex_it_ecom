@@ -33,9 +33,7 @@ export async function SiteFooter() {
       <div className="footer-columns">
         <nav aria-label="Footer solutions">
           <h2>Solutions</h2>
-          <Link href="/services#pos">POS Solution</Link>
-          <Link href="/services#barcode">Barcode Solution</Link>
-          <Link href="/services#security">Biometrics & Security</Link>
+          <Link href="/services">Services</Link>
           <Link href="/products">All Products</Link>
         </nav>
         <nav aria-label="Footer support">

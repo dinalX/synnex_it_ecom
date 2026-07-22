@@ -8,7 +8,7 @@ import { HeaderSearch } from "@/components/header-search";
 import { HeaderActions } from "@/components/header-actions";
 import { MobileMenu } from "@/components/mobile-menu";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
-import { NavDropdown, ProductsDropdown, ServicesDropdown } from "@/components/nav-dropdown";
+import { NavDropdown, ProductsDropdown } from "@/components/nav-dropdown";
 import { useHoverDropdown } from "@/components/use-hover-dropdown";
 
 export function SiteHeader() {
@@ -38,19 +38,7 @@ export function SiteHeader() {
               >
                 <ProductsDropdown />
               </NavDropdown>
-              <NavDropdown
-                id="services"
-                label="Services"
-                href="/services"
-                menuClassName="support-menu"
-                isOpen={openId === "services"}
-                onOpen={open}
-                onScheduleClose={scheduleClose}
-                onCancelClose={cancelClose}
-                onToggle={toggle}
-              >
-                <ServicesDropdown />
-              </NavDropdown>
+              <Link href="/services">Services</Link>
               <Link href="/downloads">Drivers</Link>
               <Link href="/careers">Careers</Link>
             </nav>

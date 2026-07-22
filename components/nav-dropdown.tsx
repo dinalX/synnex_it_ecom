@@ -103,21 +103,3 @@ export function ProductsDropdown() {
     </div>
   );
 }
-
-export function ServicesDropdown() {
-  const items = [
-    { label: "POS Solution", href: "/services#pos" },
-    { label: "Barcode Solution", href: "/services#barcode" },
-    { label: "Biometrics & Security", href: "/services#security" },
-  ];
-
-  return (
-    <>
-      {items.map((item) => (
-        <Link key={item.href} role="menuitem" href={item.href}>
-          {item.label}
-        </Link>
-      ))}
-    </>
-  );
-}
