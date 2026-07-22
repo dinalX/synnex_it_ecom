@@ -109,13 +109,6 @@ export async function getOrder(id: string) {
   return apiFetch<{ order: Order }>(`/api/orders/${id}`);
 }
 
-export async function registerCustomer(data: { email: string; name: string; phone?: string; password: string }) {
-  return apiFetch<{ customer: { id: string; email: string; name: string } }>("/api/auth/register", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-}
-
 export async function getSession() {
   return apiFetch<{ user: { id?: string; email: string; name: string; role: string } | null; admin: { id?: string; email: string; name: string; role: string } | null }>("/api/auth/me");
 }
