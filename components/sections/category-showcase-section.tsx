@@ -8,6 +8,7 @@ import {
   Printer,
 } from "lucide-react";
 import { fetchCategories } from "@/lib/data";
+import { CategoryBottomSheet } from "@/components/category-bottom-sheet";
 
 // Maps the icon name stored on each seeded parent category to a lucide icon.
 const iconByName: Record<string, React.ComponentType<{ size?: number }>> = {
@@ -59,6 +60,7 @@ export async function CategoryShowcaseSection() {
           );
         })}
       </div>
+      <CategoryBottomSheet categories={categories} />
     </section>
   );
 }
