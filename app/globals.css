@@ -158,6 +158,18 @@ img {
   font-size: 1rem;
 }
 
+.brand-logo-mark {
+  display: none;
+  height: 32px;
+  width: 32px;
+}
+
+.brand-logo-full {
+  display: block;
+  height: 28px;
+  width: auto;
+}
+
 .desktop-nav {
   display: flex;
   align-items: center;
@@ -2009,7 +2021,7 @@ a.hero-visual {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  padding: 24px clamp(18px, 4vw, 56px) 0;
+  padding: clamp(32px, 5vw, 56px) clamp(18px, 4vw, 56px);
 }
 
 /* Redundant with the mobile category bottom sheet (see .category-sheet-*
@@ -4800,6 +4812,14 @@ del {
   }
 
   .brand span:last-child {
+    display: none;
+  }
+
+  .brand-logo-mark {
+    display: block;
+  }
+
+  .brand-logo-full {
     display: none;
   }
 

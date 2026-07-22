@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import {
-  BriefcaseBusiness,
-  Download,
   LogIn,
   ShoppingBag,
 } from "lucide-react";
@@ -17,20 +15,6 @@ interface HeaderActionsProps {
 export function HeaderActions({ totalItems, onOpenCart, isCartOpen }: HeaderActionsProps) {
   return (
     <div className="header-actions">
-      <Link
-        href="/downloads"
-        className="icon-button desktop-icon"
-        aria-label="Open driver downloads"
-      >
-        <Download size={19} />
-      </Link>
-      <Link
-        href="/careers"
-        className="icon-button desktop-icon"
-        aria-label="Open careers"
-      >
-        <BriefcaseBusiness size={19} />
-      </Link>
       <Link
         href="/login"
         className="icon-button desktop-icon"

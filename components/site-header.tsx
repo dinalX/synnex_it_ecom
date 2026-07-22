@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { CartDrawer } from "@/components/cart-drawer";
 import { useCart } from "@/components/cart-provider";
@@ -22,8 +23,22 @@ export function SiteHeader() {
         <div className="top-row">
           <div className="top-row-left">
             <Link href="/" className="brand" aria-label="Synnex Commerce home">
-              <span className="brand-mark">S</span>
-              <span>Synnex</span>
+              <Image
+                src="/logo-mark.png"
+                alt="Synnex"
+                width={32}
+                height={32}
+                className="brand-logo-mark"
+                priority
+              />
+              <Image
+                src="/logo.png"
+                alt="Synnex IT Solution"
+                width={164}
+                height={32}
+                className="brand-logo-full"
+                priority
+              />
             </Link>
             <nav className="desktop-nav" aria-label="Primary navigation">
               <NavDropdown
