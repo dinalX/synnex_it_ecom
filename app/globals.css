@@ -231,7 +231,8 @@ img {
   z-index: 100;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-6px);
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top left;
   transition: opacity 180ms ease, transform 180ms ease, visibility 180ms;
   pointer-events: none;
 }
@@ -239,26 +240,24 @@ img {
 .nav-dropdown.open .dropdown-menu {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
   pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown-menu {
+    transition: opacity 120ms ease, visibility 120ms;
+    transform: none;
+  }
+
+  .nav-dropdown.open .dropdown-menu {
+    transform: none;
+  }
 }
 
 .support-menu {
   min-width: 180px;
   grid-template-columns: 1fr;
-}
-
-.dropdown-menu > div {
-  display: grid;
-  gap: 0;
-}
-
-.dropdown-menu > div > a:first-child {
-  font-weight: 700;
-  color: var(--ink);
-  padding: 8px 12px;
-  margin-bottom: 6px;
-  border-bottom: 1px solid var(--line);
 }
 
 .dropdown-menu a {
@@ -272,6 +271,76 @@ img {
 .dropdown-menu a:hover {
   background: #f0f0f2;
   color: var(--ink);
+}
+
+/* Products megamenu: erase this wrapper from grid layout so each category
+   group becomes a direct item of .dropdown-menu's own grid/gap above. */
+.products-dropdown {
+  display: contents;
+}
+
+.products-dropdown-group {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  opacity: 0;
+  transform: translateY(-4px);
+  animation: dropdown-column-in 200ms ease forwards;
+  animation-delay: calc(var(--stagger, 0) * 35ms);
+}
+
+.products-dropdown-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  color: var(--ink);
+  padding: 8px 12px 4px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+.products-dropdown-title-arrow {
+  opacity: 0;
+  transform: translateX(-3px);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.products-dropdown-title:hover .products-dropdown-title-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.products-dropdown-subs {
+  display: grid;
+  gap: 1px;
+}
+
+.products-dropdown-sub {
+  transition: background 120ms ease, color 120ms ease, transform 120ms ease;
+}
+
+.products-dropdown-sub:hover {
+  transform: translateX(3px);
+}
+
+@keyframes dropdown-column-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .products-dropdown-group {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .products-dropdown-sub:hover {
+    transform: none;
+  }
 }
 
 .header-actions {

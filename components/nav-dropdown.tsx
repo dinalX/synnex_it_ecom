@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Subcategory = { id: string; slug: string; name: string };
@@ -85,15 +85,25 @@ export function ProductsDropdown() {
   }, []);
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "8px", padding: "8px 0" }}>
-      {categories.map((cat) => (
-        <div key={cat.slug}>
-          <Link role="menuitem" href={`/products?category=${cat.slug}`} style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--ink)", padding: "6px 12px 4px", display: "block" }}>
+    <div className="products-dropdown">
+      {categories.map((cat, index) => (
+        <div
+          key={cat.slug}
+          className="products-dropdown-group"
+          style={{ ["--stagger" as string]: index }}
+        >
+          <Link role="menuitem" href={`/products?category=${cat.slug}`} className="products-dropdown-title">
             {cat.name}
+            <ChevronRight size={13} className="products-dropdown-title-arrow" />
           </Link>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "2px 8px", padding: "0 12px 8px" }}>
+          <div className="products-dropdown-subs">
             {(cat.children || []).map((sub) => (
-              <Link key={sub.slug} role="menuitem" href={`/products?category=${cat.slug}&subcategory=${sub.slug}`} style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
+              <Link
+                key={sub.slug}
+                role="menuitem"
+                href={`/products?category=${cat.slug}&subcategory=${sub.slug}`}
+                className="products-dropdown-sub"
+              >
                 {sub.name}
               </Link>
             ))}
