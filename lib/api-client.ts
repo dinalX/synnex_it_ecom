@@ -164,30 +164,6 @@ export async function adminDeleteProduct(id: string) {
   });
 }
 
-export async function adminGetCategories() {
-  return apiFetch<{ categories: Category[]; tree: Category[] }>("/api/admin/categories");
-}
-
-export async function adminCreateCategory(data: Partial<Category>) {
-  return apiFetch<{ category: Category }>("/api/admin/categories", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-}
-
-export async function adminUpdateCategory(id: string, data: Partial<Category>) {
-  return apiFetch<{ category: Category }>(`/api/admin/categories/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-  });
-}
-
-export async function adminDeleteCategory(id: string) {
-  return apiFetch<{ success: boolean }>(`/api/admin/categories/${id}`, {
-    method: "DELETE",
-  });
-}
-
 export async function adminGetOrders(params?: { status?: string; page?: number; limit?: number }) {
   const sp = new URLSearchParams();
   if (params?.status) sp.set("status", params.status);
