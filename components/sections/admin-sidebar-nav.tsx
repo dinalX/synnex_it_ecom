@@ -14,6 +14,8 @@ import {
   FileText,
   GalleryHorizontal,
   Gauge,
+  History,
+  Layers,
   LayoutList,
   LogOut,
   Package,
@@ -40,6 +42,7 @@ const navItems: { label: string; icon: typeof Gauge; href: string; permission?: 
   { label: "Overview", icon: Gauge, href: "/admin" },
   { label: "Orders", icon: ClipboardList, href: "/admin/orders", permission: "order.view" },
   { label: "Products", icon: Package, href: "/admin/products", permission: "product.view" },
+  { label: "Categories", icon: Layers, href: "/admin/categories", permission: "category.view" },
   { label: "Hero Banners", icon: GalleryHorizontal, href: "/admin/hero-banners", permission: "hero-banner.view" },
   { label: "Home Sections", icon: LayoutList, href: "/admin/home-sections", permission: "home-section.view" },
   { label: "Content", icon: FileText, href: "/admin/content" },
@@ -48,6 +51,7 @@ const navItems: { label: string; icon: typeof Gauge; href: string; permission?: 
   { label: "Pages", icon: Database, href: "/admin/pages", permission: "page.view" },
   { label: "Settings", icon: Settings, href: "/admin/settings", permission: "settings.view" },
   { label: "Team", icon: UsersRound, href: "/admin/team", permission: "admin.manage" },
+  { label: "Audit Log", icon: History, href: "/admin/audit-log", permission: "audit.view" },
 ];
 
 export function AdminSidebarNav({

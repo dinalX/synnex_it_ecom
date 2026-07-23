@@ -25,6 +25,7 @@ export const PERMISSIONS = [
   "hero-banner.manage",
   "home-section.view",
   "home-section.manage",
+  "audit.view",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -47,4 +48,5 @@ export const PERMISSION_GROUPS: { label: string; keys: Permission[] }[] = [
   { label: "Hero banners", keys: ["hero-banner.view", "hero-banner.manage"] },
   { label: "Home sections", keys: ["home-section.view", "home-section.manage"] },
   { label: "Team", keys: ["admin.manage"] },
+  { label: "Audit Log", keys: ["audit.view"] },
 ];

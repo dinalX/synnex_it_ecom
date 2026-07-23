@@ -3,10 +3,11 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { requireAdminAction } from "@/lib/admin-access";
+import { recordAuditLog } from "@/lib/audit-log";
 import { encryptSecret } from "@/lib/secrets";
 
 export async function saveSettings(formData: FormData) {
-  await requireAdminAction("settings.update");
+  const admin = await requireAdminAction("settings.update");
 
   const entries: Record<string, string> = {
     siteTitle: formData.get("siteTitle") as string || "",
@@ -43,6 +44,8 @@ export async function saveSettings(formData: FormData) {
   }
 
   await Promise.all(operations);
+
+  await recordAuditLog(admin, "settings.update", "SiteSetting", null, { keys: Object.keys(entries) });
 
   revalidatePath("/admin/settings");
   revalidatePath("/");

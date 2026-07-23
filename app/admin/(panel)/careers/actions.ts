@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/db";
 import { requireAdminAction } from "@/lib/admin-access";
+import { recordAuditLog } from "@/lib/audit-log";
 import { isPrismaUniqueError } from "@/lib/order-service";
 import { slugify } from "@/lib/slugify";
 
@@ -25,11 +26,12 @@ function readJobPostFields(formData: FormData) {
 }
 
 export async function createJobPost(formData: FormData) {
-  await requireAdminAction("career.manage");
+  const admin = await requireAdminAction("career.manage");
   const data = readJobPostFields(formData);
+  let created;
 
   try {
-    await prisma.jobPost.create({
+    created = await prisma.jobPost.create({
       data: { ...data, slug: slugify(data.title) },
     });
   } catch (e: unknown) {
@@ -39,16 +41,20 @@ export async function createJobPost(formData: FormData) {
     throw e;
   }
 
+  await recordAuditLog(admin, "career.create", "JobPost", created.id, { title: data.title });
+
   revalidatePath("/admin/careers");
   revalidatePath("/careers");
   return { success: true };
 }
 
 export async function updateJobPost(id: string, formData: FormData) {
-  await requireAdminAction("career.manage");
+  const admin = await requireAdminAction("career.manage");
   const data = readJobPostFields(formData);
 
   await prisma.jobPost.update({ where: { id }, data });
+
+  await recordAuditLog(admin, "career.update", "JobPost", id, { title: data.title });
 
   revalidatePath("/admin/careers");
   revalidatePath("/careers");
@@ -56,8 +62,10 @@ export async function updateJobPost(id: string, formData: FormData) {
 }
 
 export async function deleteJobPost(id: string) {
-  await requireAdminAction("career.manage");
+  const admin = await requireAdminAction("career.manage");
   await prisma.jobPost.delete({ where: { id } });
+
+  await recordAuditLog(admin, "career.delete", "JobPost", id);
 
   revalidatePath("/admin/careers");
   revalidatePath("/careers");
@@ -65,8 +73,10 @@ export async function deleteJobPost(id: string) {
 }
 
 export async function toggleJobPostPublished(id: string, published: boolean) {
-  await requireAdminAction("career.manage");
+  const admin = await requireAdminAction("career.manage");
   await prisma.jobPost.update({ where: { id }, data: { published } });
+
+  await recordAuditLog(admin, published ? "career.publish" : "career.unpublish", "JobPost", id);
 
   revalidatePath("/admin/careers");
   revalidatePath("/careers");

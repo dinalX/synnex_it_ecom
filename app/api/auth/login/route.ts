@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { errorResponse, validateBodySize, validateCSRF } from "@/lib/api";
 import { verifyPassword } from "@/lib/password";
 import { createSessionRedirect } from "@/lib/session-response";
+import { recordAuditLog } from "@/lib/audit-log";
 
 async function parseRequest(request: Request) {
   const contentType = request.headers.get("content-type") || "";
@@ -51,6 +52,8 @@ export async function POST(request: Request) {
       await prisma.adminUser.update({ where: { id: admin.id }, data: { passwordHash: verification.upgradedHash } });
     }
     await prisma.adminUser.update({ where: { id: admin.id }, data: { lastLoginAt: new Date() } });
+
+    await recordAuditLog({ id: admin.id }, "auth.login", "AdminUser", admin.id, { email });
 
     return createSessionRedirect(
       request,

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireAdminAction } from "@/lib/admin-access";
+import { recordAuditLog } from "@/lib/audit-log";
 import {
   isFulfillmentStatus,
   isOrderStatus,
@@ -11,7 +12,7 @@ import {
 } from "@/lib/order-status";
 
 export async function updateOrder(orderId: string, formData: FormData) {
-  await requireAdminAction("order.update");
+  const admin = await requireAdminAction("order.update");
 
   const data: Record<string, unknown> = {};
   const status = formData.get("status");
@@ -43,6 +44,8 @@ export async function updateOrder(orderId: string, formData: FormData) {
     where: { id: orderId },
     data,
   });
+
+  await recordAuditLog(admin, "order.update", "Order", orderId, data);
 
   revalidatePath(`/admin/orders/${orderId}`);
   revalidatePath("/admin/orders");
@@ -79,6 +82,8 @@ export async function reviewPaymentUpload(orderId: string, uploadId: string, for
       data: { paymentStatus },
     }),
   ]);
+
+  await recordAuditLog(admin, "order.paymentUpload.review", "PaymentUpload", uploadId, { orderId, status });
 
   revalidatePath(`/admin/orders/${orderId}`);
   revalidatePath("/admin/orders");

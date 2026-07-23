@@ -3,11 +3,12 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { requireAdminAction } from "@/lib/admin-access";
+import { recordAuditLog } from "@/lib/audit-log";
 import { isPrismaUniqueError } from "@/lib/order-service";
 import { slugify } from "@/lib/slugify";
 
 export async function createProduct(formData: FormData) {
-  await requireAdminAction("product.create");
+  const admin = await requireAdminAction("product.create");
 
   const name = formData.get("name") as string;
   const providedSlug = (formData.get("slug") as string | null)?.trim();
@@ -38,9 +39,10 @@ export async function createProduct(formData: FormData) {
 
   const slug = providedSlug ? slugify(providedSlug) : slugify(name);
 
+  let created;
   try {
     const last = await prisma.product.findFirst({ orderBy: { sortOrder: "desc" }, select: { sortOrder: true } });
-    await prisma.product.create({
+    created = await prisma.product.create({
       data: {
         name,
         slug,
@@ -66,12 +68,14 @@ export async function createProduct(formData: FormData) {
     throw e;
   }
 
+  await recordAuditLog(admin, "product.create", "Product", created.id, { name, slug });
+
   revalidatePath("/admin/products");
   return { success: true };
 }
 
 export async function updateProduct(id: string, formData: FormData) {
-  await requireAdminAction("product.update");
+  const admin = await requireAdminAction("product.update");
 
   const existing = await prisma.product.findUnique({ where: { id } });
   if (!existing) throw new Error("Product not found");
@@ -128,24 +132,28 @@ export async function updateProduct(id: string, formData: FormData) {
     throw e;
   }
 
+  await recordAuditLog(admin, "product.update", "Product", id, { name, slug });
+
   revalidatePath("/admin/products");
   revalidatePath(`/products/${slug}`);
   return { success: true };
 }
 
 export async function reorderProducts(orderedIds: string[]) {
-  await requireAdminAction("product.update");
+  const admin = await requireAdminAction("product.update");
 
   await prisma.$transaction(
     orderedIds.map((id, index) => prisma.product.update({ where: { id }, data: { sortOrder: index } })),
   );
+
+  await recordAuditLog(admin, "product.reorder", "Product", null, { count: orderedIds.length });
 
   revalidatePath("/admin/products");
   return { success: true };
 }
 
 export async function deleteProduct(id: string) {
-  await requireAdminAction("product.delete");
+  const admin = await requireAdminAction("product.delete");
 
   try {
     await prisma.product.delete({
@@ -154,6 +162,8 @@ export async function deleteProduct(id: string) {
   } catch (e) {
     throw new Error("Failed to delete product");
   }
+
+  await recordAuditLog(admin, "product.delete", "Product", id);
 
   revalidatePath("/admin/products");
   return { success: true };

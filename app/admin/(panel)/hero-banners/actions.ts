@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/db";
 import { requireAdminAction } from "@/lib/admin-access";
+import { recordAuditLog } from "@/lib/audit-log";
 import { isHeroBannerTheme } from "@/lib/hero-banner-theme";
 
 function readBannerFields(formData: FormData) {
@@ -40,9 +41,11 @@ export async function createHeroBanner(formData: FormData) {
   const admin = await requireAdminAction("hero-banner.manage");
   const data = readBannerFields(formData);
 
-  await prisma.heroBanner.create({
+  const created = await prisma.heroBanner.create({
     data: { ...data, createdById: admin.id },
   });
+
+  await recordAuditLog(admin, "hero-banner.create", "HeroBanner", created.id, { title: data.title });
 
   revalidatePath("/admin/hero-banners");
   revalidatePath("/");
@@ -50,10 +53,12 @@ export async function createHeroBanner(formData: FormData) {
 }
 
 export async function updateHeroBanner(id: string, formData: FormData) {
-  await requireAdminAction("hero-banner.manage");
+  const admin = await requireAdminAction("hero-banner.manage");
   const data = readBannerFields(formData);
 
   await prisma.heroBanner.update({ where: { id }, data });
+
+  await recordAuditLog(admin, "hero-banner.update", "HeroBanner", id, { title: data.title });
 
   revalidatePath("/admin/hero-banners");
   revalidatePath("/");
@@ -61,8 +66,10 @@ export async function updateHeroBanner(id: string, formData: FormData) {
 }
 
 export async function deleteHeroBanner(id: string) {
-  await requireAdminAction("hero-banner.manage");
+  const admin = await requireAdminAction("hero-banner.manage");
   await prisma.heroBanner.delete({ where: { id } });
+
+  await recordAuditLog(admin, "hero-banner.delete", "HeroBanner", id);
 
   revalidatePath("/admin/hero-banners");
   revalidatePath("/");
@@ -70,8 +77,10 @@ export async function deleteHeroBanner(id: string) {
 }
 
 export async function toggleHeroBannerActive(id: string, active: boolean) {
-  await requireAdminAction("hero-banner.manage");
+  const admin = await requireAdminAction("hero-banner.manage");
   await prisma.heroBanner.update({ where: { id }, data: { active } });
+
+  await recordAuditLog(admin, active ? "hero-banner.activate" : "hero-banner.deactivate", "HeroBanner", id);
 
   revalidatePath("/admin/hero-banners");
   revalidatePath("/");

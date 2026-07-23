@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/db";
 import { requireAdminAction } from "@/lib/admin-access";
+import { recordAuditLog } from "@/lib/audit-log";
 import { hashPassword } from "@/lib/password";
 import { isPermission } from "@/lib/permissions";
 
@@ -31,7 +32,7 @@ export async function createAdmin(formData: FormData) {
     throw new Error("An admin with that email already exists");
   }
 
-  await prisma.adminUser.create({
+  const created = await prisma.adminUser.create({
     data: {
       email,
       name,
@@ -41,12 +42,14 @@ export async function createAdmin(formData: FormData) {
     },
   });
 
+  await recordAuditLog(actor, "admin.create", "AdminUser", created.id, { email, role });
+
   revalidatePath("/admin/team");
   return { success: true };
 }
 
 export async function setAdminPermissions(adminId: string, permissionKeys: string[]) {
-  await requireAdminAction("admin.manage");
+  const actor = await requireAdminAction("admin.manage");
 
   const validKeys = permissionKeys.filter(isPermission);
 
@@ -61,14 +64,18 @@ export async function setAdminPermissions(adminId: string, permissionKeys: strin
     ),
   ]);
 
+  await recordAuditLog(actor, "admin.setPermissions", "AdminUser", adminId, { permissions: validKeys });
+
   revalidatePath("/admin/team");
   return { success: true };
 }
 
 export async function toggleAdminActive(adminId: string, active: boolean) {
-  await requireAdminAction("admin.manage");
+  const actor = await requireAdminAction("admin.manage");
 
   await prisma.adminUser.update({ where: { id: adminId }, data: { active } });
+
+  await recordAuditLog(actor, active ? "admin.activate" : "admin.deactivate", "AdminUser", adminId);
 
   revalidatePath("/admin/team");
   return { success: true };

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/db";
 import { requireAdminAction } from "@/lib/admin-access";
+import { recordAuditLog } from "@/lib/audit-log";
 import { isPrismaUniqueError } from "@/lib/order-service";
 import { slugify } from "@/lib/slugify";
 
@@ -30,11 +31,12 @@ function readPageContentFields(formData: FormData) {
 }
 
 export async function createPageContent(formData: FormData) {
-  await requireAdminAction("page.manage");
+  const admin = await requireAdminAction("page.manage");
   const data = readPageContentFields(formData);
+  let created;
 
   try {
-    await prisma.pageContent.create({
+    created = await prisma.pageContent.create({
       data: { ...data, slug: slugify(data.title) },
     });
   } catch (e: unknown) {
@@ -44,31 +46,39 @@ export async function createPageContent(formData: FormData) {
     throw e;
   }
 
+  await recordAuditLog(admin, "page.create", "PageContent", created.id, { title: data.title });
+
   revalidatePath("/admin/pages");
   return { success: true };
 }
 
 export async function updatePageContent(id: string, formData: FormData) {
-  await requireAdminAction("page.manage");
+  const admin = await requireAdminAction("page.manage");
   const data = readPageContentFields(formData);
 
   await prisma.pageContent.update({ where: { id }, data });
+
+  await recordAuditLog(admin, "page.update", "PageContent", id, { title: data.title });
 
   revalidatePath("/admin/pages");
   return { success: true };
 }
 
 export async function deletePageContent(id: string) {
-  await requireAdminAction("page.manage");
+  const admin = await requireAdminAction("page.manage");
   await prisma.pageContent.delete({ where: { id } });
+
+  await recordAuditLog(admin, "page.delete", "PageContent", id);
 
   revalidatePath("/admin/pages");
   return { success: true };
 }
 
 export async function togglePageContentPublished(id: string, published: boolean) {
-  await requireAdminAction("page.manage");
+  const admin = await requireAdminAction("page.manage");
   await prisma.pageContent.update({ where: { id }, data: { published } });
+
+  await recordAuditLog(admin, published ? "page.publish" : "page.unpublish", "PageContent", id);
 
   revalidatePath("/admin/pages");
   return { success: true };

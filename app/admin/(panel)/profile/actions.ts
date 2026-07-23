@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/db";
 import { requireAdminAction } from "@/lib/admin-access";
+import { recordAuditLog } from "@/lib/audit-log";
 import { verifyPassword, hashPassword } from "@/lib/password";
 import { validateNewPassword } from "@/lib/password-policy";
 
@@ -16,6 +17,8 @@ export async function updateProfile(formData: FormData) {
   }
 
   await prisma.adminUser.update({ where: { id: admin.id }, data: { name } });
+
+  await recordAuditLog(admin, "profile.update", "AdminUser", admin.id, { name });
 
   revalidatePath("/admin/profile");
   return { success: true };
@@ -44,6 +47,8 @@ export async function changePassword(formData: FormData) {
 
   const passwordHash = await hashPassword(newPassword);
   await prisma.adminUser.update({ where: { id: admin.id! }, data: { passwordHash } });
+
+  await recordAuditLog(admin, "profile.changePassword", "AdminUser", admin.id);
 
   return { success: true };
 }
