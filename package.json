@@ -30,6 +30,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "latest",
+    "motion": "^12.42.2",
     "next": "latest",
     "nodemailer": "^9.0.3",
     "prisma": "^6.19.3",

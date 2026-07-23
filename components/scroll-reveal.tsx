@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 const REVEAL_SELECTOR =
-  ".quick-links, .product-section, .category-showcase, .quote-cta";
+  ".quick-links, .product-section, .quote-cta";
 
 /**
  * Progressive scroll-reveal for home sections. Content is visible by

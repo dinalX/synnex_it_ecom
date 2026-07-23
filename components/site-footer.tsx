@@ -35,6 +35,8 @@ export async function SiteFooter() {
           <h2>Solutions</h2>
           <Link href="/services">Services</Link>
           <Link href="/products">All Products</Link>
+          <Link href="/pages/about">About Us</Link>
+          <Link href="/contact">Contact Us</Link>
         </nav>
         <nav aria-label="Footer support">
           <h2>Support</h2>

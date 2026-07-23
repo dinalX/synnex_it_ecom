@@ -1,3 +1,4 @@
+import "./storefront-tailwind.css";
 import { CartProvider } from "@/components/cart-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";

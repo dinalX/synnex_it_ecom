@@ -1,0 +1,15 @@
+/*
+ * Tailwind entry point scoped to the storefront only, imported exclusively
+ * from app/(storefront)/layout.tsx. The storefront's own visual system is
+ * hand-written CSS (app/globals.css) - this file exists solely to power
+ * Tailwind-authored drop-in components (e.g. Magic UI's BorderBeam) that
+ * assume Tailwind utilities are available, without pulling in Tailwind
+ * Preflight (which would reset margins/headings/lists across the whole
+ * storefront and fight app/globals.css).
+ */
+@layer theme, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@source "../../components/ui/border-beam.tsx";

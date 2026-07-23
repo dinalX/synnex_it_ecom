@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Barcode, Fingerprint, LayoutGrid, Monitor, Package, Printer, X } from "lucide-react";
-import type { fetchCategories } from "@/lib/data";
 
 const iconByName: Record<string, React.ComponentType<{ size?: number }>> = {
   Monitor,
@@ -12,16 +11,35 @@ const iconByName: Record<string, React.ComponentType<{ size?: number }>> = {
   Printer,
 };
 
-type Category = Awaited<ReturnType<typeof fetchCategories>>[number];
+export type CategoryBottomSheetItem = {
+  slug: string;
+  name: string;
+  icon: string | null;
+  accent: string;
+  children: { slug: string; name: string }[];
+};
+
+type Category = CategoryBottomSheetItem;
+
+interface CategoryBottomSheetProps {
+  categories: Category[];
+  /** Omit for a self-contained instance (own trigger banner + state), e.g. on the homepage. */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Hide the inline trigger banner when something else (e.g. the mobile bottom nav) opens this sheet. */
+  hideTrigger?: boolean;
+}
 
 /**
- * Mobile-only entry point for category browsing: a compact trigger banner
- * that opens a bottom sheet, replacing the full-height inline grid (see
- * .category-showcase-grid) which pushed real product content down a full
- * screen of scrolling on small viewports.
+ * Mobile category browsing: a compact trigger banner that opens a bottom
+ * sheet. Can also be used as a controlled component (pass `open`/
+ * `onOpenChange`) so an external trigger, like the mobile bottom nav, can
+ * open the same sheet.
  */
-export function CategoryBottomSheet({ categories }: { categories: Category[] }) {
-  const [open, setOpen] = useState(false);
+export function CategoryBottomSheet({ categories, open: controlledOpen, onOpenChange, hideTrigger }: CategoryBottomSheetProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
   const sheetRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -59,20 +77,22 @@ export function CategoryBottomSheet({ categories }: { categories: Category[] }) 
       document.removeEventListener("keydown", onKeyDown);
       previousFocusRef.current?.focus();
     };
-  }, [open]);
+  }, [open, setOpen]);
 
   return (
-    <div className="category-sheet-mobile-only">
-      <button type="button" className="category-sheet-trigger" onClick={() => setOpen(true)}>
-        <span className="category-sheet-trigger-icon">
-          <LayoutGrid size={20} />
-        </span>
-        <span className="category-sheet-trigger-text">
-          <strong>Browse Categories</strong>
-          <span>POS, barcode, security &amp; more</span>
-        </span>
-        <ArrowRight size={18} />
-      </button>
+    <div className={hideTrigger ? "category-sheet-global-only" : "category-sheet-mobile-only"}>
+      {hideTrigger ? null : (
+        <button type="button" className="category-sheet-trigger" onClick={() => setOpen(true)}>
+          <span className="category-sheet-trigger-icon">
+            <LayoutGrid size={20} />
+          </span>
+          <span className="category-sheet-trigger-text">
+            <strong>Browse Categories</strong>
+            <span>POS, barcode, security &amp; more</span>
+          </span>
+          <ArrowRight size={18} />
+        </button>
+      )}
 
       <div className={`category-sheet-shell${open ? " is-open" : ""}`} aria-hidden={!open}>
         <button

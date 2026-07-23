@@ -8,11 +8,11 @@ import { Home, LayoutGrid, Search, User, ShoppingBag, X } from "lucide-react";
 interface MobileBottomNavProps {
   totalItems: number;
   onOpenCart: () => void;
-  menuOpen: boolean;
-  onToggleMenu: () => void;
+  categoriesOpen: boolean;
+  onToggleCategories: () => void;
 }
 
-export function MobileBottomNav({ totalItems, onOpenCart, menuOpen, onToggleMenu }: MobileBottomNavProps) {
+export function MobileBottomNav({ totalItems, onOpenCart, categoriesOpen, onToggleCategories }: MobileBottomNavProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [accountHref, setAccountHref] = useState("/login");
@@ -68,12 +68,12 @@ export function MobileBottomNav({ totalItems, onOpenCart, menuOpen, onToggleMenu
         className="mobile-bottom-nav-item"
         onClick={() => {
           setSearchOpen(false);
-          onToggleMenu();
+          onToggleCategories();
         }}
-        aria-label={menuOpen ? "Close menu" : "Open menu"}
-        aria-expanded={menuOpen}
+        aria-label={categoriesOpen ? "Close categories" : "Categories"}
+        aria-expanded={categoriesOpen}
       >
-        {menuOpen ? <X size={22} /> : <LayoutGrid size={22} />}
+        {categoriesOpen ? <X size={22} /> : <LayoutGrid size={22} />}
       </button>
       <button
         type="button"

@@ -1,11 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { Barcode, ChevronDown, ChevronRight, Fingerprint, Monitor, Package, Printer } from "lucide-react";
 import { useEffect, useState } from "react";
+import { BorderBeam } from "@/components/ui/border-beam";
 
 type Subcategory = { id: string; slug: string; name: string };
-type Category = { id: string; slug: string; name: string; children?: Subcategory[] };
+type Category = {
+  id: string;
+  slug: string;
+  name: string;
+  icon?: string | null;
+  accent?: string | null;
+  children?: Subcategory[];
+};
+
+const iconByName: Record<string, React.ComponentType<{ size?: number }>> = {
+  Monitor,
+  Barcode,
+  Fingerprint,
+  Printer,
+};
 
 interface NavDropdownProps {
   id: string;
@@ -69,6 +84,7 @@ export function NavDropdown({ id, label, isOpen, onOpen, onScheduleClose, onCanc
       )}
       <div id={menuId} className={"dropdown-menu" + (menuClassName ? " " + menuClassName : "")} role="menu" onMouseEnter={onCancelClose} onMouseLeave={onScheduleClose}>
         {children}
+        {isOpen ? <BorderBeam colorFrom="#17795f" colorTo="#111111" size={90} duration={6} /> : null}
       </div>
     </div>
   );
@@ -86,13 +102,18 @@ export function ProductsDropdown() {
 
   return (
     <div className="products-dropdown">
-      {categories.map((cat, index) => (
+      {categories.map((cat, index) => {
+        const Icon = iconByName[cat.icon ?? ""] ?? Package;
+        return (
         <div
           key={cat.slug}
           className="products-dropdown-group"
-          style={{ ["--stagger" as string]: index }}
+          style={{ ["--stagger" as string]: index, ["--accent" as string]: cat.accent || "var(--green)" }}
         >
           <Link role="menuitem" href={`/products?category=${cat.slug}`} className="products-dropdown-title">
+            <span className="products-dropdown-title-icon">
+              <Icon size={16} />
+            </span>
             {cat.name}
             <ChevronRight size={13} className="products-dropdown-title-arrow" />
           </Link>
@@ -109,7 +130,8 @@ export function ProductsDropdown() {
             ))}
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

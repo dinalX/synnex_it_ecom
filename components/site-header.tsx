@@ -1,21 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CartDrawer } from "@/components/cart-drawer";
 import { useCart } from "@/components/cart-provider";
+import { CategoryBottomSheet, type CategoryBottomSheetItem } from "@/components/category-bottom-sheet";
 import { HeaderSearch } from "@/components/header-search";
 import { HeaderActions } from "@/components/header-actions";
-import { MobileMenu } from "@/components/mobile-menu";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { NavDropdown, ProductsDropdown } from "@/components/nav-dropdown";
 import { useHoverDropdown } from "@/components/use-hover-dropdown";
 
 export function SiteHeader() {
   const { totalItems, openCart, isOpen: isCartOpen } = useCart();
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [categorySheetOpen, setCategorySheetOpen] = useState(false);
+  const [categories, setCategories] = useState<CategoryBottomSheetItem[]>([]);
   const { openId, open, scheduleClose, cancelClose, toggle } = useHoverDropdown();
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => setCategories(data.categories || []))
+      .catch(() => {});
+  }, []);
 
   return (
     <>
@@ -64,14 +72,18 @@ export function SiteHeader() {
             <HeaderActions totalItems={totalItems} onOpenCart={openCart} isCartOpen={isCartOpen} />
           </div>
         </div>
-
-        {mobileOpen && <MobileMenu onClose={() => setMobileOpen(false)} />}
       </header>
       <MobileBottomNav
         totalItems={totalItems}
         onOpenCart={openCart}
-        menuOpen={mobileOpen}
-        onToggleMenu={() => setMobileOpen((open) => !open)}
+        categoriesOpen={categorySheetOpen}
+        onToggleCategories={() => setCategorySheetOpen((value) => !value)}
+      />
+      <CategoryBottomSheet
+        categories={categories}
+        open={categorySheetOpen}
+        onOpenChange={setCategorySheetOpen}
+        hideTrigger
       />
       <CartDrawer />
     </>
